@@ -1,0 +1,41 @@
+.content-header  {
+
+    background-color:#001f3f;  
+    border-bottom: 4px solid green;
+    padding: 20px;
+    align-items: center;
+
+}
+
+#tittle {
+    color: white;
+    width: 300px;
+}
+.horario-termino{
+    display: none;
+}
+.txt-objetivo{
+margin-left: -20px;    }
+.logo_hospital{
+    width: 70px;
+    height: 70px;
+  }
+  
+ #descricao  textarea {
+    line-height: 1.5;
+}
+
+
+.custom-select .options {
+    border: 1px solid #ccc;
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+.custom-select .option {
+    padding: 5px 10px;
+}
+
+.custom-select .option input[type="checkbox"] {
+    margin-right: 5px;
+}
