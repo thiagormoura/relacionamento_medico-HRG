@@ -27,9 +27,12 @@
             <div class="container-fluid">
                 <div class="row py-1">
                     <div class="col ">
-                        <h1 class=" text-light shadow">Relacionamento Médico - Registro de atendimento</h1>
+                        <h1 class=" text-light shadow"><?php echo isset($pageTitle) ? $pageTitle : "Relacionamento Médico - Registro de atendimento"; ?></h1>
                     </div>
                 </div>
             </div>
         </div>
     </header>
+   
+
+
