@@ -1,75 +1,115 @@
+// Definindo a função enviarFormulario
+function enviarFormulario() {
+    var date = document.getElementById("date").value;
+    var status = document.getElementById("status").value;
+    var nome = document.getElementById("nome").value;
+    var registro = document.getElementById("registro").value;
+    var estado = document.getElementById("estado").value;
+    var orgao = document.getElementById("orgao").value;
+    var celular = document.getElementById("celular").value;
+    var nascimento = document.getElementById("nascimento").value;
+    var email = document.getElementById("email").value;
+    var descricaoespecialidades = document.getElementById("descricaoespecialidades").value;
+    var descricao = document.getElementById("descricao").value;
+    var acoes = document.getElementById("acoes").value;
 
-function validateForm() {
-    var isValid = true;
-    var requiredFields = ['date', 'orgao', 'assunto', 'nome', 'registro', 'celular', 'email', 'descricao', 'acoes'];
 
-    requiredFields.forEach(function(field) {
-        var input = document.getElementById(field);
-        if (!input.value) {
-            input.classList.add('is-invalid');
-            isValid = false;
-        } else {
-            input.classList.remove('is-invalid');
-        }
+
+
+    // Log dos valores preenchidos no formulário
+    console.log({
+        date: date,
+        status: status,
+        nome: nome,
+        registro: registro,
+        estado: estado,
+        orgao: orgao,
+        celular: celular,
+        nascimento: nascimento,
+        email: email,
+        descricaoespecialidades: descricaoespecialidades,
+        descricao: descricao,
+        acoes: acoes
     });
 
-    var email = document.getElementById('email');
-    var emailValue = email.value;
-    var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    // Lista de campos obrigatórios
+    var camposobrigatorios = [
+        { campo: nome, nome: "Nome" },
+        { campo: email, nome: "Email" },
+        { campo: date, nome: "Data" },
+        { campo: registro, nome: "Registro" },
+        { campo: estado, nome: "Estado" },
+        { campo: orgao, nome: "Órgão" },
+        { campo: celular, nome: "Celular" },
+        { campo: nascimento, nome: "Nascimento" },
+        { campo: descricaoespecialidades, nome: "Descrição das Especialidades" },
+        { campo: descricao, nome: "Descrição" },
+        { campo: acoes, nome: "Ações" }
+    ];
 
-    if (!emailPattern.test(emailValue)) {
-        email.classList.add('is-invalid');
-        isValid = false;
-    } else {
-        email.classList.remove('is-invalid');
-    }
+    // Verificação de campos obrigatórios
+    var camposVazios = camposobrigatorios.filter(function(campo) {
+        return campo.campo.trim() === "";
+    });
 
-    console.log('Formulário é válido?', isValid);
-    return isValid;
-}
+    if (camposVazios.length > 0) {
+        var camposNomes = camposVazios.map(function(campo) {
+            return campo.nome;
+        }).join(", ");
 
-
-function enviarFormulario() {
-    // Validar os campos do formulário
-    if (validateForm(isValid)) {
-
-        $.ajax({
-            url: 'forms/enviarindexbanco.php', // Verifique se o caminho está correto
-            type: 'POST',
-            data: $('#occurrenceForm').serialize(), // Serialize o formulário para enviar os dados
-            success: function(response) {
-                // Exibir uma mensagem de sucesso
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Sucesso!',
-                    text: response, // Exemplo: exibir a resposta do PHP (como "Dados inseridos com sucesso!")
-                    confirmButtonText: 'OK'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        // Redirecionar para a página de histórico após clicar em "OK"
-                        window.location.href = '../php/historico.php'; // Verifique se o caminho está correto
-                        console.log('Redirecionamento para histórico após confirmação');
-                    }
-                });
-            },
-            error: function(xhr, status, error) {
-                // Lidar com erros de requisição, se necessário
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Erro!',
-                    text: 'Ocorreu um erro ao enviar o formulário. Por favor, tente novamente.', // Mensagem de erro padrão
-                    confirmButtonText: 'OK'
-                });
-                console.error(xhr.responseText); // Exemplo: exibir o erro retornado pelo PHP
-            }
-        });
-    } else {
-        // Se o formulário não for válido, exibir uma mensagem de erro
         Swal.fire({
-            icon: 'error',
-            title: 'Erro!',
-            text: 'Por favor, preencha todos os campos obrigatórios.', // Mensagem de erro para campos não preenchidos
-            confirmButtonText: 'OK'
+            title: "Erro no registro",
+            text: "Preencha todos os campos obrigatórios: " + camposNomes,
+            icon: "error"
         });
+        return;
+        // Aborta o envio do formulário se houver campos obrigatórios vazios
     }
+
+   
+
+    $.ajax({
+        url: 'enviarindexbanco.php', // Substitua 'seu_arquivo_php.php' pelo caminho do seu arquivo PHP de destino
+        method: 'POST',
+        data: {
+            date: date,
+            status: status,
+            nome: nome,
+            registro: registro,
+            estado: estado,
+            orgao: orgao,
+            celular: celular,
+            nascimento: nascimento,
+            email: email,
+            descricaoespecialidades: descricaoespecialidades,
+            descricao: descricao,
+            acoes: acoes
+        },
+        success: function (response) {
+            Swal.fire({
+                title: "Registro enviado com sucesso!",
+                text: response,
+                icon: "success"
+               
+            }); 
+            setTimeout(function() {
+                window.location.href = 'historico.php' ;
+                
+            }, 1500);
+        },
+        error: function (error) {
+            Swal.fire({
+                title: "Erro",
+                text: "Ocorreu um erro ao enviar o registro.",
+                icon: "error"
+            });
+            console.error('Erro na solicitação AJAX:', error);
+        }
+    });
 }
+
+var enviarButton = document.getElementById("enviarbutton");
+
+enviarButton.addEventListener("click", function() {
+    enviarFormulario();
+});
