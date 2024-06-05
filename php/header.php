@@ -26,9 +26,8 @@
         <div class="content-header shadow" style="border-bottom: solid 1px gray;">
             <div class="container-fluid">
                 <div class="row py-1">
-                    <div class="col ">
-                        <p class="h1  text-light shadow" style="font-size: 25px;" ><b><?php echo isset($pageTitle) ? $pageTitle : "Relacionamento Médico  "; ?></b></p>
-                        <p class="  text-light shadow  opacity-75" style="font-size: 20px;"><?php echo isset($pageTitle) ? $pageTitle : " Registro de atendimento "; ?></p>
+                    <div class="titulo">
+                        <p class="h1  text-light shadow" style="font-size: 25px;" > <?php echo isset($pageTitle) ? $pageTitle : "<p class='rm'> Relacionamento Médico </p>  <p class='ra'> Registro de atendimento <p/>"; ?></p>
 
                     </div>
                 </div>

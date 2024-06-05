@@ -12,12 +12,14 @@ function enviarFormulario() {
     var descricaoespecialidades = document.getElementById("descricaoespecialidades").value;
     var descricao = document.getElementById("descricao").value;
     var acoes = document.getElementById("acoes").value;
+    var cpf = document.getElementById("cpf").value;
 
 
 
 
     // Log dos valores preenchidos no formulário
     console.log({
+        cpf : cpf,
         date: date,
         status: status,
         nome: nome,
@@ -44,7 +46,8 @@ function enviarFormulario() {
         { campo: nascimento, nome: "Nascimento" },
         { campo: descricaoespecialidades, nome: "Descrição das Especialidades" },
         { campo: descricao, nome: "Descrição" },
-        { campo: acoes, nome: "Ações" }
+        { campo: acoes, nome: "Ações" },
+        { campo: cpf, nome: "Cpf" }
     ];
 
     // Verificação de campos obrigatórios
@@ -83,7 +86,8 @@ function enviarFormulario() {
             email: email,
             descricaoespecialidades: descricaoespecialidades,
             descricao: descricao,
-            acoes: acoes
+            acoes: acoes,
+            cpf:cpf
         },
         success: function (response) {
             Swal.fire({
@@ -92,10 +96,11 @@ function enviarFormulario() {
                 icon: "success"
                
             }); 
-            setTimeout(function() {
-                window.location.href = 'historico.php' ;
+            // setTimeout(function() {
+            //     window.location.href = 'historico.php'
                 
-            }, 1500);
+            // }, 1500);
+           
         },
         error: function (error) {
             Swal.fire({

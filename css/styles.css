@@ -4,16 +4,19 @@
     border-bottom: 4px solid green;
     padding: 20px;
     align-items: center;
+    color: aliceblue;
 
 }
+.content-header .titulo .rm{
+margin: 0;
+font-size: 35px;
+}
+.content-header .titulo .ra{
+    font-size: 20px;
+    margin: 0px;
+    }
 
-#tittle {
-    color: white;
-    width: 300px;
-}
-.horario-termino{
-    display: none;
-}
+
 .txt-objetivo{
 margin-left: -20px;    }
 .logo_hospital{
@@ -38,4 +41,16 @@ margin-left: -20px;    }
 
 .custom-select .option input[type="checkbox"] {
     margin-right: 5px;
+}
+@media (max-width: 700px) {
+
+    .content-header .titulo .rm{
+        margin: 0;
+        font-size: 20px;
+        }
+        .content-header .titulo .ra{
+            font-size: 14px;
+            margin: 0px;
+            }
+        
 }

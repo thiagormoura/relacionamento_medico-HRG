@@ -6,13 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Historico-Registro de Atendimento</title>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link rel="stylesheet" href="../css/styles.css">
-    <link rel="stylesheet" href="../css/bootstrap.min.css">
-    <link rel="stylesheet" href="../css/bootstrap-grid.css">
-    <link rel="stylesheet" href="../css/bootstrap-grid.min.css">
-    <link rel="stylesheet" href="../css/bootstrap.css">
-    <link rel="stylesheet" href="../css/selectize.bootstrap5.min.css">
-    <link rel="stylesheet" href="../css/multi-select-tag.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/bootstrap-grid.css">
+    <link rel="stylesheet" href="css/bootstrap-grid.min.css">
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/selectize.bootstrap5.min.css">
+    <link rel="stylesheet" href="css/multi-select-tag.css">
 </head>
 
 <body>
@@ -20,7 +20,7 @@
     <?php
 
     $pageTitle = "Histórico - Registro de Atendimento";
-    include '../php/header.php';
+    include 'php/header.php';
     ?>
 
 
