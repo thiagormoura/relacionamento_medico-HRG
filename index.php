@@ -28,7 +28,7 @@ include("conexao.php")
         <form id="occurrenceForm"  method="post" onsubmit="return validateForm()">
 
     
-            <div class="row ">
+            <div class="row d-flex">
                 <div class="col-xl-2 col-md-6 mt-3">
                     <label for="data"> data</label>
                     <div class="form-group">
@@ -40,14 +40,15 @@ include("conexao.php")
               
     
       
-               
+
+             
          <div class="col-xl-3 col-lg-xl-4  col-md-4 mt-3">
          <label for="assunto"> Assunto Tratado</label>
 
                  
                 
         <label class="form-control">
-            <input type="checkbox" class="admissao" name="admissao" id="admissao" value="Admissão/Contrato de Prestador de Serviços">Admissão 
+            <input type="checkbox" class="admissao" name="admissao" id="admissao" value="Admissão">Admissão 
         </label>
     </div> 
             <div class="col-xl-3 col-lg-xl-4 col-md-4 mt-3">
@@ -60,10 +61,9 @@ include("conexao.php")
             <div class="col-xl-2 col-lg-xl-4 col-md-4 mt-3">
                 <label for=""></label>
         <label class="form-control">
-            <input type="checkbox" class="repasse" name="repasse" id="repasse" value="repasse">Repasse
+            <input type="checkbox" class="repasse" name="repasse" id="repasse" value="Repasse">Repasse
         </label>
     </div>
-
 
                   <div class="col-xl-2 col-md-6 mt-3">
                     <div class="form-group">

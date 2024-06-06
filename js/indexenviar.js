@@ -13,13 +13,22 @@ function enviarFormulario() {
     var descricao = document.getElementById("descricao").value;
     var acoes = document.getElementById("acoes").value;
     var cpf = document.getElementById("cpf").value;
+    
+   
+    
+    if (!document.getElementById("repasse").checked && !document.getElementById("admissao").checked && !document.getElementById("atualizardados").checked) {
+        Swal.fire({
+            title: "Erro no registro",
+            text: "Marque pelo menos um dos campos: Repasse, Admissão ou Atualização de Dados",
+            icon: "error"
+        });
+        return;} var assunto = repasse.trim() + admissao.trim() + atualizardados.trim();
 
-
-
-
+    console.log("Valor da variável assunto após a concatenação:", assunto);
     // Log dos valores preenchidos no formulário
     console.log({
-        cpf : cpf,
+        assunto: assunto,
+        cpf: cpf,
         date: date,
         status: status,
         nome: nome,
@@ -35,7 +44,7 @@ function enviarFormulario() {
     });
 
     // Lista de campos obrigatórios
-    var camposobrigatorios = [
+    var camposObrigatorios = [
         { campo: nome, nome: "Nome" },
         { campo: email, nome: "Email" },
         { campo: date, nome: "Data" },
@@ -51,7 +60,7 @@ function enviarFormulario() {
     ];
 
     // Verificação de campos obrigatórios
-    var camposVazios = camposobrigatorios.filter(function(campo) {
+    var camposVazios = camposObrigatorios.filter(function(campo) {
         return campo.campo.trim() === "";
     });
 
@@ -65,16 +74,17 @@ function enviarFormulario() {
             text: "Preencha todos os campos obrigatórios: " + camposNomes,
             icon: "error"
         });
-        return;
-        // Aborta o envio do formulário se houver campos obrigatórios vazios
+        return; // Aborta o envio do formulário se houver campos obrigatórios vazios
     }
 
-   
-
+    // Envio dos dados via AJAX
     $.ajax({
         url: 'enviarindexbanco.php', // Substitua 'seu_arquivo_php.php' pelo caminho do seu arquivo PHP de destino
         method: 'POST',
         data: {
+            repasse: repasse,
+            atualizardados: atualizardados,
+            admissao: admissao,
             date: date,
             status: status,
             nome: nome,
@@ -87,22 +97,16 @@ function enviarFormulario() {
             descricaoespecialidades: descricaoespecialidades,
             descricao: descricao,
             acoes: acoes,
-            cpf:cpf
+            cpf: cpf
         },
-        success: function (response) {
+        success: function(response) {
             Swal.fire({
                 title: "Registro enviado com sucesso!",
                 text: response,
                 icon: "success"
-               
-            }); 
-            // setTimeout(function() {
-            //     window.location.href = 'historico.php'
-                
-            // }, 1500);
-           
+            });
         },
-        error: function (error) {
+        error: function(error) {
             Swal.fire({
                 title: "Erro",
                 text: "Ocorreu um erro ao enviar o registro.",
@@ -113,8 +117,8 @@ function enviarFormulario() {
     });
 }
 
+// Adiciona o evento de clique ao botão de envio
 var enviarButton = document.getElementById("enviarbutton");
-
 enviarButton.addEventListener("click", function() {
     enviarFormulario();
 });

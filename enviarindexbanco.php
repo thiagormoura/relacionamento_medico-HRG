@@ -5,10 +5,10 @@ $dbname = "relacionamentomedico";
 $dbuser = "root";
 $dbpass = "";
 
-// Conecta ao banco de dados
-$conn = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname);
+// Conexão com o banco de dados
+$conn = new mysqli($dbhost, $dbuser, $dbpass, $dbname);
 
-// Verifica a conexão
+// Verificação da conexão
 if ($conn->connect_error) {
     die("Falha na conexão: " . $conn->connect_error);
 }
@@ -18,6 +18,53 @@ function isEmpty($value) {
     return empty(trim($value));
 }
 
+// Função para inserir médico
+function insertMedico($conn, $nome, $celular, $email, $cpf, $estado_id, $nascimento) {
+    $stmt = $conn->prepare("INSERT INTO inform_medicos (nome, telefone, email, cpf, id_estado, data_nascimento) VALUES (?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("ssssss", $nome, $celular, $email, $cpf, $estado_id, $nascimento);
+    $stmt->execute();
+    return $stmt->insert_id;
+}
+
+// Função para inserir órgão
+function insertOrgao($conn, $orgao) {
+    $stmt = $conn->prepare("INSERT INTO orgaos (orgaos) VALUES (?)");
+    $stmt->bind_param("s", $orgao);
+    $stmt->execute();
+    return $stmt->insert_id;
+}
+
+// Função para inserir especialidade
+function insertEspecialidade($conn, $descricaoespecialidades) {
+    $stmt = $conn->prepare("INSERT INTO especialidades (especialidades) VALUES (?)");
+    $stmt->bind_param("s", $descricaoespecialidades);
+    $stmt->execute();
+    return $stmt->insert_id;
+}
+
+// Função para inserir informação do médico
+function insertInformacaoMedico($conn, $id_orgao, $infom_id, $especi_id) {
+    $stmt = $conn->prepare("INSERT INTO inform_inst_medicos (id_orgao, id_info_medico, id_especialidade) VALUES (?, ?, ?)");
+    $stmt->bind_param("iii", $id_orgao, $infom_id, $especi_id);
+    $stmt->execute();
+    return $stmt->insert_id;
+}
+
+// Função para inserir descrição
+function insertDescricao($conn, $descricao, $last_id) {
+    $stmt = $conn->prepare("INSERT INTO descricao (descricao, id_inform_inst_medicos) VALUES (?, ?)");
+    $stmt->bind_param("si", $descricao, $last_id);
+    $stmt->execute();
+}
+
+// Função para inserir ações
+function insertAcoes($conn, $acoes, $last_id) {
+    $stmt = $conn->prepare("INSERT INTO acoes (acoes, id_inform_inst_medicos) VALUES (?, ?)");
+    $stmt->bind_param("si", $acoes, $last_id);
+    $stmt->execute();
+}
+
+// Verificação dos dados recebidos
 $date = !isEmpty($_POST['date']) ? $_POST['date'] : null;
 $status = !isEmpty($_POST['status']) ? $_POST['status'] : null;
 $nome = !isEmpty($_POST['nome']) ? $_POST['nome'] : null;
@@ -32,18 +79,18 @@ $descricao = !isEmpty($_POST['descricao']) ? $_POST['descricao'] : null;
 $acoes = !isEmpty($_POST['acoes']) ? $_POST['acoes'] : null;
 $cpf = !isEmpty($_POST['cpf']) ? $_POST['cpf'] : null;
 
+// Verificação de campos vazios
 if (isEmpty($acoes) || isEmpty($descricaoespecialidades) || isEmpty($estado) || isEmpty($orgao) ||
     isEmpty($nome) || isEmpty($celular) || isEmpty($email) || isEmpty($registro) || isEmpty($nascimento) || isEmpty($cpf)) {
     die("Erro: Todos os campos devem ser preenchidos.");
 } else {
-    // Extrair o estado e a sigla
-    if (preg_match('/^([A-Z]{2})$/', $estado, $matches)) {
-        $sigla = trim($matches[1]);
-    } else {
+    // Verificação do estado
+    if (!preg_match('/^([A-Z]{2})$/', $estado, $matches)) {
         die("Erro: Sigla do estado inválida. A sigla do estado deve conter exatamente duas letras maiúsculas.");
     }
 
-    // Verifica se o estado já existe
+    // Obtenção do ID do estado
+    $sigla = trim($matches[1]);
     $stmt = $conn->prepare("SELECT id FROM estados WHERE sigla = ?");
     $stmt->bind_param("s", $sigla);
     $stmt->execute();
@@ -55,67 +102,28 @@ if (isEmpty($acoes) || isEmpty($descricaoespecialidades) || isEmpty($estado) || 
         die("Erro: Sigla do estado não encontrada no banco de dados.");
     }
 
-    // Insere os dados nas outras tabelas
-    $stmt = $conn->prepare("INSERT INTO acoes (acoes) VALUES (?)");
-    $stmt->bind_param("s", $acoes);
-    $stmt->execute();
-    $stmt->close();
+    // Inserção de médico
+    $infom_id = insertMedico($conn, $nome, $celular, $email, $cpf, $estado_id, $nascimento);
 
-    $stmt = $conn->prepare("INSERT INTO especialidades (especialidades) VALUES (?)");
-    $stmt->bind_param("s", $descricaoespecialidades);
-    $stmt->execute();
-    $stmt->close();
+    // Inserção de órgão
+    $id_orgao = insertOrgao($conn, $orgao);
 
-    $stmt = $conn->prepare("INSERT INTO descricao (descricao) VALUES (?)");
-    $stmt->bind_param("s", $descricao);
-    $stmt->execute();
-    $stmt->close();
+    // Inserção de especialidade
+    $especi_id = insertEspecialidade($conn, $descricaoespecialidades);
 
-    // Insere os dados na tabela `inform_medicos`
-    $stmt = $conn->prepare("INSERT INTO inform_medicos (nome, telefone, email, cpf, id_estado, data_nascimento) VALUES (?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("ssssss", $nome, $celular, $email, $cpf, $estado_id, $nascimento);
-    $stmt->execute();
-    $stmt->close();
+    // Inserção de informação do médico
+    $last_id = insertInformacaoMedico($conn, $id_orgao, $infom_id, $especi_id);
 
+    // Inserção de descrição
+    insertDescricao($conn, $descricao, $last_id);
 
-// Consulta para obter o ID do órgão com base no nome
-$stmt = $conn->prepare("SELECT id FROM orgaos WHERE orgaos = ?");
-$stmt->bind_param("s", $orgao);
-$stmt->execute();
-$stmt->bind_result($id_orgao);
-$stmt->fetch();
-$stmt->close();
-
-// Verifica se o órgão já existe
-if (empty($id_orgao)) {
-    // Se o órgão não existir, insere-o na tabela de orgãos
-    $stmt = $conn->prepare("INSERT INTO orgaos (orgao) VALUES (?)");
-    $stmt->bind_param("s", $orgao);
-    $stmt->execute();
-    $id_orgao = $stmt->insert_id; // Obtém o ID do órgão inserido
-    $stmt->close();
+    // Inserção de ações
+    insertAcoes($conn, $acoes, $last_id);
 }
 
+// Fechamento da conexão
+$conn->close();
 
-
-// // Consulta para obter o ID do médico recém-inserido
-// $stmt = $conn->prepare("SELECT id FROM inform_medicos WHERE id = ?");
-// $stmt->bind_param("s", $id_inform_medico);
-// $stmt->execute();
-// $stmt->bind_result($id_info_medico);
-// $stmt->fetch();
-// $stmt->close();
-
-
-// // Insere os dados na tabela `inform_inst_medicos`
-// $stmt = $conn->prepare("INSERT INTO inform_inst_medicos (id_info_medico, id_orgao) VALUES (?, ?)");
-// $stmt->bind_param("ss", $id_info_medico, $id_orgao);
-// $stmt->execute();
-// $stmt->close();
-    // Fecha a conexão
-    $conn->close();
-}
-
-// Retorna uma mensagem de sucesso
+// Mensagem de sucesso
 echo "Registro inserido com sucesso!";
 ?>
