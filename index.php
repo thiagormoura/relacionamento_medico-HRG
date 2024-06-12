@@ -55,7 +55,7 @@ include("conexao.php")
                     </div>
                     <div class="col-xl-4 col-md-6 mt-3">
                         <label for="celular">Número de Celular 2</label>
-                        <input type="tel" class="form-control" id="" name="" required placeholder="(99) 9 9999-9999">
+                        <input type="tel" class="form-control" id="celulardois" name="celulardois" required placeholder="(99) 9 9999-9999">
                     </div>
                     <div class="col-xl-4 col-md-6 mt-3">
                         <label for="email">E-mail </label>
@@ -161,7 +161,7 @@ include("conexao.php")
                     <div class="col-xl-3 col-lg-xl-4 col-md-4 mt-3">
                         <label for="atendimento"> Situação Atendimento </label>
                         <label class="form-control">
-                            <input type="radio" class="andamento " name="situacao_atendimento" id="andamento " value="Andamento "> Andamento
+                            <input type="radio" class="andamento " name="situacao_atendimento" id="andamento" value="Andamento"> Andamento
                         </label>
                     </div>
 
@@ -222,10 +222,12 @@ include("conexao.php")
                         <div class="form-group">
                             <label for=""> Tipo Atendimento</label>
 
-                            <select class="form-control" id="atendimento" name="atendimento"   value="Atendimento" required>
+                            <select class="form-control" id="tipo_atendimento" name="atendimento"   value="Atendimento" required>
                                 <option value="">Selecione atendimento...</option>
                                 <option value="Presencial">Presencial</option>
-                                <option value="Online">Online</option>
+                                <option value="E-mail">email</option>
+                                <option value="WhatsApp">WhatsApp</option>
+                                <option value="outros">Outros</option>
                                 <!-- Adicione mais estados aqui -->
                             </select>
                         </div>
