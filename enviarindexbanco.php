@@ -43,7 +43,7 @@ function enviarParaBanco($conn, $date, $situacaoatendimento, $nome, $registro, $
     }
 
 // Inserir dados na tabela inform_medicos
-$sql_medicos = "INSERT INTO inform_medicos (data_nascimento, cpf, email, telefone,telefone2, nome,tipo_atendimento) VALUES ('$nascimento', '$cpf', '$email', '$celular','$celulardois', '$nome','$tipo_atendimento')";
+$sql_medicos = "INSERT INTO inform_medicos (data_nascimento, cpf, email, telefone,telefone2, nome,tipo_atendimento ,situacao_atendimento) VALUES ('$nascimento', '$cpf', '$email', '$celular','$celulardois', '$nome','$tipo_atendimento','$situacaoatendimento')";
 if ($conn->query($sql_medicos) !== TRUE) {
     echo "Erro ao inserir dados do médico na tabela inform_medicos: " . $conn->error . "<br>";
     $sucesso = false;
@@ -76,7 +76,7 @@ $tipo_atendimento = isset($_POST['tipo_atendimento']) ? $_POST['tipo_atendimento
 $celulardois = isset($_POST['celulardois']) ? $_POST['celulardois'] : null;
 $date = isset($_POST['date']) ? $_POST['date'] : null;
 $situacaoatendimento = isset($_POST['situacaoatendimento']) ? $_POST['situacaoatendimento'] : null;
-print_r($situacaoatendimento);
+
 $nome = isset($_POST['nome']) ? $_POST['nome'] : null;
 $registro = isset($_POST['registro']) ? $_POST['registro'] : null;
 $orgao = isset($_POST['orgao']) ? $_POST['orgao'] : null;
