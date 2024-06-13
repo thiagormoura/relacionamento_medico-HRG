@@ -44,16 +44,21 @@ document.addEventListener('DOMContentLoaded', function() {
         var tipo_atendimento = document.getElementById("tipo_atendimento").value || '';
         var descricao = document.getElementById("descricao").value || '';
         var acoes = document.getElementById("acoes").value || '';
+        var situacao_atendimento = '';
+        var situacao_atendimento_elements = document.getElementsByName("situacao_atendimento");
+        
+        for (var i = 0; i < situacao_atendimento_elements.length; i++) {
+            if (situacao_atendimento_elements[i].checked) {
+                situacao_atendimento = situacao_atendimento_elements[i].value;
+                break;
+            }
+        }
+            console.log("Situação Atendimento selecionada:", situacao_atendimento);
 
-        let situacaoatendimento;
-        document.querySelectorAll('input[name="situacao_atendimento"]').forEach(function(elem) {
-            elem.addEventListener('change', function(event) {
-                situacaoatendimento = event.target.value;
-            });
-        });
+
+       
 
         console.log({
-            situacaoatendimento:situacaoatendimento,
             tipo_atendimento: tipo_atendimento,
             assunto: assunto,
             date: date,
@@ -123,7 +128,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 acoes: acoes,
                 tipo_atendimento: tipo_atendimento,
                 cpf: cpf,
-                situacaoatendimento:situacaoatendimento
+                situacao_atendimento:situacao_atendimento
             },
             success: function(response) {
                 Swal.fire({

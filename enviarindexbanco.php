@@ -4,7 +4,7 @@ $dbhost = "localhost";
 $dbname = "relacionamentomedico";
 $dbuser = "root";
 $dbpass = "";
-
+// echo( "A situação de atendimento é:$situacaoatendimento");
 function enviarParaBanco($conn, $date, $situacaoatendimento, $nome, $registro, $orgao, $celular, $celulardois, $nascimento, $email, $especialidade, $descricao, $acoes, $cpf, $tipo_atendimento) {
     $sucesso = true;
 
@@ -43,20 +43,22 @@ function enviarParaBanco($conn, $date, $situacaoatendimento, $nome, $registro, $
     }
 
 // Inserir dados na tabela inform_medicos
-$sql_medicos = "INSERT INTO inform_medicos (data_nascimento, cpf, email, telefone,telefone2, nome,tipo_atendimento ,situacao_atendimento) VALUES ('$nascimento', '$cpf', '$email', '$celular','$celulardois', '$nome','$tipo_atendimento','$situacaoatendimento')";
+$sql_medicos = "INSERT INTO inform_medicos (data_nascimento, cpf, email, telefone,telefone2, nome,tipo_atendimento , situacao_atendimento) VALUES ('$nascimento', '$cpf', '$email', '$celular','$celulardois', '$nome','$tipo_atendimento','$situacaoatendimento')";
 if ($conn->query($sql_medicos) !== TRUE) {
     echo "Erro ao inserir dados do médico na tabela inform_medicos: " . $conn->error . "<br>";
     $sucesso = false;
 } else {
+     // Obter o ID do $id_inform_medicos inserido
+     $id_inform_medicos = $conn->insert_id;
+
+}
 
     // Inserir dados na tabela inform_inst_medicos
-    $sql_inform_inst_medicos = "INSERT INTO inform_inst_medicos ( id_orgao, id_especialidade) VALUES ('$id_orgao', '$id_especialidade')";
+    $sql_inform_inst_medicos = "INSERT INTO inform_inst_medicos ( id_info_medico, id_orgao, id_especialidade) VALUES ('$id_inform_medicos','$id_orgao', '$id_especialidade')";
     if ($conn->query($sql_inform_inst_medicos) !== TRUE) {
         echo "Erro ao inserir dados na tabela inform_inst_medicos: " . $conn->error . "<br>";
         $sucesso = false;
     } 
-}
-
 
 
 
@@ -75,8 +77,7 @@ if ($conn->connect_error) {
 $tipo_atendimento = isset($_POST['tipo_atendimento']) ? $_POST['tipo_atendimento'] : null;
 $celulardois = isset($_POST['celulardois']) ? $_POST['celulardois'] : null;
 $date = isset($_POST['date']) ? $_POST['date'] : null;
-$situacaoatendimento = isset($_POST['situacaoatendimento']) ? $_POST['situacaoatendimento'] : null;
-
+$situacaoatendimento = isset($_POST['situacao_atendimento']) ? $_POST['situacao_atendimento'] : null;
 $nome = isset($_POST['nome']) ? $_POST['nome'] : null;
 $registro = isset($_POST['registro']) ? $_POST['registro'] : null;
 $orgao = isset($_POST['orgao']) ? $_POST['orgao'] : null;
@@ -87,6 +88,7 @@ $especialidade = isset($_POST['especialidade']) ? $_POST['especialidade'] : null
 $descricao = isset($_POST['descricao']) ? $_POST['descricao'] : null;
 $acoes = isset($_POST['acoes']) ? $_POST['acoes'] : null;
 $cpf = isset($_POST['cpf']) ? $_POST['cpf'] : null;
+
 
 // Chamada da função para enviar os dados para o banco
 if (enviarParaBanco($conn, $date, $situacaoatendimento, $nome, $registro, $orgao, $celular, $celulardois, $nascimento, $email, $especialidade, $descricao, $acoes, $cpf, $tipo_atendimento)) {

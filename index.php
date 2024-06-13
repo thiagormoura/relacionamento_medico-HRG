@@ -1,5 +1,7 @@
 <?php
 include("conexao.php")
+
+
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -27,22 +29,29 @@ include("conexao.php")
 
     <main class="container_fluid d-flex justify-content-center align-items-center">
         <div class="form-group col-8 mt-5">
-            <form id="occurrenceForm" method="post" onsubmit="return validateForm()">
+            <form  id="formulario_index" method="post" action="/seu_script_php.php">
 
 
                 <div class="row d-flex">
                     <label for="">
                         <h4> Dados do Profissional </h4>
                     </label>
+ <div class="col-xl-3 col-md-6 mt-3">
+                        <label for="celular">Cpf </label>
+                        <script>
+    $(document).ready(function() {
+        $('#cpf').mask('000.000.000-00', {reverse: true});
+    });
+</script>
+    <input type="text" class="form-control" id="cpf" name="cpf" required placeholder="000.000.000-00">
+                    </div>
 
+    
                     <div class="col-xl-6 col-md-6 mt-3">
                         <label for="nome">Nome do Profissional </label>
                         <input type="text" class="form-control" id="nome" name="nome" maxlength="80" required>
                     </div>
-                    <div class="col-xl-3 col-md-6 mt-3">
-                        <label for="celular">Cpf </label>
-                        <input type="text" class="form-control" id="cpf" name="cpf" required placeholder="999.999.999-99">
-                    </div>
+                   
                     <div class="col-xl-3 col-md-6 mt-3">
                         <div class="form-group">
                             <label for="nascimento">Data de Nascimento </label>
@@ -161,7 +170,7 @@ include("conexao.php")
                     <div class="col-xl-3 col-lg-xl-4 col-md-4 mt-3">
                         <label for="atendimento"> Situação Atendimento </label>
                         <label class="form-control">
-                            <input type="radio" class="andamento " name="situacao_atendimento" id="andamento" value="Andamento"> Andamento
+                            <input type="radio" class="andamento" name="situacao_atendimento" id="andamento" value="Andamento"> Andamento
                         </label>
                     </div>
 
@@ -179,7 +188,7 @@ include("conexao.php")
                             <input type="radio" class="fechado" name="situacao_atendimento" id="fechado" value="Fechado"> Fechado
                         </label>
 
-                        <script>
+                        <!-- <script>
                             let situacaoAtendimento;
 
                             // Adiciona um evento de mudança a todos os inputs de rádio
@@ -189,7 +198,7 @@ include("conexao.php")
                                     console.log("Situação Atendimento selecionada:", situacaoAtendimento);
                                 });
                             });
-                        </script>
+                        </script> -->
                     </div>
 
 
@@ -260,7 +269,8 @@ include("conexao.php")
 
     </main>
     <div class=" container_fluid d-flex justify-content-center align-items-center mb-5">
-        <button type="button" id="enviarbutton" class="btn btn-primary">Enviar</button>
+        <button type="submit" id="enviarbutton" class="btn btn-primary">Enviar</button>
+       
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
@@ -268,6 +278,7 @@ include("conexao.php")
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
 
     <script src="js/indexenviar.js"></script>
 </body>
