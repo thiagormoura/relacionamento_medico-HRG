@@ -1,3 +1,32 @@
+<?php 
+include("conexao.php");
+
+$sql = "SELECT 
+DATE(a.data) as data,
+im.nome as nome_profissional,
+a.situacao as situacao
+
+
+FROM 
+    relacionamentomedico.atendimento AS a
+JOIN 
+    relacionamentomedico.inform_medicos AS im ON a.profissional = im.id
+JOIN 
+    relacionamentomedico.assunto AS assuntos ON assuntos.id = a.id
+JOIN 
+    relacionamentomedico.atendimento_has_assunto AS has ON has.id = assuntos.id";
+
+$result = $conn->query($sql);
+
+
+// $data_json = json_encode($data);
+// $nome_json = json_encode($nome);
+// $situacao_json = json_encode($situacao);
+// print_r($data_json);
+
+
+?>
+
 <!DOCTYPE html>
 <html lang="pt-br">
 
@@ -14,7 +43,11 @@
     <link rel="stylesheet" href="css/selectize.bootstrap5.min.css">
     <link rel="stylesheet" href="css/multi-select-tag.css">
 </head>
-
+<style>
+    main{
+       padding: 2em;
+    }
+</style>
 <body>
     <!-- Parte do header e nav -->
     <?php
@@ -51,25 +84,30 @@
                                     <input type="date" class="form-control" id="dateFilter">
                                 </div>
                                 <div class="col-xl-3 col-sm-12 col-md-6">
-                                    <select class="form-control" id="subjectFilter">
-                                        <option value="">Todos os assuntos</option>
-                                        <option value="Consulta">Consulta</option>
-                                        <option value="Treinamento">Treinamento</option>
-                                        <option value="Reunião">Reunião</option>
-                                    </select>
+                                <input type="text" class="form-control" id="inputprofissional" placeholder="Profissional">
                                 </div>
                                 <div class="col-xl-3 col-sm-12 col-md-6">
-                                    <select class="form-control" id="stateFilter">
-                                        <option value="">Todos os estados</option>
-                                        <option value="São Paulo">São Paulo</option>
-                                        <option value="Rio de Janeiro">Rio de Janeiro</option>
-                                        <option value="Minas Gerais">Minas Gerais</option>
+                                    <select class="form-control" id="subjectFilter">
+                                        <option value="">Todos os assuntos</option>
+                                        <option value="">Atualização cadastral do Médico</option>
+                                        <option value="">Autorização de procedimentos</option>
+                                        <option value="">Cadastro Médico</option>
+                                        <option value="">Demandas da Contabilidade</option>
+                                        <option value="">Demandas do Faturamento</option>
+                                        <option value="">Demandas do INCOR</option>
+                                        <option value="">Demandas do RH</option>
+                                        <option value="">Demandas do setor Financeiro</option>
+                                        <option value="">Demandas do setor de TI</option>
+                                        <option value="">Estacionamento</option>
+                                        <option value="">Repasse Médico</option>
                                     </select>
                                 </div>
+                               
                                 <div class="col-xl-3 col-sm-12 col-md-6">
                                     <select class="form-control" id="statusFilter">
                                         <option value="">Todos os status</option>
                                         <option value="Aberto">Aberto</option>
+                                        <option value="Emandamento">Em andamento</option>
                                         <option value="Fechado">Fechado</option>
                                     </select>
                                 </div>
@@ -80,62 +118,40 @@
                 </div>
             </div>
             <br>
-
-            <table class="table table-bordered table-hover">
-                <thead class="thead-light">
-                    <tr>
-                        <th>Data</th>
-                        <th>Assunto Tratado</th>
-                        <th>Estado</th>
-                        <th>Nome do Profissional</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>2023-05-01</td>
-                        <td>Consulta</td>
-                        <td>São Paulo</td>
-
-                        <td>João Silva</td>
-                        <td>Fechado</td>
-                    </tr>
-                    <tr>
-                        <td>2023-05-02</td>
-                        <td>Treinamento</td>
-                        <td>Rio de Janeiro</td>
-
-                        <td>Maria Oliveira</td>
-                        <td>Aberto</td>
-                    </tr>
-                    <tr>
-                        <td>2023-05-03</td>
-                        <td>Reunião</td>
-                        <td>Minas Gerais</td>
-
-                        <td>Carlos Souza</td>
-                        <td>Fechado</td>
-                    </tr>
-                    <tr>
-                        <td>2023-05-03</td>
-                        <td>Reunião</td>
-                        <td>Minas Gerais</td>
-
-                        <td>Carlos Souza</td>
-                        <td>Fechado</td>
-                    </tr>
-                    <tr>
-                        <td>2023-05-03</td>
-                        <td>Reunião</td>
-                        <td>Minas Gerais</td>
-
-                        <td>Carlos Souza</td>
-                        <td>Fechado</td>
-                    </tr>
-
-                </tbody>
-            </table>
+            <br>
+            <div class="border p-3">
+       
+<table class="table">
+    <thead class="thead-light">
+        <tr>
+            <th>Data</th>
+            <th>Nome do Profissional</th>
+            <th>Assunto Tratado</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php
+        // Verificando se a consulta retornou resultados
+        if ($result && $result->num_rows > 0) {
+            // Loop pelos resultados da consulta
+            while($row = $result->fetch_assoc()) {
+                echo "<tr>";
+                echo "<td>" . $row['data'] . "</td>";
+                echo "<td>" . $row['nome_profissional'] . "</td>";
+                echo "<td>" .  "</td>"; // Adicionei esta linha corrigindo o nome da coluna
+                echo "<td>" . $row['situacao'] . "</td>";
+                echo "</tr>";
+            }
+        } else {
+            echo "<tr><td colspan='4'>Nenhum resultado encontrado</td></tr>";
+        }
+        ?>
+    </tbody>
+</table>
+            </div>
         </div>
+      
     </main>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -165,3 +181,4 @@
 </script>
 </body>
 </html>
+

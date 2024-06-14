@@ -7,9 +7,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function verificarCamposPreenchidos() {
         if (Object.values(assunto).some(campo => campo.trim() !== '')) {
-            console.log("At least one field is filled:", assunto);
+            console.log("Pelo menos um campo está preenchido:", assunto);
         } else {
-            console.log("No field is filled.");
+            console.log("Nenhum campo está preenchido.");
         }
     }
 
@@ -28,14 +28,88 @@ document.addEventListener('DOMContentLoaded', function() {
         verificarCamposPreenchidos();
     });
 
+    document.getElementById('cpf').addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault(); // Previne o envio do formulário ao pressionar Enter
+            var cpf = event.target.value.trim();
+            console.log("CPF digitado:", cpf); // Adiciona depuração para verificar o CPF digitado
+
+            if (cpf !== '') {
+                $.ajax({
+                    url: 'verificarcpf.php',
+                    method: 'POST',
+                    data: { cpf: cpf },
+                    dataType: 'json',
+                    success: function(response) {
+                        console.log("Resposta da verificação do CPF:", response); // Adiciona depuração para verificar a resposta
+                        if (response.exists) {
+                            Swal.fire({
+                                title: "CPF já cadastrado",
+                                text: "O CPF informado já está registrado no sistema. As informações foram preenchidas.",
+                                icon: "info"
+                            });
+
+                            // Preencher os campos com as informações do banco de dados
+                            document.getElementById('nome').value = response.data.nome || '';
+                            document.getElementById('nascimento').value = formatarData(response.data.data_nascimento) || '';
+                            document.getElementById('celular').value = response.data.telefone || '';
+                            document.getElementById('celulardois').value = response.data.telefone2 || '';
+                            document.getElementById('email').value = response.data.email || '';
+                            
+                        } else {
+                            Swal.fire({
+                                title: "CPF disponível",
+                                text: "O CPF informado está disponível para cadastro.",
+                                icon: "success"
+                            });
+
+                            // Limpar os campos se o CPF não estiver cadastrado
+                            document.getElementById('nome').value = '';
+                            document.getElementById('nascimento').value = '';
+                            document.getElementById('celular').value = '';
+                            document.getElementById('celulardois').value = '';
+                            document.getElementById('email').value = '';
+                            document.getElementById('especialidade').value = '';
+                            document.getElementById('registro').value = '';
+                            document.getElementById('orgao').value = '';
+                        }
+                    },
+                    error: function(error) {
+                        Swal.fire({
+                            title: "Erro",
+                            text: "Ocorreu um erro ao verificar o CPF.",
+                            icon: "error"
+                        });
+                        console.error('Erro na verificação do CPF:', error);
+                    }
+                });
+            }
+        }
+    });
+
+    function formatarData(data) {
+        // Verifica se a data está no formato correto do banco de dados (YYYY-MM-DD)
+        if (!data) return '';
+
+        var partes = data.split('-');
+        if (partes.length !== 3) return '';
+
+        var dia = partes[2];
+        var mes = partes[1];
+        var ano = partes[0];
+
+        // Formata para dd/mm/ano
+        return `${dia}/${mes}/${ano}`;
+    }
+
     function enviarFormulario(event) {
         event.preventDefault();
 
         var nome = document.getElementById("nome").value || '';
         var cpf = document.getElementById("cpf").value || '';
         var nascimento = document.getElementById("nascimento").value || '';
-        var celular = document.getElementById("celular").value || '';
-        var celulardois = document.getElementById("celulardois").value || '';
+        var telefone = document.getElementById("telefone").value || '';
+        var telefone2 = document.getElementById("telefone2").value || '';
         var email = document.getElementById("email").value || '';
         var especialidade = document.getElementById("especialidade").value || '';
         var registro = document.getElementById("registro").value || '';
@@ -46,17 +120,14 @@ document.addEventListener('DOMContentLoaded', function() {
         var acoes = document.getElementById("acoes").value || '';
         var situacao_atendimento = '';
         var situacao_atendimento_elements = document.getElementsByName("situacao_atendimento");
-        
+
         for (var i = 0; i < situacao_atendimento_elements.length; i++) {
             if (situacao_atendimento_elements[i].checked) {
                 situacao_atendimento = situacao_atendimento_elements[i].value;
                 break;
             }
         }
-            console.log("Situação Atendimento selecionada:", situacao_atendimento);
-
-
-       
+        console.log("Situação Atendimento selecionada:", situacao_atendimento);
 
         console.log({
             tipo_atendimento: tipo_atendimento,
@@ -65,8 +136,8 @@ document.addEventListener('DOMContentLoaded', function() {
             nome: nome,
             registro: registro,
             orgao: orgao,
-            celular: celular,
-            celulardois: celulardois,
+            telefone: telefone,
+            telefone2: telefone2,
             nascimento: nascimento,
             email: email,
             especialidade: especialidade,
@@ -76,18 +147,18 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         var camposObrigatorios = [
-            { campo: nome, nome: "Name" },
+            { campo: nome, nome: "Nome" },
             { campo: email, nome: "Email" },
-            { campo: date, nome: "Date" },
-            { campo: registro, nome: "Registration" },
-            { campo: orgao, nome: "Organ" },
-            { campo: celular, nome: "Cellphone" },
-            { campo: celulardois, nome: "Second Cellphone" },
-            { campo: nascimento, nome: "Birthdate" },
-            { campo: especialidade, nome: "Specialty Description" },
-            { campo: descricao, nome: "Description" },
-            { campo: tipo_atendimento, nome: "Attendance" },
-            { campo: acoes, nome: "Actions" },
+            { campo: date, nome: "Data" },
+            { campo: registro, nome: "Registro" },
+            { campo: orgao, nome: "Órgão" },
+            { campo: telefone, nome: "Telefone" },
+            { campo: telefone2, nome: "Telefone 2" },
+            { campo: nascimento, nome: "Nascimento" },
+            { campo: especialidade, nome: "Especialidade" },
+            { campo: descricao, nome: "Descrição" },
+            { campo: tipo_atendimento, nome: "Tipo de Atendimento" },
+            { campo: acoes, nome: "Ações" },
             { campo: cpf, nome: "CPF" }
         ];
 
@@ -101,8 +172,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }).join(", ");
 
             Swal.fire({
-                title: "Registration Error",
-                text: "Please fill in all required fields: " + camposNomes,
+                title: "Erro no Cadastro",
+                text: "Por favor, preencha todos os campos obrigatórios: " + camposNomes,
                 icon: "error"
             });
             return;
@@ -119,8 +190,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 nome: nome,
                 registro: registro,
                 orgao: orgao,
-                celular: celular,
-                celulardois: celulardois,
+                telefone: telefone,
+                telefone2: telefone2,
                 nascimento: nascimento,
                 email: email,
                 especialidade: especialidade,
@@ -128,22 +199,22 @@ document.addEventListener('DOMContentLoaded', function() {
                 acoes: acoes,
                 tipo_atendimento: tipo_atendimento,
                 cpf: cpf,
-                situacao_atendimento:situacao_atendimento
+                situacao_atendimento: situacao_atendimento
             },
             success: function(response) {
                 Swal.fire({
-                    title: "Registration Successful!",
+                    title: "Cadastro Realizado com Sucesso!",
                     text: response,
                     icon: "success"
                 });
             },
             error: function(error) {
                 Swal.fire({
-                    title: "Error",
-                    text: "An error occurred while sending the registration.",
+                    title: "Erro",
+                    text: "Ocorreu um erro ao enviar o cadastro.",
                     icon: "error"
                 });
-                console.error('AJAX request error:', error);
+                console.error('Erro na requisição AJAX:', error);
             }
         });
     }

@@ -43,7 +43,7 @@ include("conexao.php")
         $('#cpf').mask('000.000.000-00', {reverse: true});
     });
 </script>
-    <input type="text" class="form-control" id="cpf" name="cpf" required placeholder="000.000.000-00">
+    <input type="text" class="form-control" id="cpf" name="cpf" required placeholder="">
                     </div>
 
     
@@ -60,11 +60,11 @@ include("conexao.php")
                     </div>
                     <div class="col-xl-4 col-md-6 mt-3">
                         <label for="celular">Número de Celular </label>
-                        <input type="tel" class="form-control" id="celular" name="celular" required placeholder="(99) 9 9999-9999">
+                        <input type="text" class="form-control" id="celular" name="celular"  required placeholder="">
                     </div>
                     <div class="col-xl-4 col-md-6 mt-3">
-                        <label for="celular">Número de Celular 2</label>
-                        <input type="tel" class="form-control" id="celulardois" name="celulardois" required placeholder="(99) 9 9999-9999">
+                        <label for="celulardois">Número de Celular 2</label>
+                        <input type="text" class="form-control" id="celulardois" name="celulardois" required placeholder="">
                     </div>
                     <div class="col-xl-4 col-md-6 mt-3">
                         <label for="email">E-mail </label>
