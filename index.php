@@ -34,7 +34,7 @@ include("conexao.php")
 
                 <div class="row d-flex">
                     <label for="">
-                        <h4> Dados dos Profissionais </h4>
+                        <h4> Dados do Profissional </h4>
                     </label>
  <div class="col-xl-3 col-md-6 mt-3">
                         <label for="celular">Cpf </label>
