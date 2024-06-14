@@ -1,16 +1,16 @@
 <?php 
 include("conexao.php");
 
-$sql = "SELECT 
-DATE(a.data) as data,
+$sql = "SELECT DATE(a.data) as data,
 im.nome as nome_profissional,
+assuntos.assunto,
 a.situacao as situacao
 
 
 FROM 
     relacionamentomedico.atendimento AS a
 JOIN 
-    relacionamentomedico.inform_medicos AS im ON a.profissional = im.id
+    relacionamentomedico.profissionais AS im ON a.profissional = im.id
 JOIN 
     relacionamentomedico.assunto AS assuntos ON assuntos.id = a.id
 JOIN 
@@ -56,128 +56,141 @@ $result = $conn->query($sql);
     include 'php/header.php';
     ?>
 
-
-
-    <main class="container-fluid d-flex justify-content-center align-items-center">
-        <div class="form-group col-10 mt-5">
-
-
-            <div class="accordion" id="accordionPanelsStayOpenExample" class="text-center">
-                <div class="accordion-item text-center">
-                    <h2 class="accordion-header">
+<main class="container-fluid d-flex justify-content-center align-items-center">
+    <div class="form-group col-10 mt-5 ">
+        <div class="accordion" id="accordionPanelsStayOpenExample">
+            <div class="accordion-item">
+                <h2 class="accordion-header">
                     <button class="accordion-button shadow-sm text-white text-center" type="button" data-toggle="collapse" data-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne" style="background-color: #1c8f69 ">
-
-
-                            <i id="filter" class="fa-solid fa-filter mb-1"></i>
-                            <h5>Filtro - Atendimentos</h5>
-                        </button>
-                    </h2>
-                    <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-collapseOne" data-bs-parent="#accordionPanelsStayOpenExample">
-                        <div class="accordion-body">
-                            <div class="col-12">
-                                <input type="text" class="form-control" id="inputFilter" placeholder="Filtrar....">
+                        <i id="filter" class="fa-solid fa-filter mb-1"></i>
+                        <h5>Filtro - Atendimentos</h5>
+                    </button>
+                </h2>
+                <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-collapseOne" data-bs-parent="#accordionPanelsStayOpenExample">
+                    <div class="accordion-body mt-4">
+                        <div class="row">
+                            <div class="col-xl-3 col-sm-12 col-md-6">
+                                <input type="date" class="form-control" id="dateFilter">
                             </div>
-
-                            <br>
-                            <div class="row">
-                                <div class="col-xl-3 col-sm-12 col-md-6">
-                                    <input type="date" class="form-control" id="dateFilter">
-                                </div>
-                                <div class="col-xl-3 col-sm-12 col-md-6">
+                            <div class="col-xl-3 col-sm-12 col-md-6">
                                 <input type="text" class="form-control" id="inputprofissional" placeholder="Profissional">
-                                </div>
-                                <div class="col-xl-3 col-sm-12 col-md-6">
-                                    <select class="form-control" id="subjectFilter">
-                                        <option value="">Todos os assuntos</option>
-                                        <option value="">Atualização cadastral do Médico</option>
-                                        <option value="">Autorização de procedimentos</option>
-                                        <option value="">Cadastro Médico</option>
-                                        <option value="">Demandas da Contabilidade</option>
-                                        <option value="">Demandas do Faturamento</option>
-                                        <option value="">Demandas do INCOR</option>
-                                        <option value="">Demandas do RH</option>
-                                        <option value="">Demandas do setor Financeiro</option>
-                                        <option value="">Demandas do setor de TI</option>
-                                        <option value="">Estacionamento</option>
-                                        <option value="">Repasse Médico</option>
-                                    </select>
-                                </div>
-                               
-                                <div class="col-xl-3 col-sm-12 col-md-6">
-                                    <select class="form-control" id="statusFilter">
-                                        <option value="">Todos os status</option>
-                                        <option value="Aberto">Aberto</option>
-                                        <option value="Emandamento">Em andamento</option>
-                                        <option value="Fechado">Fechado</option>
-                                    </select>
-                                </div>
-
-                            </div> <br> <button class="btn btn-primary" id="applyFilters">Aplicar Filtros</button>
+                            </div>
+                            <div class="col-xl-3 col-sm-12 col-md-6">
+                                <select class="form-control" id="subjectFilter">
+                                    <option value="">Todos os assuntos</option>
+                                    <option value="Atualização cadastral do Médico">Atualização cadastral do Médico</option>
+                                    <option value="Autorização de procedimentos">Autorização de procedimentos</option>
+                                    <option value="Cadastro Médico">Cadastro Médico</option>
+                                    <option value="Demandas da Contabilidade">Demandas da Contabilidade</option>
+                                    <option value="Demandas do Faturamento">Demandas do Faturamento</option>
+                                    <option value="Demandas do INCOR">Demandas do INCOR</option>
+                                    <option value="Demandas do RH">Demandas do RH</option>
+                                    <option value="Demandas do setor Financeiro">Demandas do setor Financeiro</option>
+                                    <option value="Demandas do setor de TI">Demandas do setor de TI</option>
+                                    <option value="Estacionamento">Estacionamento</option>
+                                    <option value="Repasse Médico">Repasse Médico</option>
+                                </select>
+                            </div>
+                            <div class="col-xl-3 col-sm-12 col-md-6">
+                                <select class="form-control" id="statusFilter">
+                                    <option value="">Todos os status</option>
+                                    <option value="Aberto">Aberto</option>
+                                    <option value="Em andamento">Em andamento</option>
+                                    <option value="Pendente">Pendente</option>
+                                    <option value="Resolvido">Resolvido</option>
+                                </select>
+                            </div>
                         </div>
+                        <br>
+                        <button class="btn btn-primary" id="applyFilters">Aplicar Filtros</button>
                     </div>
                 </div>
             </div>
-            <br>
-            <br>
-            <div class="border p-3">
-       
-<table class="table">
-    <thead class="thead-light">
-        <tr>
-            <th>Data</th>
-            <th>Nome do Profissional</th>
-            <th>Assunto Tratado</th>
-            <th>Status</th>
-        </tr>
-    </thead>
-    <tbody>
-        <?php
-        // Verificando se a consulta retornou resultados
-        if ($result && $result->num_rows > 0) {
-            // Loop pelos resultados da consulta
-            while($row = $result->fetch_assoc()) {
-                echo "<tr>";
-                echo "<td>" . $row['data'] . "</td>";
-                echo "<td>" . $row['nome_profissional'] . "</td>";
-                echo "<td>" .  "</td>"; // Adicionei esta linha corrigindo o nome da coluna
-                echo "<td>" . $row['situacao'] . "</td>";
-                echo "</tr>";
-            }
-        } else {
-            echo "<tr><td colspan='4'>Nenhum resultado encontrado</td></tr>";
-        }
-        ?>
-    </tbody>
-</table>
-            </div>
         </div>
-      
-    </main>
+
+        <br><br>
+
+        <div class="border p-3">
+            <table class="table">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Data</th>
+                        <th>Nome do Profissional</th>
+                        <th>Assunto Tratado</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="dataTable">
+                    <?php
+                    // Verificando se a consulta retornou resultados
+                    if ($result && $result->num_rows > 0) {
+                        // Loop pelos resultados da consulta
+                        while($row = $result->fetch_assoc()) {
+                            echo "<tr>";
+                            echo "<td>" . $row['data'] . "</td>";
+                            echo "<td>" . $row['nome_profissional'] . "</td>";
+                            echo "<td>" . $row['assunto'] . "</td>"; // Nome da coluna do assunto
+                            echo "<td>" . $row['situacao'] . "</td>";
+                            echo "</tr>";
+                        }
+                    } else {
+                        echo "<tr><td colspan='4'>Nenhum resultado encontrado</td></tr>";
+                    }
+                    ?>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</main>
+
+<script>
+$(document).ready(function() {
+    // Função para aplicar os filtros
+    function applyFilters() {
+        var dateFilter = $('#dateFilter').val();
+        var inputprofissional = $('#inputprofissional').val().toLowerCase();
+        var subjectFilter = $('#subjectFilter').val();
+        var statusFilter = $('#statusFilter').val();
+
+        $('#dataTable tr').each(function() {
+            var date = $(this).find('td:eq(0)').text();
+            var profissional = $(this).find('td:eq(1)').text().toLowerCase();
+            var assunto = $(this).find('td:eq(2)').text();
+            var status = $(this).find('td:eq(3)').text();
+
+            var dateMatch = dateFilter === '' || date === dateFilter;
+            var profissionalMatch = inputprofissional === '' || profissional.includes(inputprofissional);
+            var subjectMatch = subjectFilter === '' || assunto === subjectFilter;
+            var statusMatch = statusFilter === '' || status === statusFilter;
+
+            if (dateMatch && profissionalMatch && subjectMatch && statusMatch) {
+                $(this).show();
+            } else {
+                $(this).hide();
+            }
+        });
+    }
+
+   
+    $('#applyFilters').click(function() {
+        applyFilters();
+    });
+
+
+    $('#dateFilter, #inputprofissional, #subjectFilter, #statusFilter').change(function() {
+        applyFilters();
+    });
+});
+</script>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
     <script>
-        $(document).ready(function() {
-            $('#applyFilters').click(function() {
-                var inputFilter = $('#inputFilter').val().toUpperCase();
-                var dateFilter = $('#dateFilter').val();
-                var subjectFilter = $('#subjectFilter').val();
-                var stateFilter = $('#stateFilter').val();
-                var statusFilter = $('#statusFilter').val();
 
-                $('tbody tr').each(function() {
-                    var row = $(this).html().toUpperCase();
-                    if ((row.indexOf(inputFilter) > -1 || inputFilter === '') &&
-                        ($(this).find('td:eq(0)').text() ==dateFilter || dateFilter === '') &&
-($(this).find('td:eq(1)').text() == subjectFilter || subjectFilter === '') &&
-($(this).find('td:eq(2)').text() == stateFilter || stateFilter === '') &&
-($(this).find('td:eq(4)').text() == statusFilter || statusFilter === '')) {
-    $(this).show();
-} else {
-    $(this).hide();
-}
-});
-})});
+
+</script>
+
 </script>
 </body>
 </html>
