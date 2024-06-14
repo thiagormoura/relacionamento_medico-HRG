@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     let assunto = {
         repasse: '',
-        admissao: '',
+        // admissao: '',
         atualizardados: ''
     };
 
@@ -12,21 +12,21 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log("Nenhum campo está preenchido.");
         }
     }
+// tirei admissao pois não é ali embaixo os assuntos tratados
+    // document.getElementById('repasse').addEventListener('input', function(event) {
+    //     assunto.repasse = event.target.value;
+    //     verificarCamposPreenchidos();
+    // });
 
-    document.getElementById('repasse').addEventListener('input', function(event) {
-        assunto.repasse = event.target.value;
-        verificarCamposPreenchidos();
-    });
+    // document.getElementById('admissao').addEventListener('input', function(event) {
+    //     assunto.admissao = event.target.value;
+    //     verificarCamposPreenchidos();
+    // });
 
-    document.getElementById('admissao').addEventListener('input', function(event) {
-        assunto.admissao = event.target.value;
-        verificarCamposPreenchidos();
-    });
-
-    document.getElementById('atualizardados').addEventListener('input', function(event) {
-        assunto.atualizardados = event.target.value;
-        verificarCamposPreenchidos();
-    });
+    // document.getElementById('atualizardados').addEventListener('input', function(event) {
+    //     assunto.atualizardados = event.target.value;
+    //     verificarCamposPreenchidos();
+    // });
 
     document.getElementById('cpf').addEventListener('keydown', function(event) {
         if (event.key === 'Enter') {
