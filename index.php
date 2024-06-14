@@ -21,7 +21,33 @@ include("conexao.php")
     <link rel="stylesheet" href="css/selectize.bootstrap5.min.css">
     <link rel="stylesheet" href="css/multi-select-tag.css">
 </head>
+<style>
+    .form-control{
+font-size: 0.8rem;
+}
 
+.form-check-label{
+font-size: 0.8rem;
+}
+
+label{
+font-size: 0.8rem;
+font-weight: 700;
+}
+
+.custom-textarea {
+width: 20em; 
+resize: none; 
+}
+
+#assunto{
+    resize: none; 
+}
+
+h4{
+    font-family: sans-serif;
+}
+</style>
 <body>
 
     <!-- Parte do header e nav -->
@@ -31,7 +57,124 @@ include("conexao.php")
         <div class="form-group col-8 mt-5">
             <form  id="formulario_index" method="post" action="/seu_script_php.php">
 
+            <div class="row">
+    <div class="col-xl-2 col-md-6 mb-5">
+        <div class="form-group">
+            <label for="date">Data</label>
+            <input type="date" class="form-control" id="date" name="date" required>
+        </div>
+    </div>
+    <div class="col-xl-2 col-md-6">
+        <div class="form-group">
+            <label for="estado">Status</label>
+            <select class="form-control" id="estado" name="estado" required>
+                <option value="">Selecione um status</option>
+                <option value="Fechado">Fechado</option>
+                <option value="Aberto">Aberto</option>
+                <option value="Emandamento">Em andamento</option>
+            </select>
+        </div>
+    </div>
 
+    <div class="col-xl-7 col-md-6">
+        <label for="orgao">Veículo de manifestação</label>
+        <div class="row custom-checkboxes">
+            <div class="form-check col-lg-2 col-md-4 col-sm-3 mt-2">
+                <input type="radio" class="form-check-input" id="veiculo1" name="veiculo1" value="veiculo1">
+                <label class="form-check-label" for="veiculo1">Presencial</label>
+            </div>
+            <div class="form-check col-lg-2 col-md-4 col-sm-3 mt-2">
+                <input type="radio" class="form-check-input" id="veiculo2" name="veiculo2" value="veiculo2">
+                <label class="form-check-label" for="veiculo2">E-mail</label>
+            </div>
+            <div class="form-check col-lg-2 col-md-4 col-sm-3 mt-2">
+                <input type="radio" class="form-check-input" id="veiculo3" name="veiculo3" value="veiculo3">
+                <label  class="form-check-label" for="veiculo3">WhatsApp</label>
+            </div>
+            <div class="form-check col-lg-2 col-md-4 col-sm-3 mt-2">
+                <input type="radio" class="form-check-input" id="veiculo4"  name="veiculo4" value="veiculo4" >
+                <label class="form-check-label" for="veiculo4">Outros</label>
+            </div>
+            <div class="col-lg-4 col-sm-6 mt-2">
+                <textarea class="form-control custom-textarea" id="acoes2" name="acoes2" rows="1" maxlength="1000" required></textarea>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-xl-4 col-md-6 mb-5">
+        <label for="orgao">Assuntos Tratados</label>
+        <div class="row custom-checkboxes">
+            <div class="form-control col-sm-12">
+                <input type="checkbox" id="orgao1" name="orgao1" value="Orgao1">
+                <label for="orgao1" class="ml-2">Atualização cadastral do Médico</label>
+            </div>
+            <div class="form-control col-sm-12">
+                <input type="checkbox" id="orgao2" name="orgao2" value="Orgao2">
+                <label for="orgao2" class="ml-3">Autorização de procedimentos</label>
+            </div>
+            <div class="form-control col-sm-12">
+                <input type="checkbox" id="orgao3" name="orgao3" value="Orgao3">
+                <label for="orgao3" class="ml-2">Cadastro Médico</label>
+            </div>
+            <div class="form-control col-sm-12">
+                <input type="checkbox" id="orgao4" name="orgao4" value="Orgao4">
+                <label for="orgao4" class="ml-2">Demandas da Contabilidade</label>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-4 col-md-6 mt-4">
+        <div class="row custom-checkboxes">
+            <div class="form-control col-sm-12">
+                <input type="checkbox" id="orgao5" name="orgao5" value="Orgao5">
+                <label for="orgao5" class="ml-2">Demandas do Faturamento</label>
+            </div>
+            <div class="form-control col-sm-12">
+                <input type="checkbox" id="orgao6" name="orgao6" value="Orgao6">
+                <label for="orgao6" class="ml-3">Demandas do INCOR</label>
+            </div>
+            <div class="form-control col-sm-12">
+                <input type="checkbox" id="orgao7" name="orgao7" value="Orgao7">
+                <label for="orgao7" class="ml-2">Demandas do RH</label>
+            </div>
+            <div class="form-control col-sm-12">
+                <input type="checkbox" id="orgao8" name="orgao8" value="Orgao8">
+                <label for="orgao8" class="ml-2">Demandas do setor Financeiro</label>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-4 col-md-6 mt-4 mb-4">
+        <div class="row custom-checkboxes">
+            <div class="form-control col-sm-12">
+                <input type="checkbox" id="orgao9" name="orgao9" value="Orgao9">
+                <label for="orgao9" class="ml-3">Demandas do setor de TI</label>
+            </div>
+            <div class="form-control col-sm-12">
+                <input type="checkbox" id="orgao10" name="orgao10" value="Orgao10">
+                <label for="orgao10" class="ml-3">Estacionamento</label>
+            </div>
+            <div class="form-control col-sm-12">
+                <input type="checkbox" id="orgao11" name="orgao11" value="Orgao11">
+                <label for="orgao11" class="ml-3">Repasse Médico</label>
+            </div>
+            <div class="form-control col-sm-12">
+    <input type="checkbox" id="orgao12" name="orgao12" value="Orgao12" onchange="mostrarCampoTexto()">
+    <label for="orgao12" class="ml-3">Outros</label>
+</div>
+            
+        </div>
+    </div>
+    <div class="form-control col-sm-12 mb-5" id="campoTexto" style="display: none;">
+    <b><p>Se "Outros" for assinalado, indique a qual assunto se refere:</p></b>
+    <textarea class="form-control" id="acoes3" name="acoes3" rows="1" maxlength="1000" required></textarea>
+</div>
+</div>
+
+
+
+                <div class="border p-3">
                 <div class="row d-flex">
                     <label for="">
                         <h4> Dados do Profissional </h4>
@@ -129,8 +272,10 @@ include("conexao.php")
                             </select>
                         </div>
                     </div>
+                   
 
-
+                 
+                   
                     <label for="">
                         <h4> Dados do Atendimento </h4>
                     </label>
@@ -272,6 +417,19 @@ include("conexao.php")
         <button type="submit" id="enviarbutton" class="btn btn-primary">Enviar</button>
        
     </div>
+    <script>
+  function mostrarCampoTexto() {
+        var checkbox = document.getElementById("orgao12");
+        var campoTexto = document.getElementById("campoTexto");
+
+        if (checkbox.checked) {
+            campoTexto.style.display = "block";
+        } else {
+            campoTexto.style.display = "none";
+        }
+    }
+    </script>
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
