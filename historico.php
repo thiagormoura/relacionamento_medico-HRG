@@ -1,31 +1,40 @@
-<?php 
+<?php
 include("conexao.php");
 
+
+$registrosPorPagina = 10;
+
+
+$paginaAtual = isset($_GET['pagina']) ? $_GET['pagina'] : 1;
+
+
+$offset = ($paginaAtual - 1) * $registrosPorPagina;
+
 $sql = "SELECT DATE(a.data) as data,
-im.nome as nome_profissional,
-assuntos.assunto,
-a.situacao as situacao
-
-
-FROM 
-    relacionamentomedico.atendimento AS a
-JOIN 
-    relacionamentomedico.profissionais AS im ON a.profissional = im.id
-JOIN 
-    relacionamentomedico.assunto AS assuntos ON assuntos.id = a.id
-JOIN 
-    relacionamentomedico.atendimento_has_assunto AS has ON has.id = assuntos.id";
+        im.nome as nome_profissional,
+        assuntos.assunto,
+        a.situacao as situacao
+        FROM relacionamentomedico.atendimento AS a
+        JOIN relacionamentomedico.profissionais AS im ON a.profissional = im.id
+        JOIN relacionamentomedico.atendimento_has_assunto AS has ON a.id = has.id
+        JOIN relacionamentomedico.assunto AS assuntos ON has.id = assuntos.id
+        LIMIT $offset, $registrosPorPagina";
 
 $result = $conn->query($sql);
 
+$sqlTotal = "SELECT COUNT(*) AS total
+            FROM relacionamentomedico.atendimento AS a
+            JOIN relacionamentomedico.profissionais AS im ON a.profissional = im.id
+            JOIN relacionamentomedico.atendimento_has_assunto AS has ON a.id = has.id
+            JOIN relacionamentomedico.assunto AS assuntos ON has.id = assuntos.id";
 
-// $data_json = json_encode($data);
-// $nome_json = json_encode($nome);
-// $situacao_json = json_encode($situacao);
-// print_r($data_json);
+$resultCount = $conn->query($sqlTotal);
+$totalRegistros = $resultCount->fetch_assoc()['total'];
 
 
+$totalPaginas = ceil($totalRegistros / $registrosPorPagina);
 ?>
+
 
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -67,7 +76,7 @@ $result = $conn->query($sql);
                     </button>
                 </h2>
                 <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-collapseOne" data-bs-parent="#accordionPanelsStayOpenExample">
-                    <div class="accordion-body mt-4">
+                    <div class="accordion-body mt-4 mb-4">
                         <div class="row">
                             <div class="col-xl-3 col-sm-12 col-md-6">
                                 <input type="date" class="form-control" id="dateFilter">
@@ -94,10 +103,9 @@ $result = $conn->query($sql);
                             <div class="col-xl-3 col-sm-12 col-md-6">
                                 <select class="form-control" id="statusFilter">
                                     <option value="">Todos os status</option>
-                                    <option value="Aberto">Aberto</option>
+                                    <option value="Concluído">Concluído</option>
                                     <option value="Em andamento">Em andamento</option>
                                     <option value="Pendente">Pendente</option>
-                                    <option value="Resolvido">Resolvido</option>
                                 </select>
                             </div>
                         </div>
@@ -139,49 +147,108 @@ $result = $conn->query($sql);
                     ?>
                 </tbody>
             </table>
+            <div class="d-flex justify-content-center mt-4">
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            <?php if ($paginaAtual > 1) : ?>
+                <li class="page-item">
+                    <a class="page-link" href="?pagina=<?php echo ($paginaAtual - 1); ?>" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+            <?php else : ?>
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+            <?php endif; ?>
+
+            <?php
+         
+            $inicio = max(1, $paginaAtual - 1);
+            $fim = min($totalPaginas, $paginaAtual + 1);
+
+            if ($inicio > 1) {
+                echo '<li class="page-item"><a class="page-link" href="?pagina=1">1</a></li>';
+                if ($inicio > 2) {
+                    echo '<li class="page-item disabled"><span class="page-link">...</span></li>';
+                }
+            }
+
+            for ($i = $inicio; $i <= $fim; $i++) {
+                echo '<li class="page-item ' . ($paginaAtual == $i ? 'active' : '') . '">';
+                echo '<a class="page-link" href="?pagina=' . $i . '">' . $i . '</a>';
+                echo '</li>';
+            }
+
+            if ($fim < $totalPaginas) {
+                if ($fim < $totalPaginas - 1) {
+                    echo '<li class="page-item disabled"><span class="page-link">...</span></li>';
+                }
+                echo '<li class="page-item"><a class="page-link" href="?pagina=' . $totalPaginas . '">' . $totalPaginas . '</a></li>';
+            }
+            ?>
+
+            <?php if ($paginaAtual < $totalPaginas) : ?>
+                <li class="page-item">
+                    <a class="page-link" href="?pagina=<?php echo ($paginaAtual + 1); ?>" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            <?php else : ?>
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            <?php endif; ?>
+        </ul>
+    </nav>
+</div>
+
         </div>
 
     </div>
 </main>
 
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
 <script>
-$(document).ready(function() {
-    // Função para aplicar os filtros
-    function applyFilters() {
-        var dateFilter = $('#dateFilter').val();
-        var inputprofissional = $('#inputprofissional').val().toLowerCase();
-        var subjectFilter = $('#subjectFilter').val();
-        var statusFilter = $('#statusFilter').val();
+    $(document).ready(function() {
 
-        $('#dataTable tr').each(function() {
-            var date = $(this).find('td:eq(0)').text();
-            var profissional = $(this).find('td:eq(1)').text().toLowerCase();
-            var assunto = $(this).find('td:eq(2)').text();
-            var status = $(this).find('td:eq(3)').text();
+        function applyFilters() {
+            var dateFilter = $('#dateFilter').val();
+            var inputprofissional = $('#inputprofissional').val().toLowerCase();
+            var subjectFilter = $('#subjectFilter').val();
+            var statusFilter = $('#statusFilter').val();
 
-            var dateMatch = dateFilter === '' || date === dateFilter;
-            var profissionalMatch = inputprofissional === '' || profissional.includes(inputprofissional);
-            var subjectMatch = subjectFilter === '' || assunto === subjectFilter;
-            var statusMatch = statusFilter === '' || status === statusFilter;
+            $('#dataTable tr').each(function() {
+                var date = $(this).find('td:eq(0)').text();
+                var profissional = $(this).find('td:eq(1)').text().toLowerCase();
+                var assunto = $(this).find('td:eq(2)').text();
+                var status = $(this).find('td:eq(3)').text();
 
-            if (dateMatch && profissionalMatch && subjectMatch && statusMatch) {
-                $(this).show();
-            } else {
-                $(this).hide();
-            }
+                var dateMatch = dateFilter === '' || date === dateFilter;
+                var profissionalMatch = inputprofissional === '' || profissional.includes(inputprofissional);
+                var subjectMatch = subjectFilter === '' || assunto === subjectFilter;
+                var statusMatch = statusFilter === '' || status === statusFilter;
+
+                if (dateMatch && profissionalMatch && subjectMatch && statusMatch) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+        }
+
+ 
+        $('#applyFilters').on('click', function() {
+            applyFilters();
         });
-    }
-
-   
-    $('#applyFilters').click(function() {
-        applyFilters();
     });
-
-
-    $('#dateFilter, #inputprofissional, #subjectFilter, #statusFilter').change(function() {
-        applyFilters();
-    });
-});
+    
 </script>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

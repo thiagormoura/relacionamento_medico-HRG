@@ -68,7 +68,7 @@ h4{
             <input type="date" class="form-control" id="date" name="date" required>
         </div>
     </div>
-    <div class="col-xl-2 col-md-6">
+    <div class="col-xl-2 col-md-6 mb-5">
         <div class="form-group">
             <label for="estado">Status</label>
             <select class="form-control" id="estado" name="estado" required>
@@ -80,7 +80,100 @@ h4{
         </div>
     </div>
 
-    <div class="col-xl-7 col-md-6">
+
+
+<div class="border p-3">
+            <div class="row ">
+            <h4><b>DADOS DO PROFISSIONAL</b></h4>
+            <div class="col-xl-2 col-md-6 mt-2">
+        <label for="cpf">CPF</label>
+        <input type="text" class="form-control" id="cpf" name="cpf" required placeholder="">
+    </div>
+                
+                <div class="col-xl-6  col-md-6 mt-2">
+                    <label for="nome">Nome</label>
+                    <input type="text" class="form-control" id="nome" name="nome" maxlength="80" required>
+                </div>
+                <div class="col-xl-3 col-md-6 mt-2">
+                    <div class="form-group">
+                        <label for="date">Data de Nascimento</label>
+                        <input type="date" class="form-control" id="date" name="date" required>
+                    </div>
+                </div>
+                
+               
+                <div class="col-xl-2 col-md-6 mt-2">
+                    <label for="celular">Telefone</label>
+                    <input type="tel" class="form-control" id="celular" name="celular" required placeholder="(99) 9 9999-9999">
+                </div>
+                <div class="col-xl-3 col-md-6 mt-2">
+                    <label for="email">E-mail</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                    <div class="invalid-feedback">
+                        Por favor, insira um e-mail válido.
+                    </div>
+                </div>
+                <div class="col-xl-6 col-md-6 mt-2">
+                    <label for="endereco">Endereço</label>
+                    <input type="text" class="form-control" id="endereco" name="endereco" placeholder="Digite o endereço completo" required>
+                </div>
+
+
+
+                <div class="row">
+                <div class="col-xl-2 col-md-6 mt-2">
+                    <label for="registro">CRM</label>
+                    <input type="text" class="form-control" id="registro" name="registro" maxlength="6" required>
+                </div>
+                <div class="col-xl-2 col-md-6 mt-2">
+                    <div class="form-group">
+                        <label for="orgao">Órgão</label>
+                        <select class="form-control" id="orgao" name="orgao" required>
+                            <option value="">Selecione...</option>
+                            <option value="Orgao1">CRM-AC</option>
+                            <option value="Orgao2">CRM-AL</option>
+                            <option value="Orgao1">CRM-AP</option>
+                            <option value="Orgao2">CRM-AM</option>
+                            <option value="Orgao1">CRM-BA</option>
+                            <option value="Orgao2">CRM-CE</option>
+                            <option value="Orgao1">CRM-DF</option>
+                            <option value="Orgao2">CRM-ES</option>
+                            <option value="Orgao1">CRM-GO</option>
+                            <option value="Orgao2">CRM-MA</option>
+                            <option value="Orgao1">CRM-MT</option>
+                            <option value="Orgao2">CRM-MS</option>
+                            <option value="Orgao1">CRM-MG</option>
+                            <option value="Orgao2">CRM-PA</option>
+                            <option value="Orgao1">CRM-PB</option>
+                            <option value="Orgao2">CRM-PR</option>
+                            <option value="Orgao1">CRM-PE</option>
+                            <option value="Orgao2">CRM-PI</option>
+                            <option value="Orgao1">CRM-RJ</option>
+                            <option value="Orgao2">CRM-RN</option>
+                            <option value="Orgao1">CRM-RS</option>
+                            <option value="Orgao2">CRM-RO</option>
+                            <option value="Orgao1">CRM-RR</option>
+                            <option value="Orgao2">CRM-SC</option>
+                            <option value="Orgao1">CRM-SP</option>
+                            <option value="Orgao2">CRM-SE</option>
+                            <option value="Orgao1">CRM-TO</option>
+                        </select>
+                    </div>
+                </div>
+                </label>
+            
+                <div class="col-xl-2 col-md-6 mt-2 mb-4">
+                    <label for="descricao">Especialidade(s)</label>
+                    <input type="text" class="form-control" id="especialidade" name="especialidade" maxlength="12" required>
+                </div>
+               
+                </div>
+                </div>
+                </div>
+                <br>
+
+
+                <div class="col-xl-7 col-md-6 mt-4 mb-5">
         <label for="orgao">Veículo de manifestação</label>
         <div class="row custom-checkboxes">
             <div class="form-check col-xl-2 col-lg-3 col-md-4 col-sm-3 mt-2">
@@ -105,7 +198,6 @@ h4{
         </div>
     </div>
 </div>
-
 
 <div class="row">
     <div class="col-xl-4 col-md-6 mb-5">
@@ -177,87 +269,6 @@ h4{
 </div>
 
 
-
-<div class="border p-3">
-            <div class="row ">
-            <h4><b>DADOS DO PROFISSIONAL</b></h4>
-                <div class="col-xl-4  col-md-6 mt-2">
-                    <label for="nome">Nome</label>
-                    <input type="text" class="form-control" id="nome" name="nome" maxlength="80" required>
-                </div>
-                <div class="col-xl-2 col-md-6 mt-2">
-                    <label for="registro">CRM</label>
-                    <input type="text" class="form-control" id="registro" name="registro" maxlength="6" required>
-                </div>
-
-                <div class="col-xl-3 col-md-6 mt-2 mb-4">
-                    <label for="descricao">Especialidade(s)</label>
-                    <input type="text" class="form-control" id="especialidade" name="especialidade" maxlength="12" required>
-                </div>
-                <div class="col-xl-3 col-md-6 mt-2">
-                    <div class="form-group">
-                        <label for="orgao">Órgão</label>
-                        <select class="form-control" id="orgao" name="orgao" required>
-                            <option value="">Selecione...</option>
-                            <option value="Orgao1">CRM-AC</option>
-                            <option value="Orgao2">CRM-AL</option>
-                            <option value="Orgao1">CRM-AP</option>
-                            <option value="Orgao2">CRM-AM</option>
-                            <option value="Orgao1">CRM-BA</option>
-                            <option value="Orgao2">CRM-CE</option>
-                            <option value="Orgao1">CRM-DF</option>
-                            <option value="Orgao2">CRM-ES</option>
-                            <option value="Orgao1">CRM-GO</option>
-                            <option value="Orgao2">CRM-MA</option>
-                            <option value="Orgao1">CRM-MT</option>
-                            <option value="Orgao2">CRM-MS</option>
-                            <option value="Orgao1">CRM-MG</option>
-                            <option value="Orgao2">CRM-PA</option>
-                            <option value="Orgao1">CRM-PB</option>
-                            <option value="Orgao2">CRM-PR</option>
-                            <option value="Orgao1">CRM-PE</option>
-                            <option value="Orgao2">CRM-PI</option>
-                            <option value="Orgao1">CRM-RJ</option>
-                            <option value="Orgao2">CRM-RN</option>
-                            <option value="Orgao1">CRM-RS</option>
-                            <option value="Orgao2">CRM-RO</option>
-                            <option value="Orgao1">CRM-RR</option>
-                            <option value="Orgao2">CRM-SC</option>
-                            <option value="Orgao1">CRM-SP</option>
-                            <option value="Orgao2">CRM-SE</option>
-                            <option value="Orgao1">CRM-TO</option>
-                        </select>
-                    </div>
-                </div>
-                </label>
-                <div class="col-xl-3 col-md-6 mt-2">
-        <label for="cpf">CPF</label>
-        <input type="text" class="form-control" id="cpf" name="cpf" required placeholder="">
-    </div>
-                   
-
-                <div class="col-xl-3 col-md-6 mt-2">
-                    <div class="form-group">
-                        <label for="date">Data de Nascimento</label>
-                        <input type="date" class="form-control" id="date" name="date" required>
-                    </div>
-                </div>
-                <div class="col-xl-3 col-md-6 mt-2">
-                    <label for="celular">Telefone</label>
-                    <input type="tel" class="form-control" id="celular" name="celular" required placeholder="(99) 9 9999-9999">
-                </div>
-                <div class="col-xl-3 col-md-6 mt-2">
-                    <label for="email">E-mail</label>
-                    <input type="email" class="form-control" id="email" name="email" required>
-                    <div class="invalid-feedback">
-                        Por favor, insira um e-mail válido.
-                    </div>
-                </div>
-                 
-               
-                </div>
-                </div>
-                <br>
                
                 <div class="border p-3 mt-4">
                 <h4><b>DESCRIÇÃO DO ATENDIMENTO</b></h4>

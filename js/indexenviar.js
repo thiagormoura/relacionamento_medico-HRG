@@ -57,11 +57,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             document.getElementById('email').value = response.data.email || '';
                             
                         } else {
-                            Swal.fire({
-                                title: "CPF disponível",
-                                text: "O CPF informado está disponível para cadastro.",
-                                icon: "success"
-                            });
+                          
 
                             // Limpar os campos se o CPF não estiver cadastrado
                             document.getElementById('nome').value = '';

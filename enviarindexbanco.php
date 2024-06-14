@@ -86,4 +86,4 @@ if (enviarParaBanco($conn, $date, $situacaoatendimento, $nome, $registro, $orgao
 // Fechar conexão com o banco de dados
 $conn->close();
 
-?>
+
