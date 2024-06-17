@@ -96,24 +96,29 @@ h4{
                 </div>
                 <div class="col-xl-3 col-md-6 mt-2">
                     <div class="form-group">
-                        <label for="date">Data de Nascimento</label>
-                        <input type="date" class="form-control" id="date" name="date" required>
+                        <label for="nascimento">Data de Nascimento</label>
+                        <input type="date" class="form-control" id="nascimento" name="nascimento" required>
                     </div>
                 </div>
                 
                
                 <div class="col-xl-2 col-md-6 mt-2">
-                    <label for="celular">Telefone</label>
+                    <label for="celular">Celular 1</label>
                     <input type="tel" class="form-control" id="celular" name="celular" required placeholder="(99) 9 9999-9999">
+                </div>
+               
+                <div class="col-xl-2 col-md-6 mt-2">
+                    <label for="celulardois">Celular 2</label>
+                    <input type="tel" class="form-control" id="celulardois" name="celulardois" required placeholder="(99) 9 9999-9999">
                 </div>
                 <div class="col-xl-3 col-md-6 mt-2">
                     <label for="email">E-mail</label>
-                    <input type="email" class="form-control" id="email" name="email" required>
+                    <input type="email" class="form-control" id="email" name="email"  required>
                     <div class="invalid-feedback">
                         Por favor, insira um e-mail válido.
                     </div>
                 </div>
-                <div class="col-xl-6 col-md-6 mt-2">
+                <div class="col-xl-4 col-md-6 mt-2">
                     <label for="endereco">Endereço</label>
                     <input type="text" class="form-control" id="endereco" name="endereco" placeholder="Digite o endereço completo" required>
                 </div>
@@ -163,7 +168,7 @@ h4{
                 </label>
             
                 <div class="col-xl-2 col-md-6 mt-2 mb-4">
-                    <label for="descricao">Especialidade(s)</label>
+                    <label for="especialidade">Especialidade(s)</label>
                     <input type="text" class="form-control" id="especialidade" name="especialidade" maxlength="12" required>
                 </div>
                
@@ -177,19 +182,19 @@ h4{
         <label for="orgao">Veículo de manifestação</label>
         <div class="row custom-checkboxes">
             <div class="form-check col-xl-2 col-lg-3 col-md-4 col-sm-3 mt-2">
-                <input type="radio" class="form-check-input" id="veiculo1" name="veiculo1" value="veiculo1">
+                <input type="radio" class="form-check-input" id="veiculo1" name="veiculo" value="Presencial">
                 <label class="form-check-label" for="veiculo1">Presencial</label>
             </div>
             <div class="form-check col-xl-2 col-lg-3 col-md-4 col-sm-3 mt-2">
-                <input type="radio" class="form-check-input" id="veiculo2" name="veiculo2" value="veiculo2">
+                <input type="radio" class="form-check-input" id="veiculo2" name="veiculo" value="E-mail">
                 <label class="form-check-label" for="veiculo2">E-mail</label>
             </div>
             <div class="form-check col-xl-2 col-lg-3 col-md-3 col-sm-3 mt-2">
-                <input type="radio" class="form-check-input" id="veiculo3" name="veiculo3" value="veiculo3">
+                <input type="radio" class="form-check-input" id="veiculo3" name="veiculo" value="WhatsApp">
                 <label  class="form-check-label" for="veiculo3">WhatsApp</label>
             </div>
             <div class="form-check col-xl-2 col-lg-3 col-md-3 col-sm-3 mt-2">
-                <input type="radio" class="form-check-input" id="veiculo4"  name="veiculo4" value="veiculo4" >
+                <input type="radio" class="form-check-input" id="veiculo4"  name="veiculo" value="Outros" >
                 <label class="form-check-label" for="veiculo4">Outros</label>
             </div>
             <div class="col-xl-2  col-lg-4 col-sm-10 mt-2">
@@ -204,60 +209,60 @@ h4{
         <label for="orgao">Assuntos Tratados</label>
         <div class="row custom-checkboxes">
             <div class="form-control col-sm-12">
-                <input type="checkbox" id="orgao1" name="orgao1" value="Orgao1">
-                <label for="orgao1" class="ml-2">Atualização cadastral do Médico</label>
+                <input type="checkbox" id="assunto1" name="assunto1" value="assunto1">
+                <label for="assunto1" class="ml-2">Atualização cadastral do Médico</label>
             </div>
             <div class="form-control col-sm-12">
-                <input type="checkbox" id="orgao2" name="orgao2" value="Orgao2">
-                <label for="orgao2" class="ml-3">Autorização de procedimentos</label>
+                <input type="checkbox" id="assunto2" name="assunto2" value="assunto2">
+                <label for="assunto2" class="ml-3">Autorização de procedimentos</label>
             </div>
             <div class="form-control col-sm-12">
-                <input type="checkbox" id="orgao3" name="orgao3" value="Orgao3">
-                <label for="orgao3" class="ml-2">Cadastro Médico</label>
+                <input type="checkbox" id="assunto3" name="assunto3" value="assunto3">
+                <label for="assunto3" class="ml-2">Cadastro Médico</label>
             </div>
             <div class="form-control col-sm-12">
-                <input type="checkbox" id="orgao4" name="orgao4" value="Orgao4">
-                <label for="orgao4" class="ml-2">Demandas da Contabilidade</label>
+                <input type="checkbox" id="assunto4" name="assunto4" value="assunto4">
+                <label for="assunto4" class="ml-2">Demandas da Contabilidade</label>
             </div>
         </div>
     </div>
     <div class="col-xl-4 col-md-6 mt-4">
         <div class="row custom-checkboxes">
             <div class="form-control col-sm-12">
-                <input type="checkbox" id="orgao5" name="orgao5" value="Orgao5">
-                <label for="orgao5" class="ml-2">Demandas do Faturamento</label>
+                <input type="checkbox" id="assunto5" name="assunto5" value="assunto5">
+                <label for="assunto5" class="ml-2">Demandas do Faturamento</label>
             </div>
             <div class="form-control col-sm-12">
-                <input type="checkbox" id="orgao6" name="orgao6" value="Orgao6">
-                <label for="orgao6" class="ml-3">Demandas do INCOR</label>
+                <input type="checkbox" id="assunto6" name="assunto6" value="assunto6">
+                <label for="assunto6" class="ml-3">Demandas do INCOR</label>
             </div>
             <div class="form-control col-sm-12">
-                <input type="checkbox" id="orgao7" name="orgao7" value="Orgao7">
+                <input type="checkbox" id="assunto7" name="assunto7" value="assunto7">
                 <label for="orgao7" class="ml-2">Demandas do RH</label>
             </div>
             <div class="form-control col-sm-12">
-                <input type="checkbox" id="orgao8" name="orgao8" value="Orgao8">
-                <label for="orgao8" class="ml-2">Demandas do setor Financeiro</label>
+                <input type="checkbox" id="assunto8" name="assunto8" value="assunto8">
+                <label for="assunto8" class="ml-2">Demandas do setor Financeiro</label>
             </div>
         </div>
     </div>
     <div class="col-xl-4 col-md-6 mt-4 mb-4">
         <div class="row custom-checkboxes">
             <div class="form-control col-sm-12">
-                <input type="checkbox" id="orgao9" name="orgao9" value="Orgao9">
-                <label for="orgao9" class="ml-3">Demandas do setor de TI</label>
+                <input type="checkbox" id="assunto9" name="assunto9" value="assunto9">
+                <label for="assunto9" class="ml-3">Demandas do setor de TI</label>
             </div>
             <div class="form-control col-sm-12">
-                <input type="checkbox" id="orgao10" name="orgao10" value="Orgao10">
-                <label for="orgao10" class="ml-3">Estacionamento</label>
+                <input type="checkbox" id="assunto10" name="assunto10" value="assunto10">
+                <label for="assunto10" class="ml-3">Estacionamento</label>
             </div>
             <div class="form-control col-sm-12">
-                <input type="checkbox" id="orgao11" name="orgao11" value="Orgao11">
-                <label for="orgao11" class="ml-3">Repasse Médico</label>
+                <input type="checkbox" id="assunto11" name="assunto11" value="assunto11">
+                <label for="assunto11" class="ml-3">Repasse Médico</label>
             </div>
             <div class="form-control col-sm-12">
-    <input type="checkbox" id="orgao12" name="orgao12" value="Orgao12" onchange="mostrarCampoTexto()">
-    <label for="orgao12" class="ml-3">Outros</label>
+    <input type="checkbox" id="assunto12" name="assunto12" value="assunto12" onchange="mostrarCampoTexto()">
+    <label for="assunto12" class="ml-3">Outros</label>
 </div>
             
         </div>
@@ -273,8 +278,8 @@ h4{
                 <div class="border p-3 mt-4">
                 <h4><b>DESCRIÇÃO DO ATENDIMENTO</b></h4>
                 <div class="col-xl-12 col-md-6 mt-3">
-                    <label for="descricao">Assunto</label>
-                    <textarea class="form-control custom-textarea2" id="descricao" name="descricao" rows="1" maxlength="1000" required></textarea>
+                    <label for="assunto">Assunto</label>
+                    <textarea class="form-control custom-textarea2" id="assunto" name="assunto" rows="1" maxlength="1000" required></textarea>
                 </div>
 
 
@@ -312,7 +317,7 @@ $(document).ready(function() {
     });
 
   function mostrarCampoTexto() {
-        var checkbox = document.getElementById("orgao12");
+        var checkbox = document.getElementById("assunto12");
         var campoTexto = document.getElementById("campoTexto");
 
         if (checkbox.checked) {
