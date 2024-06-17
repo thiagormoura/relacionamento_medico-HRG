@@ -28,88 +28,14 @@ document.addEventListener('DOMContentLoaded', function() {
         verificarCamposPreenchidos();
     });
 
-    document.getElementById('cpf').addEventListener('keydown', function(event) {
-        if (event.key === 'Enter') {
-            event.preventDefault(); // Previne o envio do formulário ao pressionar Enter
-            var cpf = event.target.value.trim();
-            console.log("CPF digitado:", cpf); // Adiciona depuração para verificar o CPF digitado
-
-            if (cpf !== '') {
-                $.ajax({
-                    url: 'verificarcpf.php',
-                    method: 'POST',
-                    data: { cpf: cpf },
-                    dataType: 'json',
-                    success: function(response) {
-                        console.log("Resposta da verificação do CPF:", response); // Adiciona depuração para verificar a resposta
-                        if (response.exists) {
-                            Swal.fire({
-                                title: "CPF já cadastrado",
-                                text: "O CPF informado já está registrado no sistema. As informações foram preenchidas.",
-                                icon: "info"
-                            });
-
-                            // Preencher os campos com as informações do banco de dados
-                            document.getElementById('nome').value = response.data.nome || '';
-                            document.getElementById('nascimento').value = formatarData(response.data.data_nascimento) || '';
-                            document.getElementById('celular').value = response.data.telefone || '';
-                            document.getElementById('celulardois').value = response.data.telefone2 || '';
-                            document.getElementById('email').value = response.data.email || '';
-                            
-                        } else {
-                            Swal.fire({
-                                title: "CPF disponível",
-                                text: "O CPF informado está disponível para cadastro.",
-                                icon: "success"
-                            });
-
-                            // Limpar os campos se o CPF não estiver cadastrado
-                            document.getElementById('nome').value = '';
-                            document.getElementById('nascimento').value = '';
-                            document.getElementById('celular').value = '';
-                            document.getElementById('celulardois').value = '';
-                            document.getElementById('email').value = '';
-                            document.getElementById('especialidade').value = '';
-                            document.getElementById('registro').value = '';
-                            document.getElementById('orgao').value = '';
-                        }
-                    },
-                    error: function(error) {
-                        Swal.fire({
-                            title: "Erro",
-                            text: "Ocorreu um erro ao verificar o CPF.",
-                            icon: "error"
-                        });
-                        console.error('Erro na verificação do CPF:', error);
-                    }
-                });
-            }
-        }
-    });
-
-    function formatarData(data) {
-        // Verifica se a data está no formato correto do banco de dados (YYYY-MM-DD)
-        if (!data) return '';
-
-        var partes = data.split('-');
-        if (partes.length !== 3) return '';
-
-        var dia = partes[2];
-        var mes = partes[1];
-        var ano = partes[0];
-
-        // Formata para dd/mm/ano
-        return `${dia}/${mes}/${ano}`;
-    }
-
     function enviarFormulario(event) {
         event.preventDefault();
 
         var nome = document.getElementById("nome").value || '';
         var cpf = document.getElementById("cpf").value || '';
         var nascimento = document.getElementById("nascimento").value || '';
-        var telefone = document.getElementById("telefone").value || '';
-        var telefone2 = document.getElementById("telefone2").value || '';
+        var celular = document.getElementById("celular").value || '';
+        var celulardois = document.getElementById("celulardois").value || '';
         var email = document.getElementById("email").value || '';
         var especialidade = document.getElementById("especialidade").value || '';
         var registro = document.getElementById("registro").value || '';
@@ -118,15 +44,18 @@ document.addEventListener('DOMContentLoaded', function() {
         var tipo_atendimento = document.getElementById("tipo_atendimento").value || '';
         var descricao = document.getElementById("descricao").value || '';
         var acoes = document.getElementById("acoes").value || '';
+        
+        // Obter o valor do elemento selecionado em situacao_atendimento
         var situacao_atendimento = '';
         var situacao_atendimento_elements = document.getElementsByName("situacao_atendimento");
-
+        
         for (var i = 0; i < situacao_atendimento_elements.length; i++) {
             if (situacao_atendimento_elements[i].checked) {
                 situacao_atendimento = situacao_atendimento_elements[i].value;
                 break;
             }
         }
+
         console.log("Situação Atendimento selecionada:", situacao_atendimento);
 
         console.log({
@@ -136,8 +65,8 @@ document.addEventListener('DOMContentLoaded', function() {
             nome: nome,
             registro: registro,
             orgao: orgao,
-            telefone: telefone,
-            telefone2: telefone2,
+            celular: celular,
+            celulardois: celulardois,
             nascimento: nascimento,
             email: email,
             especialidade: especialidade,
@@ -152,10 +81,10 @@ document.addEventListener('DOMContentLoaded', function() {
             { campo: date, nome: "Data" },
             { campo: registro, nome: "Registro" },
             { campo: orgao, nome: "Órgão" },
-            { campo: telefone, nome: "Telefone" },
-            { campo: telefone2, nome: "Telefone 2" },
-            { campo: nascimento, nome: "Nascimento" },
-            { campo: especialidade, nome: "Especialidade" },
+            { campo: celular, nome: "Celular" },
+            { campo: celulardois, nome: "Segundo Celular" },
+            { campo: nascimento, nome: "Data de Nascimento" },
+            { campo: especialidade, nome: "Descrição da Especialidade" },
             { campo: descricao, nome: "Descrição" },
             { campo: tipo_atendimento, nome: "Tipo de Atendimento" },
             { campo: acoes, nome: "Ações" },
@@ -190,8 +119,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 nome: nome,
                 registro: registro,
                 orgao: orgao,
-                telefone: telefone,
-                telefone2: telefone2,
+                celular: celular,
+                celulardois: celulardois,
                 nascimento: nascimento,
                 email: email,
                 especialidade: especialidade,
@@ -203,7 +132,7 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             success: function(response) {
                 Swal.fire({
-                    title: "Cadastro Realizado com Sucesso!",
+                    title: "Cadastro realizado com sucesso!",
                     text: response,
                     icon: "success"
                 });
@@ -223,4 +152,87 @@ document.addEventListener('DOMContentLoaded', function() {
     enviarButton.addEventListener("click", function(event) {
         enviarFormulario(event);
     });
+
+    // Evento para verificar CPF ao pressionar Enter no campo CPF
+    document.getElementById('cpf').addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            var cpf = event.target.value.trim();
+            console.log("CPF digitado:", cpf);
+
+            if (cpf !== '') {
+                verificarCPF(cpf);
+            }
+        }
+    });
+
+    // Função para verificar o CPF
+    function verificarCPF(cpf) {
+        $.ajax({
+            url: 'verificarcpf.php',
+            method: 'POST',
+            data: { cpf: cpf },
+            dataType: 'json',
+            success: function(response) {
+                console.log("Resposta da verificação do CPF:", response);
+                if (response.exists) {
+                    Swal.fire({
+                        title: "CPF já cadastrado",
+                        text: "O CPF informado já está registrado no sistema. As informações foram preenchidas.",
+                        icon: "info"
+                    });
+
+                    preencherCampos(response.data);
+                } else {
+                    Swal.fire({
+                        title: "CPF disponível",
+                        text: "O CPF informado está disponível para cadastro.",
+                        icon: "success"
+                    });
+
+                    limparCampos();
+                }
+            },
+            error: function(error) {
+                Swal.fire({
+                    title: "Erro",
+                    text: "Ocorreu um erro ao verificar o CPF.",
+                    icon: "error"
+                });
+                console.error('Erro na verificação do CPF:', error);
+            }
+        });
+    }
+
+    // Função para preencher os campos do formulário
+    function preencherCampos(data) {
+        document.getElementById('nome').value = data.nome || '';
+        document.getElementById('nascimento').value = formatarData(data.data_nascimento) || '';
+        document.getElementById('celular').value = data.telefone || '';
+        document.getElementById('celulardois').value = data.telefone2 || '';
+        document.getElementById('email').value = data.email || '';
+    }
+
+    // Função para limpar os campos do formulário
+    function limparCampos() {
+        document.getElementById('nome').value = '';
+        document.getElementById('nascimento').value = '';
+        document.getElementById('celular').value = '';
+        document.getElementById('celulardois').value = '';
+        document.getElementById('email').value = '';
+        document.getElementById('especialidade').value = '';
+        document.getElementById('registro').value = '';
+        document.getElementById('orgao').value = '';
+    }
+
+    // Função para formatar data
+    function formatarData(data) {
+        if (!data) return '';
+        var partes = data.split('-');
+        if (partes.length !== 3) return '';
+        var dia = partes[2];
+        var mes = partes[1];
+        var ano = partes[0];
+        return `${dia}/${mes}/${ano}`;
+    }
 });
