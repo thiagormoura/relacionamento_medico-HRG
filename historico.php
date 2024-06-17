@@ -131,50 +131,101 @@ $result = $conn->query($sql);
         </tr>
     </thead>
     <tbody>
-        <?php
-        function getBadgeClass($situacao) {
-            switch ($situacao) {
-                case 'Ativo':
-                    return 'badge bg-success';
-                case 'Fechado':
-                    return 'badge bg-danger';
-                case 'Andamento':
-                    return 'badge bg-warning';
-                default:
-                    return 'badge bg-secondary';
-            }
-        }
-        $sql = "SELECT id, nome, situacao_atendimento FROM profissionais";
-        $result_profissionais = $conn->query($sql);
+    <?php
+function getBadgeClass($situacao) {
+    switch ($situacao) {
+        case 'Ativo':
+            return 'badge bg-success';
+        case 'Fechado':
+            return 'badge bg-danger';
+        case 'Andamento':
+            return 'badge bg-warning';
+        default:
+            return 'badge bg-secondary';
+    }
+}
 
-        if ($result_profissionais && $result_profissionais->num_rows > 0) {
-            while ($row = $result_profissionais->fetch_assoc()) {
-                echo "<tr>";
-                echo "<td class='text-left'>" . htmlspecialchars($row['id']) . "</td>";
-                echo "<td class='text-left'>" . htmlspecialchars($row['nome']) . "</td>";
+$sql = "SELECT id, nome, situacao_atendimento FROM profissionais";
+$result_profissionais = $conn->query($sql);
 
-                $sql_assunto = "SELECT assunto FROM tabela_assunto WHERE id_profissional = " . $row['id'];
-                $result_assunto = $conn->query($sql_assunto);
+if ($result_profissionais && $result_profissionais->num_rows > 0) {
+    while ($row = $result_profissionais->fetch_assoc()) {
+        echo "<tr id='profissional_" . htmlspecialchars($row['id']) . "' data-toggle='modal' data-target='#detalhesModal'>";
+        echo "<td class='text-left'>" . htmlspecialchars($row['id']) . "</td>";
+        echo "<td class='text-left'>" . htmlspecialchars($row['nome']) . "</td>";
 
-                if ($result_assunto && $result_assunto->num_rows > 0) {
-                    $assunto = $result_assunto->fetch_assoc()['assunto'];
-                    echo "<td class='text-left'>" . htmlspecialchars($assunto) . "</td>";
-                } else {
-                    echo "<td class='text-left'>Nenhum assunto encontrado</td>";
-                }
+        $sql_assunto = "SELECT assunto FROM tabela_assunto WHERE id_profissional = " . $row['id'];
+        $result_assunto = $conn->query($sql_assunto);
 
-                $situacao = htmlspecialchars($row['situacao_atendimento']);
-                echo "<td class='text-left'><span class='" . getBadgeClass($situacao) . "'>" . $situacao . "</span></td>";
-
-                echo "</tr>";
-            }
+        if ($result_assunto && $result_assunto->num_rows > 0) {
+            $assunto = $result_assunto->fetch_assoc()['assunto'];
+            echo "<td class='text-left'>" . htmlspecialchars($assunto) . "</td>";
         } else {
-            echo "<tr><td colspan='4' class='text-center'>Nenhum profissional encontrado</td></tr>";
+            echo "<td class='text-left'>Nenhum assunto encontrado</td>";
         }
-        $conn->close();
-        ?>
+
+        $situacao = htmlspecialchars($row['situacao_atendimento']);
+        echo "<td class='text-left'><span class='" . getBadgeClass($situacao) . "'>" . $situacao . "</span></td>";
+
+        echo "</tr>";
+    }
+} else {
+    echo "<tr><td colspan='4' class='text-center'>Nenhum profissional encontrado</td></tr>";
+}
+$conn->close();
+?>
     </tbody>
 </table>
+<!-- Modal -->
+<div class="modal fade" id="detalhesModal" tabindex="-1" aria-labelledby="detalhesModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="detalhesModalLabel">Detalhes do Profissional</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="modalContent">
+        <!-- Aqui os dados serão preenchidos dinamicamente -->
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+$(document).ready(function() {
+    // Captura o clique na linha da tabela
+    $('tr[data-toggle="modal"]').on('click', function() {
+        // Obtém os dados da linha clicada
+        var id = $(this).find('td:nth-child(1)').text().trim();
+        var nome = $(this).find('td:nth-child(2)').text().trim();
+        var assunto = $(this).find('td:nth-child(3)').text().trim();
+        var situacao = $(this).find('td:nth-child(4) span').text().trim();
+        var badgeClass = $(this).find('td:nth-child(4) span').attr('class');
+
+        // Monta o conteúdo do modal com os dados obtidos
+        var modalContent = '';
+        modalContent += '<p><strong>ID:</strong> ' + id + '</p>';
+        modalContent += '<p><strong>Nome:</strong> ' + nome + '</p>';
+        modalContent += '<p><strong>Assunto:</strong> ' + assunto + '</p>';
+        modalContent += '<p><strong>Situação de Atendimento:</strong> <span class="' + badgeClass + '">' + situacao + '</span></p>';
+
+        // Insere o conteúdo montado no modal
+        $('#modalContent').html(modalContent);
+
+        // Define o título do modal
+        $('#detalhesModalLabel').text('Detalhes do Profissional: ' + nome);
+
+        // Abre o modal
+        $('#detalhesModal').modal('show');
+    });
+});
+</script>
+
+
+
 
 
 
@@ -186,28 +237,38 @@ $result = $conn->query($sql);
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
     <script>
-        $(document).ready(function() {
-            $('#applyFilters').click(function() {
-                var inputFilter = $('#inputFilter').val().toUpperCase();
-                var dateFilter = $('#dateFilter').val();
-                var subjectFilter = $('#subjectFilter').val();
-                var stateFilter = $('#stateFilter').val();
-                var statusFilter = $('#statusFilter').val();
+$(document).ready(function() {
+    $('#applyFilters').click(function() {
+        var inputFilter = $('#inputFilter').val().toUpperCase();
+        var dateFilter = $('#dateFilter').val();
+        var profissionalFilter = $('#inputprofissional').val().toUpperCase();
+        var subjectFilter = $('#subjectFilter').val();
+        var statusFilter = $('#statusFilter').val();
 
-                $('tbody tr').each(function() {
-                    var row = $(this).html().toUpperCase();
-                    if ((row.indexOf(inputFilter) > -1 || inputFilter === '') &&
-                        ($(this).find('td:eq(0)').text() ==dateFilter || dateFilter === '') &&
-($(this).find('td:eq(1)').text() == subjectFilter || subjectFilter === '') &&
-($(this).find('td:eq(2)').text() == stateFilter || stateFilter === '') &&
-($(this).find('td:eq(4)').text() == statusFilter || statusFilter === '')) {
-    $(this).show();
-} else {
-    $(this).hide();
-}
+        $('tbody tr').each(function() {
+            var row = $(this).html().toUpperCase();
+            var rowData = {
+                id: $(this).find('td:eq(0)').text().toUpperCase(),
+                nome: $(this).find('td:eq(1)').text().toUpperCase(),
+                assunto: $(this).find('td:eq(2)').text().toUpperCase(),
+                profissional: $(this).find('td:eq(3)').text().toUpperCase(),
+                situacao: $(this).find('td:eq(4)').text().toUpperCase()
+            };
+
+            if ((row.indexOf(inputFilter) > -1 || inputFilter === '') &&
+                (dateFilter === '' || $(this).find('td:eq(0)').text() === dateFilter) &&
+                (profissionalFilter === '' || rowData.profissional.indexOf(profissionalFilter) > -1) &&
+                (subjectFilter === '' || rowData.assunto.indexOf(subjectFilter) > -1) &&
+                (statusFilter === '' || rowData.situacao.indexOf(statusFilter) > -1)) {
+                $(this).show();
+            } else {
+                $(this).hide();
+            }
+        });
+    });
 });
-})});
 </script>
+
 </body>
 </html>
 
