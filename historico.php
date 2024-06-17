@@ -121,34 +121,63 @@ $result = $conn->query($sql);
             <br>
             <div class="border p-3">
        
-<table class="table">
+            <table class="table table-bordered table-striped">
     <thead class="thead-light">
         <tr>
-            <th>Data</th>
-            <th>Nome do Profissional</th>
-            <th>Assunto Tratado</th>
-            <th>Status</th>
+            <th class="text-left">ID</th>
+            <th class="text-left">Nome</th>
+            <th class="text-left">Assunto</th>
+            <th class="text-left">Situação de Atendimento</th>
         </tr>
     </thead>
     <tbody>
         <?php
-        // Verificando se a consulta retornou resultados
-        if ($result && $result->num_rows > 0) {
-            // Loop pelos resultados da consulta
-            while($row = $result->fetch_assoc()) {
+        function getBadgeClass($situacao) {
+            switch ($situacao) {
+                case 'Ativo':
+                    return 'badge bg-success';
+                case 'Fechado':
+                    return 'badge bg-danger';
+                case 'Andamento':
+                    return 'badge bg-warning';
+                default:
+                    return 'badge bg-secondary';
+            }
+        }
+        $sql = "SELECT id, nome, situacao_atendimento FROM profissionais";
+        $result_profissionais = $conn->query($sql);
+
+        if ($result_profissionais && $result_profissionais->num_rows > 0) {
+            while ($row = $result_profissionais->fetch_assoc()) {
                 echo "<tr>";
-                echo "<td>" . $row['data'] . "</td>";
-                echo "<td>" . $row['nome_profissional'] . "</td>";
-                echo "<td>" .  "</td>"; // Adicionei esta linha corrigindo o nome da coluna
-                echo "<td>" . $row['situacao'] . "</td>";
+                echo "<td class='text-left'>" . htmlspecialchars($row['id']) . "</td>";
+                echo "<td class='text-left'>" . htmlspecialchars($row['nome']) . "</td>";
+
+                $sql_assunto = "SELECT assunto FROM tabela_assunto WHERE id_profissional = " . $row['id'];
+                $result_assunto = $conn->query($sql_assunto);
+
+                if ($result_assunto && $result_assunto->num_rows > 0) {
+                    $assunto = $result_assunto->fetch_assoc()['assunto'];
+                    echo "<td class='text-left'>" . htmlspecialchars($assunto) . "</td>";
+                } else {
+                    echo "<td class='text-left'>Nenhum assunto encontrado</td>";
+                }
+
+                $situacao = htmlspecialchars($row['situacao_atendimento']);
+                echo "<td class='text-left'><span class='" . getBadgeClass($situacao) . "'>" . $situacao . "</span></td>";
+
                 echo "</tr>";
             }
         } else {
-            echo "<tr><td colspan='4'>Nenhum resultado encontrado</td></tr>";
+            echo "<tr><td colspan='4' class='text-center'>Nenhum profissional encontrado</td></tr>";
         }
+        $conn->close();
         ?>
     </tbody>
 </table>
+
+
+
             </div>
         </div>
       

@@ -236,3 +236,37 @@ document.addEventListener('DOMContentLoaded', function() {
         return `${dia}/${mes}/${ano}`;
     }
 });
+document.getElementById('enviarbutton').addEventListener('click', function(event) {
+    if (!validateNumbers()) {
+        event.preventDefault();
+    }
+});
+
+function validateNumbers() {
+    const celular = document.getElementById('celular');
+    const celulardois = document.getElementById('celulardois');
+    const celularFeedback = document.getElementById('celularFeedback');
+    const celulardoisFeedback = document.getElementById('celulardoisFeedback');
+
+    let isValid = true;
+
+    if (celular.value.length !== 11) {
+        celular.classList.add('is-invalid');
+        celularFeedback.style.display = 'block';
+        isValid = false;
+    } else {
+        celular.classList.remove('is-invalid');
+        celularFeedback.style.display = 'none';
+    }
+
+    if (celulardois.value.length !== 11) {
+        celulardois.classList.add('is-invalid');
+        celulardoisFeedback.style.display = 'block';
+        isValid = false;
+    } else {
+        celulardois.classList.remove('is-invalid');
+        celulardoisFeedback.style.display = 'none';
+    }
+
+    return isValid;
+}
