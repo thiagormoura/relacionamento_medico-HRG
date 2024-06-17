@@ -38,7 +38,7 @@ function enviarParaBanco($conn, $date, $situacaoatendimento, $nome, $registro, $
    
 
 // Inserir dados na tabela profissionais
-$sql_medicos = "INSERT INTO profissionais (data_nascimento, cpf, email, telefone,telefone2, nome,tipo_atendimento ) VALUES ('$nascimento', '$cpf', '$email', '$celular','$celulardois', '$nome','$tipo_atendimento')";
+$sql_medicos = "INSERT INTO profissionais (data_nascimento, cpf, email, telefone,telefone2, nome,tipo_atendimento ,situacao_atendimento ) VALUES ('$nascimento', '$cpf', '$email', '$celular','$celulardois', '$nome','$tipo_atendimento','$situacaoatendimento')";
 if ($conn->query($sql_medicos) !== TRUE) {
     echo "Erro ao inserir dados do médico na tabela profissionais: " . $conn->error . "<br>";
     $sucesso = false;
