@@ -13,7 +13,8 @@ $offset = ($paginaAtual - 1) * $registrosPorPagina;
 $sql = "SELECT DATE(a.data) as data,
         im.nome as nome_profissional,
         assuntos.assunto,
-        a.situacao as situacao
+        a.situacao as situacao,
+        a.id as id
         FROM relacionamentomedico.atendimento AS a
         JOIN relacionamentomedico.profissionais AS im ON a.profissional = im.id
         JOIN relacionamentomedico.atendimento_has_assunto AS has ON a.id = has.id
@@ -56,6 +57,13 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
     main{
        padding: 2em;
     }
+
+    
+    a{
+        color: black;
+        text-decoration: none;
+    }
+
 </style>
 <body>
     <!-- Parte do header e nav -->
@@ -135,7 +143,7 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
                         // Loop pelos resultados da consulta
                         while($row = $result->fetch_assoc()) {
                             echo "<tr>";
-                            echo "<td>" . $row['data'] . "</td>";
+                            echo "<td><a href='informacoes.php?id=". $row["id"]. "'>" . $row["data"] . "</a></td>";
                             echo "<td>" . $row['nome_profissional'] . "</td>";
                             echo "<td>" . $row['assunto'] . "</td>"; // Nome da coluna do assunto
                             echo "<td>" . $row['situacao'] . "</td>";
