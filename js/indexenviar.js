@@ -265,13 +265,7 @@ function verificarCPF(cpf) {
 
                 preencherCampos(response.data); // Preencher os campos com os dados existentes
             } else {
-                Swal.fire({
-                    title: "CPF disponível",
-                    text: "O CPF informado está disponível para cadastro.",
-                    icon: "success"
-                });
-
-                limparCampos(); // Limpar os campos do formulário
+               
             }
         },
         error: function(error) {
