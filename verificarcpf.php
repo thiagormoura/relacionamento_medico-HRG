@@ -13,7 +13,7 @@ if (isset($_POST['cpf'])) {
     }
 
     // Prepare a consulta SQL
-    $stmt = $conn->prepare("SELECT nome, DATE_FORMAT(data_nascimento, '%d/%m/%Y') as data_nascimento, telefone, telefone2, email FROM profissionais WHERE cpf = ?");
+    $stmt = $conn->prepare("SELECT nome, DATE_FORMAT(data_nascimento, '%d/%m/%Y') as data_nascimento, telefone, telefone2, email,registro,especialidades ,orgao  FROM profissionais WHERE cpf = ?");
     if ($stmt === false) {
         die(json_encode(['error' => 'Erro na preparação da declaração: ' . $conn->error]));
     }

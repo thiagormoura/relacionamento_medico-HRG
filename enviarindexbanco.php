@@ -8,25 +8,9 @@ $dbpass = "";
 function enviarParaBanco($conn, $date, $situacaoatendimento, $nome, $registro, $orgao, $celular, $celulardois, $nascimento, $email, $especialidade, $descricao, $acoes, $cpf, $tipo_atendimento) {
     $sucesso = true;
 
-    // Inserir dados na tabela orgaos
-    $sql_orgaos = "INSERT INTO orgaos (orgaos) VALUES ('$orgao')";
-    if ($conn->query($sql_orgaos) !== TRUE) {
-        echo "Erro ao inserir órgão na tabela orgaos: " . $conn->error . "<br>";
-        $sucesso = false;
-    } else {
-        // Obter o ID do órgão inserido
-        $id_orgao = $conn->insert_id;
-    }
+    
 
-    // Inserir dados na tabela especialidade
-    $sql_especialidade = "INSERT INTO especialidades (especialidades) VALUES ('$especialidade')";
-    if ($conn->query($sql_especialidade) !== TRUE) {
-        echo "Erro ao inserir especialidade na tabela especialidade: " . $conn->error . "<br>";
-        $sucesso = false;
-    } else {
-        // Obter o ID da especialidade inserida
-        $id_especialidade = $conn->insert_id;
-    }
+   
 
     // Inserir dados na tabela acoes
     $sql_acoes = "INSERT INTO acoes (acoes) VALUES ('$acoes')";
@@ -38,7 +22,7 @@ function enviarParaBanco($conn, $date, $situacaoatendimento, $nome, $registro, $
    
 
 // Inserir dados na tabela profissionais
-$sql_medicos = "INSERT INTO profissionais (data_nascimento, cpf, email, telefone,telefone2, nome,tipo_atendimento ,situacao_atendimento ) VALUES ('$nascimento', '$cpf', '$email', '$celular','$celulardois', '$nome','$tipo_atendimento','$situacaoatendimento')";
+$sql_medicos = "INSERT INTO profissionais (data_nascimento, cpf, email, telefone,telefone2, nome,tipo_atendimento ,situacao_atendimento,registro,especialidades ,orgao) VALUES ('$nascimento', '$cpf', '$email', '$celular','$celulardois', '$nome','$tipo_atendimento','$situacaoatendimento','$registro','$especialidade','$orgao')";
 if ($conn->query($sql_medicos) !== TRUE) {
     echo "Erro ao inserir dados do médico na tabela profissionais: " . $conn->error . "<br>";
     $sucesso = false;

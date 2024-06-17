@@ -167,51 +167,76 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Função para verificar o CPF
-    function verificarCPF(cpf) {
-        $.ajax({
-            url: 'verificarcpf.php',
-            method: 'POST',
-            data: { cpf: cpf },
-            dataType: 'json',
-            success: function(response) {
-                console.log("Resposta da verificação do CPF:", response);
-                if (response.exists) {
-                    Swal.fire({
-                        title: "CPF já cadastrado",
-                        text: "O CPF informado já está registrado no sistema. As informações foram preenchidas.",
-                        icon: "info"
-                    });
-
-                    preencherCampos(response.data);
-                } else {
-                    Swal.fire({
-                        title: "CPF disponível",
-                        text: "O CPF informado está disponível para cadastro.",
-                        icon: "success"
-                    });
-
-                    limparCampos();
-                }
-            },
-            error: function(error) {
+function verificarCPF(cpf) {
+    $.ajax({
+        url: 'verificarcpf.php',
+        method: 'POST',
+        data: { cpf: cpf },
+        dataType: 'json',
+        success: function(response) {
+            console.log("Resposta da verificação do CPF:", response);
+            if (response.exists) {
                 Swal.fire({
-                    title: "Erro",
-                    text: "Ocorreu um erro ao verificar o CPF.",
-                    icon: "error"
+                    title: "CPF já cadastrado",
+                    text: "O CPF informado já está registrado no sistema. As informações foram preenchidas.",
+                    icon: "info"
                 });
-                console.error('Erro na verificação do CPF:', error);
+
+                preencherCampos(response.data); // Preencher os campos com os dados existentes
+            } else {
+                Swal.fire({
+                    title: "CPF disponível",
+                    text: "O CPF informado está disponível para cadastro.",
+                    icon: "success"
+                });
+
+                limparCampos(); // Limpar os campos do formulário
             }
-        });
-    }
+        },
+        error: function(error) {
+            Swal.fire({
+                title: "Erro",
+                text: "Ocorreu um erro ao verificar o CPF.",
+                icon: "error"
+            });
+            console.error('Erro na verificação do CPF:', error);
+        }
+    });
+}
 
     // Função para preencher os campos do formulário
-    function preencherCampos(data) {
-        document.getElementById('nome').value = data.nome || '';
-        document.getElementById('nascimento').value = formatarData(data.data_nascimento) || '';
-        document.getElementById('celular').value = data.telefone || '';
-        document.getElementById('celulardois').value = data.telefone2 || '';
-        document.getElementById('email').value = data.email || '';
+function preencherCampos(data) {
+    document.getElementById('nome').value = data.nome || '';
+    document.getElementById('nascimento').value = formatarDataParaCampo(data.data_nascimento) || '';
+    console.log("Data de nascimento recebida:", data.data_nascimento); // Adicione este console log
+    document.getElementById('celular').value = data.telefone || '';
+    document.getElementById('celulardois').value = data.telefone2 || '';
+    document.getElementById('email').value = data.email || '';
+    document.getElementById('registro').value = data.registro || '';
+
+    
+    // Preencher o campo 'orgao'
+    var orgaoSelect = document.getElementById('orgao');
+    for (var i = 0; i < orgaoSelect.options.length; i++) {
+        if (orgaoSelect.options[i].value === data.orgao) {
+            orgaoSelect.selectedIndex = i;
+            break;
+        }
     }
+
+    console.log("Especialidade recebida:", data.especialidades);
+
+var especialidadeSelect = document.getElementById('especialidade');
+for (var j = 0; j < especialidadeSelect.options.length; j++) {
+    console.log("Opção:", especialidadeSelect.options[j].value);
+    if (especialidadeSelect.options[j].value === data.especialidades) {
+        console.log("Correspondência encontrada para especialidade:", especialidadeSelect.options[j].value);
+        especialidadeSelect.selectedIndex = j;
+        break;
+    }
+}
+}
+
 
     // Função para limpar os campos do formulário
     function limparCampos() {
@@ -225,14 +250,18 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('orgao').value = '';
     }
 
-    // Função para formatar data
-    function formatarData(data) {
+    function formatarDataParaCampo(data) {
         if (!data) return '';
+    
+        // Separar a data em partes
         var partes = data.split('-');
         if (partes.length !== 3) return '';
-        var dia = partes[2];
-        var mes = partes[1];
+    
         var ano = partes[0];
+        var mes = partes[1];
+        var dia = partes[2];
+    
+        // Retornar no formato dd/mm/aaaa
         return `${dia}/${mes}/${ano}`;
     }
 });
