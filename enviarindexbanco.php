@@ -12,20 +12,10 @@ function enviarParaBanco($conn, $date, $situacaoatendimento, $nome, $registro, $
     
 
    
-
-    $sql_medicos = "INSERT INTO profissionais (data_nascimento, cpf, email, endereco, telefone, telefone2, nome, tipo_atendimento) VALUES ('$nascimento', '$cpf', '$email', '$endereco', '$celular', '$celulardois', '$nome', '$tipo_atendimento')";
-    if ($conn->query($sql_medicos) !== TRUE) {
-        echo "Erro ao inserir dados do médico na tabela profissionais: " . $conn->error . "<br>";
-        $sucesso = false;
-    } else {
-    
-        $id_profissional = $conn->insert_id;
-    }
-
    
 
 // Inserir dados na tabela profissionais
-$sql_medicos = "INSERT INTO profissionais (data_nascimento, cpf, email, telefone,telefone2, nome,tipo_atendimento ,situacao_atendimento,registro,especialidades ,orgao) VALUES ('$nascimento', '$cpf', '$email', '$celular','$celulardois', '$nome','$tipo_atendimento','$situacaoatendimento','$registro','$especialidade','$orgao')";
+$sql_medicos = "INSERT INTO profissionais (data_nascimento, cpf, email, telefone,telefone2, nome,tipo_atendimento ,situacao_atendimento,registro,especialidades ,orgao, endereco) VALUES ('$nascimento', '$cpf', '$email', '$celular','$celulardois', '$nome','$tipo_atendimento','$situacaoatendimento','$registro','$especialidade','$orgao','$endereco')";
 if ($conn->query($sql_medicos) !== TRUE) {
     echo "Erro ao inserir dados do médico na tabela profissionais: " . $conn->error . "<br>";
     $sucesso = false;

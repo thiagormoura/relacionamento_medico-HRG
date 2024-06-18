@@ -97,8 +97,10 @@ h4{
                 <div class="col-xl-3 col-md-6 mt-2">
                     <div class="form-group">
                         <label for="nascimento">Data de Nascimento</label>
-                        <input type="date" class="form-control" id="nascimento" name="nascimento" required>
+                        <input type="date" class="form-control" id="nascimento" value="" name="nascimento" required>
                     </div>
+
+                  
                 </div>
                 
                
@@ -135,33 +137,33 @@ h4{
                         <label for="orgao">Órgão</label>
                         <select class="form-control" id="orgao" name="orgao" required>
                             <option value="">Selecione...</option>
-                            <option value="Orgao1">CRM-AC</option>
-                            <option value="Orgao2">CRM-AL</option>
-                            <option value="Orgao1">CRM-AP</option>
-                            <option value="Orgao2">CRM-AM</option>
-                            <option value="Orgao1">CRM-BA</option>
-                            <option value="Orgao2">CRM-CE</option>
-                            <option value="Orgao1">CRM-DF</option>
-                            <option value="Orgao2">CRM-ES</option>
-                            <option value="Orgao1">CRM-GO</option>
-                            <option value="Orgao2">CRM-MA</option>
-                            <option value="Orgao1">CRM-MT</option>
-                            <option value="Orgao2">CRM-MS</option>
-                            <option value="Orgao1">CRM-MG</option>
-                            <option value="Orgao2">CRM-PA</option>
-                            <option value="Orgao1">CRM-PB</option>
-                            <option value="Orgao2">CRM-PR</option>
-                            <option value="Orgao1">CRM-PE</option>
-                            <option value="Orgao2">CRM-PI</option>
-                            <option value="Orgao1">CRM-RJ</option>
-                            <option value="Orgao2">CRM-RN</option>
-                            <option value="Orgao1">CRM-RS</option>
-                            <option value="Orgao2">CRM-RO</option>
-                            <option value="Orgao1">CRM-RR</option>
-                            <option value="Orgao2">CRM-SC</option>
-                            <option value="Orgao1">CRM-SP</option>
-                            <option value="Orgao2">CRM-SE</option>
-                            <option value="Orgao1">CRM-TO</option>
+                            <option value="CRM-AC">CRM-AC</option>
+                            <option value="CRM-AL">CRM-AL</option>
+                            <option value="CRM-AP">CRM-AP</option>
+                            <option value="CRM-AM">CRM-AM</option>
+                            <option value="CRM-BA">CRM-BA</option>
+                            <option value="CRM-CE">CRM-CE</option>
+                            <option value="CRM-DF">CRM-DF</option>
+                            <option value="CRM-ES">CRM-ES</option>
+                            <option value="CRM-GO">CRM-GO</option>
+                            <option value="CRM-MA">CRM-MA</option>
+                            <option value="CRM-MT">CRM-MT</option>
+                            <option value="CRM-MS">CRM-MS</option>
+                            <option value="CRM-MG">CRM-MG</option>
+                            <option value="CRM-PA">CRM-PA</option>
+                            <option value="CRM-PB">CRM-PB</option>
+                            <option value="CRM-PR">CRM-PR</option>
+                            <option value="CRM-PE">CRM-PE</option>
+                            <option value="CRM-PI">CRM-PI</option>
+                            <option value="CRM-RJ">CRM-RJ</option>
+                            <option value="CRM-RN">CRM-RN</option>
+                            <option value="CRM-RS">CRM-RS</option>
+                            <option value="CRM-RO">CRM-RO</option>
+                            <option value="CRM-RR">CRM-RR</option>
+                            <option value="CRM-SC">CRM-SC</option>
+                            <option value="CRM-SP">CRM-SP</option>
+                            <option value="CRM-SE">CRM-SE</option>
+                            <option value="CRM-TO">CRM-TO</option>
                         </select>
                     </div>
                 </div>
