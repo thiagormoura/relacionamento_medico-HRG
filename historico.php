@@ -124,59 +124,79 @@ $result = $conn->query($sql);
             <table class="table table-bordered table-striped">
     <thead class="thead-light">
         <tr>
-            <th class="text-left">ID</th>
-            <th class="text-left">Nome</th>
-            <th class="text-left">Assunto</th>
-            <th class="text-left">Situação de Atendimento</th>
+            <th class="text-left">Data</th>
+            <th class="text-left">Nome do Profissional</th>
+            <th class="text-left">Assunto Tratado</th>
+            <th class="text-left">Status</th>
         </tr>
     </thead>
     <tbody>
     <?php
-function getBadgeClass($situacao) {
-    switch ($situacao) {
-        case 'Ativo':
-            return 'badge bg-success';
-        case 'Fechado':
-            return 'badge bg-danger';
-        case 'Andamento':
-            return 'badge bg-warning';
-        default:
-            return 'badge bg-secondary';
-    }
-}
-
-$sql = "SELECT id, nome, situacao_atendimento FROM profissionais";
-$result_profissionais = $conn->query($sql);
-
-if ($result_profissionais && $result_profissionais->num_rows > 0) {
-    while ($row = $result_profissionais->fetch_assoc()) {
-        echo "<tr id='profissional_" . htmlspecialchars($row['id']) . "' data-toggle='modal' data-target='#detalhesModal'>";
-        echo "<td class='text-left'>" . htmlspecialchars($row['id']) . "</td>";
-        echo "<td class='text-left'>" . htmlspecialchars($row['nome']) . "</td>";
-
-        $sql_assunto = "SELECT assunto FROM tabela_assunto WHERE id_profissional = " . $row['id'];
-        $result_assunto = $conn->query($sql_assunto);
-
-        if ($result_assunto && $result_assunto->num_rows > 0) {
-            $assunto = $result_assunto->fetch_assoc()['assunto'];
-            echo "<td class='text-left'>" . htmlspecialchars($assunto) . "</td>";
-        } else {
-            echo "<td class='text-left'>Nenhum assunto encontrado</td>";
+    function getBadgeClass($situacao) {
+        switch ($situacao) {
+            case 'Ativo':
+                return 'badge bg-success';
+            case 'Fechado':
+                return 'badge bg-danger';
+            case 'Andamento':
+                return 'badge bg-warning';
+            default:
+                return 'badge bg-secondary';
         }
-
-        $situacao = htmlspecialchars($row['situacao_atendimento']);
-        echo "<td class='text-left'><span class='" . getBadgeClass($situacao) . "'>" . $situacao . "</span></td>";
-
-        echo "</tr>";
     }
-} else {
-    echo "<tr><td colspan='4' class='text-center'>Nenhum profissional encontrado</td></tr>";
-}
-$conn->close();
-?>
+
+    // Consulta para obter dados dos profissionais
+    $sql_profissionais = "SELECT id, data_nascimento, nome, situacao_atendimento FROM profissionais";
+    $result_profissionais = $conn->query($sql_profissionais);
+
+    // Consulta para obter os assuntos em ordem decrescente
+    $sql_assunto = "SELECT assunto FROM assunto ORDER BY id DESC";
+    $result_assunto = $conn->query($sql_assunto);
+
+    $assuntos = [];
+    if ($result_assunto && $result_assunto->num_rows > 0) {
+        while ($row_assunto = $result_assunto->fetch_assoc()) {
+            $assuntos[] = $row_assunto['assunto'];
+        }
+    }
+
+    if ($result_profissionais && $result_profissionais->num_rows > 0) {
+        $index = 0;
+        while ($row = $result_profissionais->fetch_assoc()) {
+            // Formatando a data de nascimento para o formato brasileiro
+            $data_nascimento = new DateTime($row['data_nascimento']);
+            $data_nascimento_formatada = $data_nascimento->format('d/m/Y');
+
+            echo "<tr data-toggle='modal' data-target='#detalhesModal'>";
+            echo "<td class='text-left'>" . htmlspecialchars($data_nascimento_formatada) . "</td>";
+            echo "<td class='text-left'>" . htmlspecialchars($row['nome']) . "</td>";
+
+            // Exibir o próximo assunto na ordem
+            if (isset($assuntos[$index])) {
+                echo "<td class='text-left'>" . htmlspecialchars($assuntos[$index]) . "</td>";
+            } else {
+                echo "<td class='text-left'>Nenhum assunto encontrado</td>";
+            }
+
+            $situacao = htmlspecialchars($row['situacao_atendimento']);
+            echo "<td class='text-left'><span class='" . getBadgeClass($situacao) . "'>" . $situacao . "</span></td>";
+
+            echo "</tr>";
+
+            $index++;
+        }
+    } else {
+        echo "<tr><td colspan='4' class='text-center'>Nenhum profissional encontrado</td></tr>";
+    }
+    $conn->close();
+    ?>
     </tbody>
 </table>
-<!-- Modal -->
+
+
+
+
+
 <div class="modal fade" id="detalhesModal" tabindex="-1" aria-labelledby="detalhesModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
