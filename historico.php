@@ -127,7 +127,7 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
         <br><br>
 
         <div class="border p-3">
-            <table class="table">
+            <table class="table table-hover">
                 <thead class="thead-light">
                     <tr>
                         <th>Data</th>
@@ -138,20 +138,20 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
                 </thead>
                 <tbody id="dataTable">
                     <?php
-                    // Verificando se a consulta retornou resultados
-                    if ($result && $result->num_rows > 0) {
-                        // Loop pelos resultados da consulta
-                        while($row = $result->fetch_assoc()) {
-                            echo "<tr>";
-                            echo "<td><a href='informacoes.php?id=". $row["id"]. "'>" . $row["data"] . "</a></td>";
-                            echo "<td>" . $row['nome_profissional'] . "</td>";
-                            echo "<td>" . $row['assunto'] . "</td>"; // Nome da coluna do assunto
-                            echo "<td>" . $row['situacao'] . "</td>";
-                            echo "</tr>";
-                        }
-                    } else {
-                        echo "<tr><td colspan='4'>Nenhum resultado encontrado</td></tr>";
+                   if ($result && $result->num_rows > 0) {
+                    // Loop pelos resultados da consulta
+                    while($row = $result->fetch_assoc()) {
+                        echo "<tr class='clickable-row' data-href='informacoes.php?id=". $row["id"]. "'>";
+                        echo "<td>" . $row["data"] . "</td>";
+                        echo "<td>" . $row['nome_profissional'] . "</td>";
+                        echo "<td>" . $row['assunto'] . "</td>"; // Nome da coluna do assunto
+                        echo "<td>" . $row['situacao'] . "</td>";
+                        echo "</tr>";
                     }
+                } else {
+                    echo "<tr><td colspan='4'>Nenhum resultado encontrado</td></tr>";
+                }
+             
                     ?>
                 </tbody>
             </table>
@@ -257,6 +257,14 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
         });
     });
     
+    document.addEventListener("DOMContentLoaded", function() {
+    var rows = document.querySelectorAll(".clickable-row");
+    rows.forEach(function(row) {
+        row.addEventListener("click", function() {
+            window.location.href = row.getAttribute("data-href");
+        });
+    });
+});
 </script>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
