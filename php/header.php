@@ -16,15 +16,16 @@
                 <a class="navbar-brand" href="http://10.1.1.31:80/centralservicos/">
                     <img src="http://10.1.1.31:80/centralservicos/resources/img/central-servicos.png" alt="Central de Serviço" style="width: 160px">
                 </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navBarCentral" aria-controls="navBarCentral" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
                 <button class="btn">
                         <a class="nav-link" href="index.php">Registrar atendimento</a>
                     </button>
                     <button class="btn">
                         <a class="nav-link" href="historico.php">Histórico</a>
                     </button>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navBarCentral" aria-controls="navBarCentral" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                
 
                 <div class="collapse navbar-collapse" id="navBarCentral">
                 </div>
