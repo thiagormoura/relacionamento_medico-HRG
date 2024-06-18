@@ -46,4 +46,4 @@ if (isset($_POST['cpf'])) {
     // Se o CPF não foi fornecido via POST, retorne um erro
     echo json_encode(['error' => 'CPF não fornecido']);
 }
-?>
+

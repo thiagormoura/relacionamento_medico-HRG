@@ -1,9 +1,20 @@
 document.addEventListener('DOMContentLoaded', function() {
     let assunto = {
-        repasse: '',
-        admissao: '',
-        atualizardados: ''
+        assunto1: '',
+        assunto2: '',
+        assunto3: '',
+        assunto4: '',
+        assunto5: '',
+        assunto6: '',
+        assunto7: '',
+        assunto8: '',
+        assunto9: '',
+        assunto10: '',
+        assunto11: '',
+        assunto12: ''
     };
+
+    let veiculo = '';
 
     function verificarCamposPreenchidos() {
         if (Object.values(assunto).some(campo => campo.trim() !== '')) {
@@ -13,17 +24,53 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    document.getElementById('repasse').addEventListener('input', function(event) {
+    document.getElementById('assunto1').addEventListener('input', function(event) {
         assunto.repasse = event.target.value;
         verificarCamposPreenchidos();
     });
 
-    document.getElementById('admissao').addEventListener('input', function(event) {
+    document.getElementById('assunto2').addEventListener('input', function(event) {
         assunto.admissao = event.target.value;
         verificarCamposPreenchidos();
     });
 
-    document.getElementById('atualizardados').addEventListener('input', function(event) {
+    document.getElementById('assunto3').addEventListener('input', function(event) {
+        assunto.atualizardados = event.target.value;
+        verificarCamposPreenchidos();
+    });
+    document.getElementById('assunto4').addEventListener('input', function(event) {
+        assunto.atualizardados = event.target.value;
+        verificarCamposPreenchidos();
+    });
+    document.getElementById('assunto5').addEventListener('input', function(event) {
+        assunto.atualizardados = event.target.value;
+        verificarCamposPreenchidos();
+    });
+    document.getElementById('assunto6').addEventListener('input', function(event) {
+        assunto.atualizardados = event.target.value;
+        verificarCamposPreenchidos();
+    });
+    document.getElementById('assunto7').addEventListener('input', function(event) {
+        assunto.atualizardados = event.target.value;
+        verificarCamposPreenchidos();
+    });
+    document.getElementById('assunto8').addEventListener('input', function(event) {
+        assunto.atualizardados = event.target.value;
+        verificarCamposPreenchidos();
+    });
+    document.getElementById('assunto9').addEventListener('input', function(event) {
+        assunto.atualizardados = event.target.value;
+        verificarCamposPreenchidos();
+    });
+    document.getElementById('assunto10').addEventListener('input', function(event) {
+        assunto.atualizardados = event.target.value;
+        verificarCamposPreenchidos();
+    });
+    document.getElementById('assunto11').addEventListener('input', function(event) {
+        assunto.atualizardados = event.target.value;
+        verificarCamposPreenchidos();
+    });
+    document.getElementById('assunto12').addEventListener('input', function(event) {
         assunto.atualizardados = event.target.value;
         verificarCamposPreenchidos();
     });
@@ -41,7 +88,18 @@ document.addEventListener('DOMContentLoaded', function() {
         var registro = document.getElementById("registro").value || '';
         var orgao = document.getElementById("orgao").value || '';
         var date = document.getElementById("date").value || '';
-        var tipo_atendimento = document.getElementById("tipo_atendimento").value || '';
+        var status = document.getElementById("estado").value || '';
+        var cpf = document.getElementById("cpf").value || '';
+        var nome = document.getElementById("nome").value || '';
+        var nascimento = document.getElementById("nascimento").value || '';
+        var celular = document.getElementById("celular").value || '';
+        var celulardois = document.getElementById("celulardois").value || '';
+        var email = document.getElementById("email").value || '';
+        var endereco = document.getElementById("endereco").value || '';
+        var crm = document.getElementById("registro").value || '';
+        var orgao = document.getElementById("orgao").value || '';
+        var especialidade = document.getElementById("especialidade").value || '';
+        var assunto = document.getElementById("assunto").value || '';
         var descricao = document.getElementById("descricao").value || '';
         var acoes = document.getElementById("acoes").value || '';
         
@@ -59,34 +117,35 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log("Situação Atendimento selecionada:", situacao_atendimento);
 
         console.log({
-            tipo_atendimento: tipo_atendimento,
             assunto: assunto,
             date: date,
             nome: nome,
-            registro: registro,
+            crm: crm,
             orgao: orgao,
             celular: celular,
             celulardois: celulardois,
             nascimento: nascimento,
             email: email,
             especialidade: especialidade,
+            assunto: assunto,
             descricao: descricao,
             acoes: acoes,
-            cpf: cpf
+            cpf: cpf,
+            veiculo: veiculo,
+            acoes3 : acoes3
         });
 
         var camposObrigatorios = [
             { campo: nome, nome: "Nome" },
             { campo: email, nome: "Email" },
             { campo: date, nome: "Data" },
-            { campo: registro, nome: "Registro" },
+            { campo: crm, nome: "Registro" },
             { campo: orgao, nome: "Órgão" },
             { campo: celular, nome: "Celular" },
             { campo: celulardois, nome: "Segundo Celular" },
             { campo: nascimento, nome: "Data de Nascimento" },
             { campo: especialidade, nome: "Descrição da Especialidade" },
             { campo: descricao, nome: "Descrição" },
-            { campo: tipo_atendimento, nome: "Tipo de Atendimento" },
             { campo: acoes, nome: "Ações" },
             { campo: cpf, nome: "CPF" }
         ];
@@ -112,23 +171,38 @@ document.addEventListener('DOMContentLoaded', function() {
             url: 'enviarindexbanco.php',
             method: 'POST',
             data: {
-                repasse: assunto.repasse,
-                atualizardados: assunto.atualizardados,
-                admissao: assunto.admissao,
+                assunto1: assunto.assunto1,
+                assunto2: assunto.assunto2,
+                assunto3: assunto.assunto3,
+                assunto4: assunto.assunto4,
+                assunto5: assunto.assunto5,
+                assunto6: assunto.assunto6,
+                assunto7: assunto.assunto7,
+                assunto8: assunto.assunto8,
+                assunto9: assunto.assunto9,
+                assunto10: assunto.assunto10,
+                assunto11: assunto.assunto11,
+                assunto12: assunto.assunto12,
                 date: date,
+                status: status,
+                cpf: cpf,
                 nome: nome,
                 registro: registro,
                 orgao: orgao,
                 celular: celular,
                 celulardois: celulardois,
                 nascimento: nascimento,
+                celular: celular,
+                celulardois: celulardois,
                 email: email,
+                endereco: endereco,
+                crm: crm,
+                orgao: orgao,
                 especialidade: especialidade,
+                assunto: assunto,
                 descricao: descricao,
                 acoes: acoes,
-                tipo_atendimento: tipo_atendimento,
-                cpf: cpf,
-                situacao_atendimento: situacao_atendimento
+                veiculo: veiculo
             },
             success: function(response) {
                 Swal.fire({
@@ -248,6 +322,9 @@ for (var j = 0; j < especialidadeSelect.options.length; j++) {
         document.getElementById('especialidade').value = '';
         document.getElementById('registro').value = '';
         document.getElementById('orgao').value = '';
+        document.getElementById('assunto').value = '';
+        document.getElementById('descricao').value = '';
+        document.getElementById('acoes').value = '';
     }
 
     function formatarDataParaCampo(data) {
