@@ -15,44 +15,27 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     let veiculo = '';
-    let dataFormatada = ''; // Variável para armazenar a data formatada
-
-    function verificarCamposPreenchidos() {
-        if (Object.values(assunto).some(campo => campo.trim() !== '')) {
-            console.log("Pelo menos um campo está preenchido:", assunto);
-        } else {
-            console.log("Nenhum campo está preenchido.");
-        }
-    }
-
-    // Função para formatar a data recebida do banco de dados
-    function formatarDataParaCampo(data) {
+    function formatarDataExibicao(data) {
         if (!data) return '';
-
-        // Separar a data em partes
-        var partes = data.split('/');
-        if (partes.length !== 3) return '';
-
-        var dia = partes[0];
-        var mes = partes[1];
-        var ano = partes[2];
-
-        // Retornar no formato yyyy-mm-dd
-        return `${ano}-${mes}-${dia}`;
+        // Convertendo a data para formato ISO para garantir consistência
+    var dataObj = new Date(data + 'T00:00:00'); // Adicionando 'T00:00:00' para garantir a hora zero
+    
+        var dia = dataObj.getDate().toString().padStart(2, '0');
+        
+        var mes = (dataObj.getMonth() + 1).toString().padStart(2, '0');
+        var ano = dataObj.getFullYear();
+        return ano + '-' + mes + '-' + dia; // Formato yyyy-MM-dd
     }
-
     // Função para preencher os campos do formulário com os dados recebidos
     function preencherCampos(data) {
         document.getElementById('nome').value = data.nome || '';
-        dataFormatada = formatarDataParaCampo(data.nascimento); // Armazena a data formatada na variável global
-        document.getElementById('nascimento').value = data.dataFormatada || '';
-        console.log("Data de nascimento recebida:", data.dataFormatada);
-        document.getElementById('celular').value = data.celular || '';
-        document.getElementById('celulardois').value = data.celulardois || '';
+        document.getElementById('nascimento').value = formatarDataExibicao(data.data_nascimento) || '';
+        document.getElementById('celular').value = data.telefone || '';
+        document.getElementById('celulardois').value = data.telefone2 || '';
         document.getElementById('email').value = data.email || '';
         document.getElementById('registro').value = data.registro || '';
         document.getElementById('endereco').value = data.endereco || '';
-        document.getElementById('especialidade').value = data.especialidade || '';
+        document.getElementById('especialidade').value = data.especialidades || '';
 
         var orgaoSelect = document.getElementById('orgao');
         for (var i = 0; i < orgaoSelect.options.length; i++) {
@@ -109,6 +92,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     });
 
                     preencherCampos(response.data); // Preencher os campos com os dados existentes
+
+                    // Formatar e exibir data de nascimento no formato dia/mês/ano
+                    if (response.data && response.data.data_nascimento) {
+                        document.getElementById('nascimento').value = formatarDataExibicao(response.data.data_nascimento);
+                    }
                 } else {
                     Swal.fire({
                         title: "CPF disponível",
@@ -130,6 +118,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    
     // Evento para enviar o formulário
     var enviarButton = document.getElementById("enviarbutton");
     enviarButton.addEventListener("click", function(event) {
@@ -154,7 +143,7 @@ document.addEventListener('DOMContentLoaded', function() {
         var endereco = document.getElementById("endereco").value || '';
         var descricao = document.getElementById("descricao").value || '';
         var acoes = document.getElementById("acoes").value || '';
-        
+
         // Obter o valor do elemento selecionado em situacao_atendimento
         var situacao_atendimento = '';
         var situacao_atendimento_elements = document.getElementsByName("situacao_atendimento");
@@ -239,7 +228,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 orgao: orgao,
                 celular: celular,
                 celulardois: celulardois,
-                nascimento: dataFormatada, // Enviar a data formatada para o backend
+                nascimento: nascimento, // Enviar a data formatada para o backend
                 email: email,
                 endereco: endereco,
                 especialidade: especialidade,
@@ -264,5 +253,4 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
-
 });

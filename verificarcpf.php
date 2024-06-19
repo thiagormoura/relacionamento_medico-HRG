@@ -32,8 +32,6 @@ if (isset($_POST['cpf'])) {
         // Capture os dados
         $data = $result->fetch_assoc();
 
-        // Formate a data para dd/mm/yyyy
-        $data['data_nascimento'] = date('d/m/Y', strtotime($data['data_nascimento']));
 
         // Retorne os dados encontrados no formato JSON
         echo json_encode(['exists' => true, 'data' => $data]);
