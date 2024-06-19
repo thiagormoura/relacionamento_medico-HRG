@@ -58,236 +58,157 @@ $result = $conn->query($sql);
 
 
 
-    <main class="container-fluid d-flex justify-content-center align-items-center">
-        <div class="form-group col-10 mt-5">
-
-
-            <div class="accordion" id="accordionPanelsStayOpenExample" class="text-center">
-                <div class="accordion-item text-center">
-                    <h2 class="accordion-header">
-                    <button class="accordion-button shadow-sm text-white text-center" type="button" data-toggle="collapse" data-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne" style="background-color: #1c8f69 ">
-
-
-                            <i id="filter" class="fa-solid fa-filter mb-1"></i>
-                            <h5>Filtro - Atendimentos</h5>
-                        </button>
-                    </h2>
-                    <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-collapseOne" data-bs-parent="#accordionPanelsStayOpenExample">
-                        <div class="accordion-body">
-                            <div class="col-12">
-                                <input type="text" class="form-control" id="inputFilter" placeholder="Filtrar....">
-                            </div>
-
-                            <br>
-                            <div class="row">
-                                <div class="col-xl-3 col-sm-12 col-md-6">
-                                    <input type="date" class="form-control" id="dateFilter">
-                                </div>
-                                <div class="col-xl-3 col-sm-12 col-md-6">
-                                <input type="text" class="form-control" id="inputprofissional" placeholder="Profissional">
-                                </div>
-                                <div class="col-xl-3 col-sm-12 col-md-6">
-                                    <select class="form-control" id="subjectFilter">
-                                        <option value="">Todos os assuntos</option>
-                                        <option value="">Atualização cadastral do Médico</option>
-                                        <option value="">Autorização de procedimentos</option>
-                                        <option value="">Cadastro Médico</option>
-                                        <option value="">Demandas da Contabilidade</option>
-                                        <option value="">Demandas do Faturamento</option>
-                                        <option value="">Demandas do INCOR</option>
-                                        <option value="">Demandas do RH</option>
-                                        <option value="">Demandas do setor Financeiro</option>
-                                        <option value="">Demandas do setor de TI</option>
-                                        <option value="">Estacionamento</option>
-                                        <option value="">Repasse Médico</option>
-                                    </select>
-                                </div>
-                               
-                                <div class="col-xl-3 col-sm-12 col-md-6">
-                                    <select class="form-control" id="statusFilter">
-                                        <option value="">Todos os status</option>
-                                        <option value="Aberto">Aberto</option>
-                                        <option value="Emandamento">Em andamento</option>
-                                        <option value="Fechado">Fechado</option>
-                                    </select>
-                                </div>
-
-                            </div> <br> <button class="btn btn-primary" id="applyFilters">Aplicar Filtros</button>
+<main class="container-fluid d-flex justify-content-center align-items-center">
+<div class="form-group col-10 mt-5">
+    <div class="accordion" id="accordionPanelsStayOpenExample">
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button shadow-sm text-white text-center" type="button" data-toggle="collapse" data-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne" style="background-color: #1c8f69">
+                    <i id="filter" class="fa-solid fa-filter mb-1"></i>
+                    <h5>Filtro - Atendimentos</h5>
+                </button>
+            </h2>
+            <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-collapseOne" data-bs-parent="#accordionPanelsStayOpenExample">
+                <div class="accordion-body mt-4 mb-4">
+                    <div class="row">
+                        <div class="col-xl-3 col-sm-12 col-md-6">
+                            <input type="date" class="form-control" id="filterData" onkeydown="if(event.key==='Enter'){applyFilters();}">
                         </div>
+                        <div class="col-xl-3 col-sm-12 col-md-6">
+                            <input type="text" class="form-control" id="filterNome" placeholder="Profissional" onkeydown="if(event.key==='Enter'){applyFilters();}">
+                        </div>
+                        <div class="col-xl-3 col-sm-12 col-md-6">
+                            <select class="form-control" id="filterAssunto">
+                                <option value="">Todos os assuntos</option>
+                                <option value="Atualização cadastral do Médico">Atualização cadastral do Médico</option>
+                                <option value="Autorização de procedimentos">Autorização de procedimentos</option>
+                                <option value="Cadastro Médico">Cadastro Médico</option>
+                                <option value="Demandas da Contabilidade">Demandas da Contabilidade</option>
+                                <option value="Demandas do Faturamento">Demandas do Faturamento</option>
+                                <option value="Demandas do INCOR">Demandas do INCOR</option>
+                                <option value="Demandas do RH">Demandas do RH</option>
+                                <option value="Demandas do setor Financeiro">Demandas do setor Financeiro</option>
+                                <option value="Demandas do setor de TI">Demandas do setor de TI</option>
+                                <option value="Estacionamento">Estacionamento</option>
+                                <option value="Repasse Médico">Repasse Médico</option>
+                            </select>
+                        </div>
+                        <div class="col-xl-3 col-sm-12 col-md-6">
+                            <select class="form-control" id="filterStatus">
+                                <option value="">Todos os status</option>
+                                <option value="Ativo">Ativo</option>
+                                <option value="Andamento">Andamento</option>
+                                <option value="Fechado">Fechado</option>
+                            </select>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="d-flex justify-content-center">
+                        <button class="btn btn-primary" id="applyFilters" onclick="applyFilters()">Aplicar Filtros</button>
                     </div>
                 </div>
             </div>
-            <br>
-            <br>
-            <div class="border p-3">
-       
-            <table class="table table-bordered table-striped">
-    <thead class="thead-light">
-        <tr>
-            <th class="text-left">Data</th>
-            <th class="text-left">Nome do Profissional</th>
-            <th class="text-left">Assunto Tratado</th>
-            <th class="text-left">Status</th>
-        </tr>
-    </thead>
-    <tbody>
-    <?php
-    function getBadgeClass($situacao) {
-        switch ($situacao) {
-            case 'Ativo':
-                return 'badge bg-success';
-            case 'Fechado':
-                return 'badge bg-danger';
-            case 'Andamento':
-                return 'badge bg-warning';
-            default:
-                return 'badge bg-secondary';
-        }
-    }
-
-    // Consulta para obter dados dos profissionais
-    $sql_profissionais = "SELECT id, data_nascimento, nome, situacao_atendimento FROM profissionais";
-    $result_profissionais = $conn->query($sql_profissionais);
-
-    // Consulta para obter os assuntos em ordem decrescente
-    $sql_assunto = "SELECT assunto FROM assunto ORDER BY id DESC";
-    $result_assunto = $conn->query($sql_assunto);
-
-    $assuntos = [];
-    if ($result_assunto && $result_assunto->num_rows > 0) {
-        while ($row_assunto = $result_assunto->fetch_assoc()) {
-            $assuntos[] = $row_assunto['assunto'];
-        }
-    }
-
-    if ($result_profissionais && $result_profissionais->num_rows > 0) {
-        $index = 0;
-        while ($row = $result_profissionais->fetch_assoc()) {
-            // Formatando a data de nascimento para o formato brasileiro
-            $data_nascimento = new DateTime($row['data_nascimento']);
-            $data_nascimento_formatada = $data_nascimento->format('d/m/Y');
-
-            echo "<tr data-toggle='modal' data-target='#detalhesModal'>";
-            echo "<td class='text-left'>" . htmlspecialchars($data_nascimento_formatada) . "</td>";
-            echo "<td class='text-left'>" . htmlspecialchars($row['nome']) . "</td>";
-
-            // Exibir o próximo assunto na ordem
-            if (isset($assuntos[$index])) {
-                echo "<td class='text-left'>" . htmlspecialchars($assuntos[$index]) . "</td>";
-            } else {
-                echo "<td class='text-left'>Nenhum assunto encontrado</td>";
-            }
-
-            $situacao = htmlspecialchars($row['situacao_atendimento']);
-            echo "<td class='text-left'><span class='" . getBadgeClass($situacao) . "'>" . $situacao . "</span></td>";
-
-            echo "</tr>";
-
-            $index++;
-        }
-    } else {
-        echo "<tr><td colspan='4' class='text-center'>Nenhum profissional encontrado</td></tr>";
-    }
-    $conn->close();
-    ?>
-    </tbody>
-</table>
-
-
-
-
-
-<div class="modal fade" id="detalhesModal" tabindex="-1" aria-labelledby="detalhesModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="detalhesModalLabel">Detalhes do Profissional</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body" id="modalContent">
-        <!-- Aqui os dados serão preenchidos dinamicamente -->
-      </div>
-    </div>
-  </div>
-</div>
-
-
-<script>
-$(document).ready(function() {
-    // Captura o clique na linha da tabela
-    $('tr[data-toggle="modal"]').on('click', function() {
-        // Obtém os dados da linha clicada
-        var id = $(this).find('td:nth-child(1)').text().trim();
-        var nome = $(this).find('td:nth-child(2)').text().trim();
-        var assunto = $(this).find('td:nth-child(3)').text().trim();
-        var situacao = $(this).find('td:nth-child(4) span').text().trim();
-        var badgeClass = $(this).find('td:nth-child(4) span').attr('class');
-
-        // Monta o conteúdo do modal com os dados obtidos
-        var modalContent = '';
-        modalContent += '<p><strong>ID:</strong> ' + id + '</p>';
-        modalContent += '<p><strong>Nome:</strong> ' + nome + '</p>';
-        modalContent += '<p><strong>Assunto:</strong> ' + assunto + '</p>';
-        modalContent += '<p><strong>Situação de Atendimento:</strong> <span class="' + badgeClass + '">' + situacao + '</span></p>';
-
-        // Insere o conteúdo montado no modal
-        $('#modalContent').html(modalContent);
-
-        // Define o título do modal
-        $('#detalhesModalLabel').text('Detalhes do Profissional: ' + nome);
-
-        // Abre o modal
-        $('#detalhesModal').modal('show');
-    });
-});
-</script>
-
-
-
-
-
-
-            </div>
         </div>
-      
+    </div>
+    <table class="table table-bordered table-striped">
+        <thead class="thead-light">
+            <tr>
+                <th class="text-left">Data</th>
+                <th class="text-left">Nome do Profissional</th>
+                <th class="text-left">Assunto Tratado</th>
+                <th class="text-left">Status</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody">
+        <?php
+        function getBadgeClass($situacao) {
+            switch ($situacao) {
+                case 'Ativo':
+                    return 'badge bg-success';
+                case 'Fechado':
+                    return 'badge bg-danger';
+                case 'Andamento':
+                    return 'badge bg-warning';
+                default:
+                    return 'badge bg-secondary';
+            }
+        }
+        $sql_profissionais = "SELECT id, data_nascimento, nome, situacao_atendimento FROM profissionais";
+        $result_profissionais = $conn->query($sql_profissionais);
+        $sql_assunto = "SELECT assunto FROM assunto ORDER BY id DESC";
+        $result_assunto = $conn->query($sql_assunto);
+        $assuntos = [];
+        if ($result_assunto && $result_assunto->num_rows > 0) {
+            while ($row_assunto = $result_assunto->fetch_assoc()) {
+                $assuntos[] = $row_assunto['assunto'];
+            }
+        }
+        if ($result_profissionais && $result_profissionais->num_rows > 0) {
+            $index = 0;
+            while ($row = $result_profissionais->fetch_assoc()) {
+                $data_nascimento = new DateTime($row['data_nascimento']);
+                $data_nascimento_formatada = $data_nascimento->format('d/m/Y');
+                echo "<tr data-toggle='modal' data-target='#detalhesModal'>";
+                echo "<td class='text-left'>" . htmlspecialchars($data_nascimento_formatada) . "</td>";
+                echo "<td class='text-left'>" . htmlspecialchars($row['nome']) . "</td>";
+                if (isset($assuntos[$index])) {
+                    echo "<td class='text-left'>" . htmlspecialchars($assuntos[$index]) . "</td>";
+                } else {
+                    echo "<td class='text-left'>Nenhum assunto encontrado</td>";
+                }
+                $situacao = htmlspecialchars($row['situacao_atendimento']);
+                echo "<td class='text-left'><span class='" . getBadgeClass($situacao) . "'>" . $situacao . "</span></td>";
+                echo "</tr>";
+                $index++;
+            }
+        } else {
+            echo "<tr><td colspan='4' class='text-center'>Nenhum profissional encontrado</td></tr>";
+        }
+        $conn->close();
+        ?>
+        </tbody>
+    </table>
+    <script>
+        function applyFilters() {
+            var filterData = document.getElementById('filterData').value;
+            var filterNome = document.getElementById('filterNome').value.trim().toLowerCase(); // Remove espaços extras e converte para minúsculas
+            var filterAssunto = document.getElementById('filterAssunto').value.toLowerCase();
+            var filterStatus = document.getElementById('filterStatus').value.toLowerCase();
+            var table = document.getElementById('tableBody');
+            var tr = table.getElementsByTagName('tr');
+            for (var i = 0; i < tr.length; i++) {
+                var tdData = tr[i].getElementsByTagName('td')[0];
+                var tdNome = tr[i].getElementsByTagName('td')[1];
+                var tdAssunto = tr[i].getElementsByTagName('td')[2];
+                var tdStatus = tr[i].getElementsByTagName('td')[3];
+                if (tdData && tdNome && tdAssunto && tdStatus) {
+                    var txtValueData = tdData.textContent || tdData.innerText;
+                    var txtValueNome = tdNome.textContent || tdNome.innerText;
+                    var txtValueAssunto = tdAssunto.textContent || tdAssunto.innerText;
+                    var txtValueStatus = tdStatus.textContent || tdStatus.innerText;
+                    var tableDateFormatted = txtValueData.split('/').reverse().join('-');
+                    var cleanTxtValueNome = txtValueNome.trim().toLowerCase();
+                    var dataMatches = filterData === "" || tableDateFormatted === filterData;
+                    var nomeMatches = cleanTxtValueNome.indexOf(filterNome) > -1;
+                    var assuntoMatches = txtValueAssunto.toLowerCase().indexOf(filterAssunto) > -1;
+                    var statusMatches = filterStatus === "" || txtValueStatus.toLowerCase().indexOf(filterStatus) > -1;
+                    if (dataMatches && nomeMatches && assuntoMatches && statusMatches) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        }
+        document.getElementById('applyFilters').addEventListener('click', applyFilters);
+    </script>
+</div>   
+</div>  
     </main>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
-    <script>
-$(document).ready(function() {
-    $('#applyFilters').click(function() {
-        var inputFilter = $('#inputFilter').val().toUpperCase();
-        var dateFilter = $('#dateFilter').val();
-        var profissionalFilter = $('#inputprofissional').val().toUpperCase();
-        var subjectFilter = $('#subjectFilter').val();
-        var statusFilter = $('#statusFilter').val();
 
-        $('tbody tr').each(function() {
-            var row = $(this).html().toUpperCase();
-            var rowData = {
-                id: $(this).find('td:eq(0)').text().toUpperCase(),
-                nome: $(this).find('td:eq(1)').text().toUpperCase(),
-                assunto: $(this).find('td:eq(2)').text().toUpperCase(),
-                profissional: $(this).find('td:eq(3)').text().toUpperCase(),
-                situacao: $(this).find('td:eq(4)').text().toUpperCase()
-            };
-
-            if ((row.indexOf(inputFilter) > -1 || inputFilter === '') &&
-                (dateFilter === '' || $(this).find('td:eq(0)').text() === dateFilter) &&
-                (profissionalFilter === '' || rowData.profissional.indexOf(profissionalFilter) > -1) &&
-                (subjectFilter === '' || rowData.assunto.indexOf(subjectFilter) > -1) &&
-                (statusFilter === '' || rowData.situacao.indexOf(statusFilter) > -1)) {
-                $(this).show();
-            } else {
-                $(this).hide();
-            }
-        });
-    });
-});
-</script>
 
 </body>
 </html>
