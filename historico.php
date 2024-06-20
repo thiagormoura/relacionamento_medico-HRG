@@ -121,53 +121,179 @@ $result = $conn->query($sql);
         </thead>
         <tbody id="tableBody">
         <?php
-        function getBadgeClass($situacao) {
-            switch ($situacao) {
-                case 'Ativo':
-                    return 'badge bg-success';
-                case 'Fechado':
-                    return 'badge bg-danger';
-                case 'Andamento':
-                    return 'badge bg-warning';
-                default:
-                    return 'badge bg-secondary';
-            }
-        }
-        $sql_profissionais = "SELECT id, data_nascimento, nome, situacao_atendimento FROM profissionais";
-        $result_profissionais = $conn->query($sql_profissionais);
-        $sql_assunto = "SELECT assunto FROM assunto ORDER BY id DESC";
-        $result_assunto = $conn->query($sql_assunto);
-        $assuntos = [];
-        if ($result_assunto && $result_assunto->num_rows > 0) {
-            while ($row_assunto = $result_assunto->fetch_assoc()) {
-                $assuntos[] = $row_assunto['assunto'];
-            }
-        }
-        if ($result_profissionais && $result_profissionais->num_rows > 0) {
-            $index = 0;
-            while ($row = $result_profissionais->fetch_assoc()) {
-                $data_nascimento = new DateTime($row['data_nascimento']);
-                $data_nascimento_formatada = $data_nascimento->format('d/m/Y');
-                echo "<tr data-toggle='modal' data-target='#detalhesModal'>";
-                echo "<td class='text-left'>" . htmlspecialchars($data_nascimento_formatada) . "</td>";
-                echo "<td class='text-left'>" . htmlspecialchars($row['nome']) . "</td>";
-                if (isset($assuntos[$index])) {
-                    echo "<td class='text-left'>" . htmlspecialchars($assuntos[$index]) . "</td>";
-                } else {
-                    echo "<td class='text-left'>Nenhum assunto encontrado</td>";
-                }
-                $situacao = htmlspecialchars($row['situacao_atendimento']);
-                echo "<td class='text-left'><span class='" . getBadgeClass($situacao) . "'>" . $situacao . "</span></td>";
-                echo "</tr>";
-                $index++;
-            }
+function getBadgeClass($situacao) {
+    switch ($situacao) {
+        case 'Ativo':
+            return 'badge bg-success';
+        case 'Fechado':
+            return 'badge bg-danger';
+        case 'Andamento':
+            return 'badge bg-warning';
+        default:
+            return 'badge bg-secondary';
+    }
+}
+
+$sql_profissionais = "SELECT id, data_nascimento, nome, situacao_atendimento, cpf, telefone, telefone2, email FROM profissionais";
+$result_profissionais = $conn->query($sql_profissionais);
+$sql_assunto = "SELECT assunto FROM assunto ORDER BY id DESC";
+$result_assunto = $conn->query($sql_assunto);
+$assuntos = [];
+
+if ($result_assunto && $result_assunto->num_rows > 0) {
+    while ($row_assunto = $result_assunto->fetch_assoc()) {
+        $assuntos[] = $row_assunto['assunto'];
+    }
+}
+
+if ($result_profissionais && $result_profissionais->num_rows > 0) {
+    while ($row = $result_profissionais->fetch_assoc()) {
+        $data_nascimento = new DateTime($row['data_nascimento']);
+        $data_nascimento_formatada = $data_nascimento->format('d/m/Y');
+        $situacao = htmlspecialchars($row['situacao_atendimento']);
+        $cpf = htmlspecialchars($row['cpf']);
+        $telefone = htmlspecialchars($row['telefone']);
+        $telefone2 = htmlspecialchars($row['telefone2']);
+        $email = htmlspecialchars($row['email']);
+        
+        echo "<tr data-toggle='modal' data-target='#detalhesModal{$row['id']}'>";
+        echo "<td class='text-left'>" . htmlspecialchars($data_nascimento_formatada) . "</td>";
+        echo "<td class='text-left'>" . htmlspecialchars($row['nome']) . "</td>";
+        echo "<td class='text-left'>";
+        if (isset($assuntos[$row['id']])) {
+            echo htmlspecialchars($assuntos[$row['id']]);
         } else {
-            echo "<tr><td colspan='4' class='text-center'>Nenhum profissional encontrado</td></tr>";
+            echo "Nenhum assunto encontrado";
         }
-        $conn->close();
-        ?>
+        echo "</td>";
+        echo "<td class='text-left'><span class='" . getBadgeClass($situacao) . "'>" . $situacao . "</span></td>";
+        echo "</tr>";
+        
+        // Modal para cada profissional
+        echo "<div class='modal fade' id='detalhesModal{$row['id']}' tabindex='-1' role='dialog' aria-labelledby='detalhesModalLabel' aria-hidden='true'>";
+        echo "<div class='modal-dialog modal-dialog-centered modal-square-lg' role='document'>";
+        echo "<div class='modal-content'>";
+        echo "<div class='modal-header'>";
+        echo "<h5 class='modal-title' id='detalhesModalLabel'>Detalhes do Profissional</h5>";
+        echo "<button type='button' class='close' data-dismiss='modal' aria-label='Fechar'>";
+        echo "<span aria-hidden='true'>&times;</span>";
+        echo "</button>";
+        echo "</div>";
+        echo "<div class='modal-body'>";
+
+        // Conteúdo do modal
+        echo "<div class='row'>";
+
+        // CPF
+        echo "<div class='col'>";
+        echo "<label><b>CPF:</b></label>";
+        echo "<p>{$cpf}</p>";
+        echo "</div>";
+
+        // Nome do Profissional
+        echo "<div class='col'>";
+        echo "<label><b>Nome do Profissional:</b></label>";
+        echo "<p>" . htmlspecialchars($row['nome']) . "</p>";
+        echo "</div>";
+
+        // Data de Nascimento
+        echo "<div class='col'>";
+        echo "<label><b>Data de Nascimento:</b></label>";
+        echo "<p>{$data_nascimento_formatada}</p>";
+        echo "</div>";
+
+        // Número de Celular
+        echo "<div class='col'>";
+        echo "<label><b>Número de Celular:</b></label>";
+        echo "<p>{$telefone}</p>";
+        echo "</div>";
+
+        // Número de Celular 2
+        echo "<div class='col'>";
+        echo "<label><b>Número de Celular 2:</b></label>";
+        echo "<p>{$telefone2}</p>";
+        echo "</div>";
+
+        // E-mail
+        echo "<div class='col'>";
+        echo "<label><b>E-mail:</b></label>";
+        echo "<p>{$email}</p>";
+        echo "</div>";
+
+
+
+      
+        echo "</div>"; // row
+
+        echo "</div>"; // modal-body
+
+        echo "</div>"; // modal-content
+        echo "</div>"; // modal-dialog
+        echo "</div>"; // modal fade
+    }
+} else {
+    echo "<tr><td colspan='4' class='text-center'>Nenhum profissional encontrado</td></tr>";
+}
+$conn->close();
+?>
+
+
+
+
+
         </tbody>
     </table>
+
+
+<script>
+$(document).ready(function() {
+    $('#tableBody').on('click', 'tr', function() {
+        var dataNascimento = $(this).find('td:eq(0)').text();
+        var nome = $(this).find('td:eq(1)').text();
+        var assunto = $(this).find('td:eq(2)').text();
+        var status = $(this).find('td:eq(3)').find('span').text();
+
+        console.log("Data de Nascimento:", dataNascimento);
+        console.log("Nome:", nome);
+        console.log("Assunto Tratado:", assunto);
+        console.log("Status:", status);
+
+        $('#modalDataNascimento').text(dataNascimento);
+        $('#modalNome').text(nome);
+        $('#modalAssunto').text(assunto);
+        $('#modalStatus').text(status);
+
+        $('#detalhesModal').modal('show');
+    });
+});
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     <script>
         function applyFilters() {
             var filterData = document.getElementById('filterData').value;
