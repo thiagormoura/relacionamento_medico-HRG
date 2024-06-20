@@ -13,7 +13,7 @@ if (isset($_POST['cpf'])) {
     }
 
     // Prepare a consulta SQL
-    $stmt = $conn->prepare("SELECT nome, DATE_FORMAT(data_nascimento, '%d/%m/%Y') as data_nascimento, telefone, telefone2, email FROM profissionais WHERE cpf = ?");
+    $stmt = $conn->prepare("SELECT nome, data_nascimento, telefone, telefone2, email, registro, especialidades, orgao, endereco FROM profissionais WHERE cpf = ?");
     if ($stmt === false) {
         die(json_encode(['error' => 'Erro na preparação da declaração: ' . $conn->error]));
     }
@@ -31,7 +31,8 @@ if (isset($_POST['cpf'])) {
     if ($result->num_rows > 0) {
         // Capture os dados
         $data = $result->fetch_assoc();
-        
+
+
         // Retorne os dados encontrados no formato JSON
         echo json_encode(['exists' => true, 'data' => $data]);
     } else {

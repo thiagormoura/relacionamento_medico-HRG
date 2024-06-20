@@ -1,31 +1,41 @@
-<?php 
+<?php
 include("conexao.php");
 
-$sql = "SELECT 
-DATE(a.data) as data,
-im.nome as nome_profissional,
-a.situacao as situacao
+
+$registrosPorPagina = 10;
 
 
-FROM 
-    relacionamentomedico.atendimento AS a
-JOIN 
-    relacionamentomedico.inform_medicos AS im ON a.profissional = im.id
-JOIN 
-    relacionamentomedico.assunto AS assuntos ON assuntos.id = a.id
-JOIN 
-    relacionamentomedico.atendimento_has_assunto AS has ON has.id = assuntos.id";
+$paginaAtual = isset($_GET['pagina']) ? $_GET['pagina'] : 1;
+
+
+$offset = ($paginaAtual - 1) * $registrosPorPagina;
+
+$sql = "SELECT DATE(a.data) as data,
+        im.nome as nome_profissional,
+        assuntos.assunto,
+        a.situacao as situacao,
+        a.id as id
+        FROM relacionamentomedico.atendimento AS a
+        JOIN relacionamentomedico.profissionais AS im ON a.profissional = im.id
+        JOIN relacionamentomedico.atendimento_has_assunto AS has ON a.id = has.id
+        JOIN relacionamentomedico.assunto AS assuntos ON has.id = assuntos.id
+        LIMIT $offset, $registrosPorPagina";
 
 $result = $conn->query($sql);
 
+$sqlTotal = "SELECT COUNT(*) AS total
+            FROM relacionamentomedico.atendimento AS a
+            JOIN relacionamentomedico.profissionais AS im ON a.profissional = im.id
+            JOIN relacionamentomedico.atendimento_has_assunto AS has ON a.id = has.id
+            JOIN relacionamentomedico.assunto AS assuntos ON has.id = assuntos.id";
 
-// $data_json = json_encode($data);
-// $nome_json = json_encode($nome);
-// $situacao_json = json_encode($situacao);
-// print_r($data_json);
+$resultCount = $conn->query($sqlTotal);
+$totalRegistros = $resultCount->fetch_assoc()['total'];
 
 
+$totalPaginas = ceil($totalRegistros / $registrosPorPagina);
 ?>
+
 
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -47,6 +57,13 @@ $result = $conn->query($sql);
     main{
        padding: 2em;
     }
+
+    
+    a{
+        color: black;
+        text-decoration: none;
+    }
+
 </style>
 <body>
     <!-- Parte do header e nav -->

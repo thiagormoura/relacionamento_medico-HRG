@@ -1,5 +1,69 @@
 <?php
-include("conexao.php")
+if(isset($_GET['id'])) {
+    // Conecte-se ao banco de dados
+    require_once("conexao.php");
+    $id_procedimento = $_GET['id'];
+    $id_procedimento = filter_var($id_procedimento, FILTER_SANITIZE_NUMBER_INT);
+
+$sql = "SELECT DATE(a.data) as data,
+a.situacao as situacao,
+a.id as id,
+im.cpf as cpf,
+im.nome as nome_profissional,
+im.data_nascimento as nascimento,
+im.telefone as tel1,
+im.telefone2 as tel2,
+im.email as email,
+im.endereco as endereco,
+im.registro as crm,
+im.orgao as orgao,
+im.especialidades as especialidade,
+a.veiculo_atendimento as veiculo,
+assuntos.assunto as assuntos_tratados,
+a.assunto as assunto,
+a.descricao as descricao,
+a.acoes as acoes
+
+
+FROM relacionamentomedico.atendimento AS a
+JOIN relacionamentomedico.profissionais AS im ON a.profissional = im.id
+JOIN relacionamentomedico.atendimento_has_assunto AS has ON a.id = has.id
+JOIN relacionamentomedico.assunto AS assuntos ON has.id = assuntos.id
+where a.id = $id_procedimento";
+$result = $conn->query($sql);
+
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        $data= "Data: " . $row["data"] . "<br>";
+        $status= "Status: " . $row["situacao"] . "<br>";
+        $cpf="CPF: " . $row["cpf"] . "<br>";
+        $nome="Nome: " . $row["nome_profissional"] . "<br>";
+        $nascimento="Nascimento: " . $row["nascimento"] . "<br>";
+        $telefone1="Telefone 1: " . $row["tel1"] . "<br>";
+        $telefone2="Telefone 2: " . $row["tel2"] . "<br>";
+        $email="E-mail: " . $row["email"] . "<br>";
+        $endereco="Endereco: " . $row["endereco"] . "<br>";
+        $crm="CRM: " . $row["crm"] . "<br>";
+        $orgao="Orgão: " . $row["orgao"] . "<br>";
+        $especialidade="Especialidade: " . $row["especialidade"] . "<br>";
+        $assuntotratado="Assunto tratado: " . $row["assuntos_tratados"] . "<br>";
+        $veiculo="Veiculo: " . $row["veiculo"] . "<br>";
+        $assunto="Assunto: " . $row["assunto"] . "<br>";
+        $descricao="Descrição: " . $row["descricao"] . "<br>";
+        $acoes="Ações: " . $row["acoes"] . "<br>";
+
+       
+       
+    } else {
+        echo "Nenhum resultado encontrado para este ID de procedimento.";
+    }
+
+    // Feche a conexão com o banco de dados
+    $conn->close();
+} else {
+    echo "ID de procedimento não fornecido na URL.";
+}
+
 
 
 ?>
@@ -51,6 +115,7 @@ resize: none;
 h4{
     font-family: sans-serif;
 }
+
 </style>
 <body>
 
@@ -65,13 +130,13 @@ h4{
     <div class="col-xl-2 col-md-6 mb-5">
         <div class="form-group">
             <label for="date">Data</label>
-            <input type="date" class="form-control" id="date" name="date" required>
+            <input type="date" class="form-control" id="date" name="date" disabled required>
         </div>
     </div>
     <div class="col-xl-2 col-md-6 mb-5">
         <div class="form-group">
             <label for="estado">Status</label>
-            <select class="form-control" id="estado" name="estado" required>
+            <select class="form-control" id="estado" name="estado" disabled  required>
                 <option value="">Selecione um status</option>
                 <option value="Fechado">Fechado</option>
                 <option value="Aberto">Aberto</option>
@@ -87,61 +152,40 @@ h4{
             <h4><b>DADOS DO PROFISSIONAL</b></h4>
             <div class="col-xl-2 col-md-6 mt-2">
         <label for="cpf">CPF</label>
-        <input type="text" class="form-control" id="cpf" name="cpf" required placeholder="">
-        <script>
-    // Script para formatar e limitar o CPF (000.000.000-00)
-    document.getElementById('cpf').addEventListener('input', function() {
-        var cpf = this.value.replace(/\D/g, ''); // Remove tudo que não é dígito
-        if (cpf.length > 11) {
-            cpf = cpf.substring(0, 11); // Limita a 11 dígitos
-        }
-        if (cpf.length > 3) {
-            cpf = cpf.replace(/(\d{3})(\d)/, '$1.$2'); // Adiciona o primeiro ponto
-        }
-        if (cpf.length > 6) {
-            cpf = cpf.replace(/(\d{3})(\d)/, '$1.$2'); // Adiciona o segundo ponto
-        }
-        if (cpf.length > 9) {
-            cpf = cpf.replace(/(\d{3})(\d{1,2})$/, '$1-$2'); // Adiciona o traço
-        }
-        this.value = cpf;
-    });
-</script>
+        <input type="text" class="form-control" id="cpf" name="cpf" required disabled placeholder=""  value="<?php echo $row["cpf"];?>" >
     </div>
                 
                 <div class="col-xl-6  col-md-6 mt-2">
                     <label for="nome">Nome</label>
-                    <input type="text" class="form-control" id="nome" name="nome" maxlength="80" required>
+                    <input type="text" class="form-control" id="nome" name="nome" maxlength="80" disabled  required value="<?php echo $row["nome_profissional"];?>">
                 </div>
                 <div class="col-xl-3 col-md-6 mt-2">
                     <div class="form-group">
                         <label for="nascimento">Data de Nascimento</label>
-                        <input type="date" class="form-control" id="nascimento"  name="nascimento" >
+                        <input type="date" class="form-control" id="nascimento" name="nascimento" disabled required value="<?php echo $row["nascimento"];?>">
                     </div>
-
-                  
                 </div>
                 
                
                 <div class="col-xl-2 col-md-6 mt-2">
                     <label for="celular">Celular 1</label>
-                    <input type="tel" class="form-control" id="celular" name="celular" required placeholder="(99) 9 9999-9999">
+                    <input type="tel" class="form-control" id="celular" name="celular" required disabled  placeholder="(99) 9 9999-9999" value="<?php echo $row["tel1"];?>">
                 </div>
                
                 <div class="col-xl-2 col-md-6 mt-2">
                     <label for="celulardois">Celular 2</label>
-                    <input type="tel" class="form-control" id="celulardois" name="celulardois" required placeholder="(99) 9 9999-9999">
+                    <input type="tel" class="form-control" id="celulardois" name="celulardois" required disabled  placeholder="(99) 9 9999-9999" value="<?php echo $row["tel2"];?>">
                 </div>
                 <div class="col-xl-3 col-md-6 mt-2">
                     <label for="email">E-mail</label>
-                    <input type="email" class="form-control" id="email" name="email"  required>
+                    <input type="email" class="form-control" id="email" name="email" disabled  required value="<?php echo $row["email"];?>">
                     <div class="invalid-feedback">
                         Por favor, insira um e-mail válido.
                     </div>
                 </div>
                 <div class="col-xl-4 col-md-6 mt-2">
                     <label for="endereco">Endereço</label>
-                    <input type="text" class="form-control" id="endereco" name="endereco" placeholder="Digite o endereço completo" required>
+                    <input type="text" class="form-control" id="endereco" name="endereco" disabled  placeholder="Digite o endereço completo" required value="<?php echo $row["endereco"];?>">
                 </div>
 
 
@@ -149,40 +193,40 @@ h4{
                 <div class="row">
                 <div class="col-xl-2 col-md-6 mt-2">
                     <label for="registro">CRM</label>
-                    <input type="text" class="form-control" id="registro" name="registro" maxlength="6" required>
+                    <input type="text" class="form-control" id="registro" name="registro" disabled  maxlength="6" required value="<?php echo $row["crm"];?>">
                 </div>
                 <div class="col-xl-2 col-md-6 mt-2">
                     <div class="form-group">
                         <label for="orgao">Órgão</label>
-                        <select class="form-control" id="orgao" name="orgao" required>
+                        <select class="form-control" id="orgao" name="orgao" disabled  required value="<?php echo $row["orgao"];?>">
                             <option value="">Selecione...</option>
-                            <option value="CRM-AC">CRM-AC</option>
-                            <option value="CRM-AL">CRM-AL</option>
-                            <option value="CRM-AP">CRM-AP</option>
-                            <option value="CRM-AM">CRM-AM</option>
-                            <option value="CRM-BA">CRM-BA</option>
-                            <option value="CRM-CE">CRM-CE</option>
-                            <option value="CRM-DF">CRM-DF</option>
-                            <option value="CRM-ES">CRM-ES</option>
-                            <option value="CRM-GO">CRM-GO</option>
-                            <option value="CRM-MA">CRM-MA</option>
-                            <option value="CRM-MT">CRM-MT</option>
-                            <option value="CRM-MS">CRM-MS</option>
-                            <option value="CRM-MG">CRM-MG</option>
-                            <option value="CRM-PA">CRM-PA</option>
-                            <option value="CRM-PB">CRM-PB</option>
-                            <option value="CRM-PR">CRM-PR</option>
-                            <option value="CRM-PE">CRM-PE</option>
-                            <option value="CRM-PI">CRM-PI</option>
-                            <option value="CRM-RJ">CRM-RJ</option>
-                            <option value="CRM-RN">CRM-RN</option>
-                            <option value="CRM-RS">CRM-RS</option>
-                            <option value="CRM-RO">CRM-RO</option>
-                            <option value="CRM-RR">CRM-RR</option>
-                            <option value="CRM-SC">CRM-SC</option>
-                            <option value="CRM-SP">CRM-SP</option>
-                            <option value="CRM-SE">CRM-SE</option>
-                            <option value="CRM-TO">CRM-TO</option>
+                            <option value="Orgao1">CRM-AC</option>
+                            <option value="Orgao2">CRM-AL</option>
+                            <option value="Orgao1">CRM-AP</option>
+                            <option value="Orgao2">CRM-AM</option>
+                            <option value="Orgao1">CRM-BA</option>
+                            <option value="Orgao2">CRM-CE</option>
+                            <option value="Orgao1">CRM-DF</option>
+                            <option value="Orgao2">CRM-ES</option>
+                            <option value="Orgao1">CRM-GO</option>
+                            <option value="Orgao2">CRM-MA</option>
+                            <option value="Orgao1">CRM-MT</option>
+                            <option value="Orgao2">CRM-MS</option>
+                            <option value="Orgao1">CRM-MG</option>
+                            <option value="Orgao2">CRM-PA</option>
+                            <option value="Orgao1">CRM-PB</option>
+                            <option value="Orgao2">CRM-PR</option>
+                            <option value="Orgao1">CRM-PE</option>
+                            <option value="Orgao2">CRM-PI</option>
+                            <option value="Orgao1">CRM-RJ</option>
+                            <option value="Orgao2">CRM-RN</option>
+                            <option value="Orgao1">CRM-RS</option>
+                            <option value="Orgao2">CRM-RO</option>
+                            <option value="Orgao1">CRM-RR</option>
+                            <option value="Orgao2">CRM-SC</option>
+                            <option value="Orgao1">CRM-SP</option>
+                            <option value="Orgao2">CRM-SE</option>
+                            <option value="Orgao1">CRM-TO</option>
                         </select>
                     </div>
                 </div>
@@ -190,7 +234,7 @@ h4{
             
                 <div class="col-xl-2 col-md-6 mt-2 mb-4">
                     <label for="especialidade">Especialidade(s)</label>
-                    <input type="text" class="form-control" id="especialidade" name="especialidade" maxlength="12" required>
+                    <input type="text" class="form-control" id="especialidade" disabled  name="especialidade" maxlength="12" required value="<?php echo $row["especialidade"];?>">
                 </div>
                
                 </div>
@@ -203,23 +247,23 @@ h4{
         <label for="orgao">Veículo de manifestação</label>
         <div class="row custom-checkboxes">
             <div class="form-check col-xl-2 col-lg-3 col-md-4 col-sm-3 mt-2">
-                <input type="radio" class="form-check-input" id="veiculo1" name="veiculo" value="Presencial">
+                <input type="radio" class="form-check-input" id="veiculo1" name="veiculo" disabled  value="Presencial">
                 <label class="form-check-label" for="veiculo1">Presencial</label>
             </div>
             <div class="form-check col-xl-2 col-lg-3 col-md-4 col-sm-3 mt-2">
-                <input type="radio" class="form-check-input" id="veiculo2" name="veiculo" value="E-mail">
+                <input type="radio" class="form-check-input" id="veiculo2" name="veiculo" disabled value="E-mail">
                 <label class="form-check-label" for="veiculo2">E-mail</label>
             </div>
             <div class="form-check col-xl-2 col-lg-3 col-md-3 col-sm-3 mt-2">
-                <input type="radio" class="form-check-input" id="veiculo3" name="veiculo" value="WhatsApp">
+                <input type="radio" class="form-check-input" id="veiculo3" name="veiculo" disabled value="WhatsApp">
                 <label  class="form-check-label" for="veiculo3">WhatsApp</label>
             </div>
             <div class="form-check col-xl-2 col-lg-3 col-md-3 col-sm-3 mt-2">
-                <input type="radio" class="form-check-input" id="veiculo4"  name="veiculo" value="Outros" >
+                <input type="radio" class="form-check-input" id="veiculo4"  name="veiculo" disabled value="Outros" >
                 <label class="form-check-label" for="veiculo4">Outros</label>
             </div>
             <div class="col-xl-2  col-lg-4 col-sm-10 mt-2">
-                <textarea class="form-control custom-textarea" id="acoes2" name="acoes2" rows="1" maxlength="1000" required></textarea>
+                <textarea class="form-control custom-textarea" id="acoes2" name="acoes2" rows="1" disabled maxlength="1000" required></textarea>
             </div>
         </div>
     </div>
@@ -230,19 +274,19 @@ h4{
         <label for="orgao">Assuntos Tratados</label>
         <div class="row custom-checkboxes">
             <div class="form-control col-sm-12">
-                <input type="checkbox" id="assunto1" name="assunto1" value="assunto1">
+                <input type="checkbox" id="assunto1" name="assunto1"disabled value="assunto1">
                 <label for="assunto1" class="ml-2">Atualização cadastral do Médico</label>
             </div>
             <div class="form-control col-sm-12">
-                <input type="checkbox" id="assunto2" name="assunto2" value="assunto2">
+                <input type="checkbox" id="assunto2" name="assunto2" disabled value="assunto2">
                 <label for="assunto2" class="ml-3">Autorização de procedimentos</label>
             </div>
-            <div class="form-control col-sm-12">
-                <input type="checkbox" id="assunto3" name="assunto3" value="assunto3">
+            <div  class="form-control col-sm-12">
+                <input type="checkbox" id="assunto3" name="assunto3" disabled value="assunto3">
                 <label for="assunto3" class="ml-2">Cadastro Médico</label>
             </div>
             <div class="form-control col-sm-12">
-                <input type="checkbox" id="assunto4" name="assunto4" value="assunto4">
+                <input type="checkbox" id="assunto4" name="assunto4"disabled value="assunto4">
                 <label for="assunto4" class="ml-2">Demandas da Contabilidade</label>
             </div>
         </div>
@@ -250,19 +294,19 @@ h4{
     <div class="col-xl-4 col-md-6 mt-4">
         <div class="row custom-checkboxes">
             <div class="form-control col-sm-12">
-                <input type="checkbox" id="assunto5" name="assunto5" value="assunto5">
+                <input type="checkbox" id="assunto5" name="assunto5" disabled value="assunto5">
                 <label for="assunto5" class="ml-2">Demandas do Faturamento</label>
             </div>
             <div class="form-control col-sm-12">
-                <input type="checkbox" id="assunto6" name="assunto6" value="assunto6">
+                <input type="checkbox" id="assunto6" name="assunto6"disabled value="assunto6">
                 <label for="assunto6" class="ml-3">Demandas do INCOR</label>
             </div>
             <div class="form-control col-sm-12">
-                <input type="checkbox" id="assunto7" name="assunto7" value="assunto7">
+                <input type="checkbox" id="assunto7" name="assunto7"disabled value="assunto7">
                 <label for="orgao7" class="ml-2">Demandas do RH</label>
             </div>
             <div class="form-control col-sm-12">
-                <input type="checkbox" id="assunto8" name="assunto8" value="assunto8">
+                <input type="checkbox" id="assunto8" name="assunto8"disabled value="assunto8">
                 <label for="assunto8" class="ml-2">Demandas do setor Financeiro</label>
             </div>
         </div>
@@ -270,19 +314,19 @@ h4{
     <div class="col-xl-4 col-md-6 mt-4 mb-4">
         <div class="row custom-checkboxes">
             <div class="form-control col-sm-12">
-                <input type="checkbox" id="assunto9" name="assunto9" value="assunto9">
+                <input type="checkbox" id="assunto9" name="assunto9" disabled value="assunto9">
                 <label for="assunto9" class="ml-3">Demandas do setor de TI</label>
             </div>
             <div class="form-control col-sm-12">
-                <input type="checkbox" id="assunto10" name="assunto10" value="assunto10">
+                <input type="checkbox" id="assunto10" name="assunto10" disabled value="assunto10">
                 <label for="assunto10" class="ml-3">Estacionamento</label>
             </div>
             <div class="form-control col-sm-12">
-                <input type="checkbox" id="assunto11" name="assunto11" value="assunto11">
+                <input type="checkbox" id="assunto11" name="assunto11" disabled value="assunto11">
                 <label for="assunto11" class="ml-3">Repasse Médico</label>
             </div>
             <div class="form-control col-sm-12">
-    <input type="checkbox" id="assunto12" name="assunto12" value="assunto12" onchange="mostrarCampoTexto()">
+    <input type="checkbox" id="assunto12" name="assunto12" disabled value="assunto12" onchange="mostrarCampoTexto()">
     <label for="assunto12" class="ml-3">Outros</label>
 </div>
             
@@ -300,7 +344,7 @@ h4{
                 <h4><b>DESCRIÇÃO DO ATENDIMENTO</b></h4>
                 <div class="col-xl-12 col-md-6 mt-3">
                     <label for="assunto">Assunto</label>
-                    <textarea class="form-control custom-textarea2" id="assunto" name="assunto" rows="1" maxlength="1000" required></textarea>
+                    <textarea class="form-control custom-textarea2" id="assunto" disabled name="assunto" rows="1" maxlength="1000" required value="<?php echo $row["assunto"];?>"></textarea>
                 </div>
 
 
@@ -308,12 +352,12 @@ h4{
 
                     <div class="col-xl-12 col-md-6 mt-3">
                         <label for="descricao">Descrição</label>
-                        <textarea class="form-control" id="descricao" name="descricao" rows="3" maxlength="1000" required></textarea>
+                        <textarea class="form-control" id="descricao"disabled name="descricao" rows="3" maxlength="1000" required value="<?php echo $row["descricao"];?>"></textarea>
                     </div>
 
                     <div class="col-xl-12 col-md-6 mt-3 mb-3">
                         <label for="acoes">Ações</label>
-                        <textarea class="form-control" id="acoes" name="acoes" rows="3" maxlength="1000" required></textarea>
+                        <textarea class="form-control" id="acoes" disabled name="acoes" rows="3" maxlength="1000" required value="<?php echo $row["acoes"];?>"></textarea>
                     </div>
                 </div>
                 </div>
@@ -321,10 +365,6 @@ h4{
 
 
 
-    <div class=" container_fluid d-flex justify-content-center align-items-center mt-4">
-        <button type="submit" id="enviarbutton" class="btn btn-primary">Enviar</button>
-       
-    </div>
 
 
         </form>
