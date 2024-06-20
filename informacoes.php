@@ -4,66 +4,59 @@ if(isset($_GET['id'])) {
     require_once("conexao.php");
     $id_procedimento = $_GET['id'];
     $id_procedimento = filter_var($id_procedimento, FILTER_SANITIZE_NUMBER_INT);
-
-$sql = "SELECT DATE(a.data) as data,
-a.situacao as situacao,
-a.id as id,
-im.cpf as cpf,
-im.nome as nome_profissional,
-im.data_nascimento as nascimento,
-im.telefone as tel1,
-im.telefone2 as tel2,
-im.email as email,
-im.endereco as endereco,
-im.registro as crm,
-im.orgao as orgao,
-im.especialidades as especialidade,
-a.veiculo_atendimento as veiculo,
-assuntos.assunto as assuntos_tratados,
-a.assunto as assunto,
-a.descricao as descricao,
-a.acoes as acoes
-
-
+    $sql = "SELECT 
+    DATE(a.data) AS data,
+    a.data AS data_completa,
+    a.assunto,
+    a.descricao AS descricao,
+    a.acoes AS acoes,
+    a.situacao AS situacao,
+    a.id AS id,
+    a.veiculo_atendimento AS veiculo,
+    im.cpf AS cpf,
+    im.nome AS nome_profissional,
+    im.data_nascimento AS nascimento,
+    im.telefone AS tel1,
+    im.telefone2 AS tel2,
+    im.email AS email,
+    im.endereco AS endereco,
+    im.registro AS crm,
+    im.orgao AS orgao,
+    im.especialidades AS especialidade
 FROM relacionamentomedico.atendimento AS a
 JOIN relacionamentomedico.profissionais AS im ON a.profissional = im.id
-JOIN relacionamentomedico.atendimento_has_assunto AS has ON a.id = has.id
-JOIN relacionamentomedico.assunto AS assuntos ON has.id = assuntos.id
-where a.id = $id_procedimento";
+WHERE a.id = $id_procedimento";
+
 $result = $conn->query($sql);
 
-    if ($result->num_rows > 0) {
-        $row = $result->fetch_assoc();
-        $data= "Data: " . $row["data"] . "<br>";
-        $status= "Status: " . $row["situacao"] . "<br>";
-        $cpf="CPF: " . $row["cpf"] . "<br>";
-        $nome="Nome: " . $row["nome_profissional"] . "<br>";
-        $nascimento="Nascimento: " . $row["nascimento"] . "<br>";
-        $telefone1="Telefone 1: " . $row["tel1"] . "<br>";
-        $telefone2="Telefone 2: " . $row["tel2"] . "<br>";
-        $email="E-mail: " . $row["email"] . "<br>";
-        $endereco="Endereco: " . $row["endereco"] . "<br>";
-        $crm="CRM: " . $row["crm"] . "<br>";
-        $orgao="Orgão: " . $row["orgao"] . "<br>";
-        $especialidade="Especialidade: " . $row["especialidade"] . "<br>";
-        $assuntotratado="Assunto tratado: " . $row["assuntos_tratados"] . "<br>";
-        $veiculo="Veiculo: " . $row["veiculo"] . "<br>";
-        $assunto="Assunto: " . $row["assunto"] . "<br>";
-        $descricao="Descrição: " . $row["descricao"] . "<br>";
-        $acoes="Ações: " . $row["acoes"] . "<br>";
+if ($result->num_rows > 0) {
+$row = $result->fetch_assoc();
+$data = "Data: " . $row["data"] . "<br>";
+$status = "Status: " . $row["situacao"] . "<br>";
+$cpf = "CPF: " . $row["cpf"] . "<br>";
+$nome = "Nome: " . $row["nome_profissional"] . "<br>";
+$nascimento = "Nascimento: " . $row["nascimento"] . "<br>";
+$telefone1 = "Telefone 1: " . $row["tel1"] . "<br>";
+$telefone2 = "Telefone 2: " . $row["tel2"] . "<br>";
+$email = "E-mail: " . $row["email"] . "<br>";
+$endereco = "Endereco: " . $row["endereco"] . "<br>";
+$crm = "CRM: " . $row["crm"] . "<br>";
+$orgao = "Orgão: " . $row["orgao"] . "<br>";
+$especialidade = "Especialidade: " . $row["especialidade"] . "<br>";
+$assunto = "Assunto: " . $row["assunto"] . "<br>";
+$descricao = "Descrição: " . $row["descricao"] . "<br>";
+$acoes = "Ações: " . $row["acoes"] . "<br>";
+$veiculo = "Veiculo: " . $row["veiculo"] . "<br>";
 
-       
-       
-    } else {
-        echo "Nenhum resultado encontrado para este ID de procedimento.";
-    }
 
-    // Feche a conexão com o banco de dados
-    $conn->close();
+
 } else {
-    echo "ID de procedimento não fornecido na URL.";
+echo "Nenhum resultado encontrado para este ID de procedimento.";
 }
 
+// Feche a conexão com o banco de dados
+$conn->close();
+}
 
 
 ?>
@@ -130,20 +123,20 @@ h4{
     <div class="col-xl-2 col-md-6 mb-5">
         <div class="form-group">
             <label for="date">Data</label>
-            <input type="date" class="form-control" id="date" name="date" disabled required>
+            <input type="date" class="form-control" id="date" name="date" disabled required value="<?php echo $row["data"];?>" >
         </div>
     </div>
     <div class="col-xl-2 col-md-6 mb-5">
-        <div class="form-group">
-            <label for="estado">Status</label>
-            <select class="form-control" id="estado" name="estado" disabled  required>
-                <option value="">Selecione um status</option>
-                <option value="Fechado">Fechado</option>
-                <option value="Aberto">Aberto</option>
-                <option value="Emandamento">Em andamento</option>
-            </select>
-        </div>
+    <div class="form-group">
+        <label for="estado">Status</label>
+        <select class="form-control" id="estado" name="estado" disabled required>
+            <option <?php if ($row["situacao"] == "") echo "selected"; ?>>Selecione um status</option>
+            <option value="Fechado" <?php if ($row["situacao"] == "Fechado") echo "selected"; ?>>Fechado</option>
+            <option value="Aberto" <?php if ($row["situacao"] == "Aberto") echo "selected"; ?>>Aberto</option>
+            <option value="Em andamento" <?php if ($row["situacao"] == "Em andamento") echo "selected"; ?>>Em andamento</option>
+        </select>
     </div>
+</div>
 
 
 
@@ -242,32 +235,31 @@ h4{
                 </div>
                 <br>
 
-
                 <div class="col-xl-7 col-md-6 mt-4 mb-5">
-        <label for="orgao">Veículo de manifestação</label>
-        <div class="row custom-checkboxes">
-            <div class="form-check col-xl-2 col-lg-3 col-md-4 col-sm-3 mt-2">
-                <input type="radio" class="form-check-input" id="veiculo1" name="veiculo" disabled  value="Presencial">
-                <label class="form-check-label" for="veiculo1">Presencial</label>
-            </div>
-            <div class="form-check col-xl-2 col-lg-3 col-md-4 col-sm-3 mt-2">
-                <input type="radio" class="form-check-input" id="veiculo2" name="veiculo" disabled value="E-mail">
-                <label class="form-check-label" for="veiculo2">E-mail</label>
-            </div>
-            <div class="form-check col-xl-2 col-lg-3 col-md-3 col-sm-3 mt-2">
-                <input type="radio" class="form-check-input" id="veiculo3" name="veiculo" disabled value="WhatsApp">
-                <label  class="form-check-label" for="veiculo3">WhatsApp</label>
-            </div>
-            <div class="form-check col-xl-2 col-lg-3 col-md-3 col-sm-3 mt-2">
-                <input type="radio" class="form-check-input" id="veiculo4"  name="veiculo" disabled value="Outros" >
-                <label class="form-check-label" for="veiculo4">Outros</label>
-            </div>
-            <div class="col-xl-2  col-lg-4 col-sm-10 mt-2">
-                <textarea class="form-control custom-textarea" id="acoes2" name="acoes2" rows="1" disabled maxlength="1000" required></textarea>
-            </div>
+    <label for="orgao">Veículo de manifestação</label>
+    <div class="row custom-checkboxes">
+        <div class="form-check col-xl-2 col-lg-3 col-md-4 col-sm-3 mt-2">
+            <input type="radio" class="form-check-input" id="veiculo1" name="veiculo" disabled value="Presencial" <?php if ($row["veiculo"] == "Presencial") echo "checked"; ?>>
+            <label class="form-check-label" for="veiculo1">Presencial</label>
+        </div>
+        <div class="form-check col-xl-2 col-lg-3 col-md-4 col-sm-3 mt-2">
+            <input type="radio" class="form-check-input" id="veiculo2" name="veiculo" disabled value="E-mail" <?php if ($row["veiculo"] == "E-mail") echo "checked"; ?>>
+            <label class="form-check-label" for="veiculo2">E-mail</label>
+        </div>
+        <div class="form-check col-xl-2 col-lg-3 col-md-3 col-sm-3 mt-2">
+            <input type="radio" class="form-check-input" id="veiculo3" name="veiculo" disabled value="WhatsApp" <?php if ($row["veiculo"] == "WhatsApp") echo "checked"; ?>>
+            <label class="form-check-label" for="veiculo3">WhatsApp</label>
+        </div>
+        <div class="form-check col-xl-2 col-lg-3 col-md-3 col-sm-3 mt-2">
+            <input type="radio" class="form-check-input" id="veiculo4" name="veiculo" disabled value="Outros" <?php if ($row["veiculo"] == "Outros") echo "checked"; ?>>
+            <label class="form-check-label" for="veiculo4">Outros</label>
+        </div>
+        <div class="col-xl-2 col-lg-4 col-sm-10 mt-2">
+            <textarea class="form-control custom-textarea" id="acoes2" name="acoes2" rows="1" disabled maxlength="1000" required <?php if ($row["veiculo"] != "Outros") echo "style='display: none;'"; ?>><?php echo htmlspecialchars($row["veiculo"]); ?></textarea>
         </div>
     </div>
 </div>
+
 
 <div class="row">
     <div class="col-xl-4 col-md-6 mb-5">
@@ -340,24 +332,26 @@ h4{
 
 
                
-                <div class="border p-3 mt-4">
-                <h4><b>DESCRIÇÃO DO ATENDIMENTO</b></h4>
-                <div class="col-xl-12 col-md-6 mt-3">
-                    <label for="assunto">Assunto</label>
-                    <textarea class="form-control custom-textarea2" id="assunto" disabled name="assunto" rows="1" maxlength="1000" required value="<?php echo $row["assunto"];?>"></textarea>
-                </div>
+<div class="border p-3 mt-4">
+    <h4><b>DESCRIÇÃO DO ATENDIMENTO</b></h4>
+    <div class="col-xl-12 col-md-6 mt-3">
+        <label for="assunto">Assunto</label>
+        <textarea class="form-control custom-textarea2" id="assunto" name="assunto" rows="1" maxlength="1000" disabled required><?php echo htmlspecialchars($row["assunto"]); ?></textarea>
+    </div>
+
+
 
 
                 <div class="row ">
 
                     <div class="col-xl-12 col-md-6 mt-3">
                         <label for="descricao">Descrição</label>
-                        <textarea class="form-control" id="descricao"disabled name="descricao" rows="3" maxlength="1000" required value="<?php echo $row["descricao"];?>"></textarea>
+                        <textarea class="form-control" id="descricao" name="descricao" rows="3" maxlength="1000" disabled required><?php echo htmlspecialchars($row["descricao"]); ?></textarea>
                     </div>
 
                     <div class="col-xl-12 col-md-6 mt-3 mb-3">
                         <label for="acoes">Ações</label>
-                        <textarea class="form-control" id="acoes" disabled name="acoes" rows="3" maxlength="1000" required value="<?php echo $row["acoes"];?>"></textarea>
+                        <textarea class="form-control" id="acoes" name="acoes" rows="3" maxlength="1000" disabled required><?php echo htmlspecialchars($row["acoes"]); ?></textarea>
                     </div>
                 </div>
                 </div>

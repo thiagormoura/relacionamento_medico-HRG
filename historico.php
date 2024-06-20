@@ -10,15 +10,20 @@ $paginaAtual = isset($_GET['pagina']) ? $_GET['pagina'] : 1;
 
 $offset = ($paginaAtual - 1) * $registrosPorPagina;
 
-$sql = "SELECT DATE(a.data) as data,
-        im.nome as nome_profissional,
-        assuntos.assunto,
-        a.situacao as situacao,
-        a.id as id
+$sql = "SELECT 
+DATE(a.data) as data,
+a.id as id,
+im.nome as nome_profissional,
+a.situacao,
+assunto.assunto
+
+
         FROM relacionamentomedico.atendimento AS a
-        JOIN relacionamentomedico.profissionais AS im ON a.profissional = im.id
-        JOIN relacionamentomedico.atendimento_has_assunto AS has ON a.id = has.id
-        JOIN relacionamentomedico.assunto AS assuntos ON has.id = assuntos.id
+    JOIN relacionamentomedico.profissionais AS im ON a.profissional = im.id     
+  JOIN 
+    relacionamentomedico.atendimento_has_assunto AS aha ON a.id = aha.atendimento
+JOIN 
+    relacionamentomedico.assunto AS assunto ON aha.assunto = assunto.id
         LIMIT $offset, $registrosPorPagina";
 
 $result = $conn->query($sql);
@@ -34,6 +39,7 @@ $totalRegistros = $resultCount->fetch_assoc()['total'];
 
 
 $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
+
 ?>
 
 
