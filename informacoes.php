@@ -23,8 +23,6 @@ assuntos.assunto as assuntos_tratados,
 a.assunto as assunto,
 a.descricao as descricao,
 a.acoes as acoes
-
-
 FROM relacionamentomedico.atendimento AS a
 JOIN relacionamentomedico.profissionais AS im ON a.profissional = im.id
 JOIN relacionamentomedico.atendimento_has_assunto AS has ON a.id = has.id
@@ -52,8 +50,8 @@ $result = $conn->query($sql);
         $descricao="Descrição: " . $row["descricao"] . "<br>";
         $acoes="Ações: " . $row["acoes"] . "<br>";
 
-       
-       
+
+
     } else {
         echo "Nenhum resultado encontrado para este ID de procedimento.";
     }
@@ -154,7 +152,7 @@ h4{
         <label for="cpf">CPF</label>
         <input type="text" class="form-control" id="cpf" name="cpf" required disabled placeholder=""  value="<?php echo $row["cpf"];?>" >
     </div>
-                
+
                 <div class="col-xl-6  col-md-6 mt-2">
                     <label for="nome">Nome</label>
                     <input type="text" class="form-control" id="nome" name="nome" maxlength="80" disabled  required value="<?php echo $row["nome_profissional"];?>">
@@ -165,13 +163,13 @@ h4{
                         <input type="date" class="form-control" id="nascimento" name="nascimento" disabled required value="<?php echo $row["nascimento"];?>">
                     </div>
                 </div>
-                
-               
+
+
                 <div class="col-xl-2 col-md-6 mt-2">
                     <label for="celular">Celular 1</label>
                     <input type="tel" class="form-control" id="celular" name="celular" required disabled  placeholder="(99) 9 9999-9999" value="<?php echo $row["tel1"];?>">
                 </div>
-               
+
                 <div class="col-xl-2 col-md-6 mt-2">
                     <label for="celulardois">Celular 2</label>
                     <input type="tel" class="form-control" id="celulardois" name="celulardois" required disabled  placeholder="(99) 9 9999-9999" value="<?php echo $row["tel2"];?>">
@@ -231,12 +229,12 @@ h4{
                     </div>
                 </div>
                 </label>
-            
+
                 <div class="col-xl-2 col-md-6 mt-2 mb-4">
                     <label for="especialidade">Especialidade(s)</label>
                     <input type="text" class="form-control" id="especialidade" disabled  name="especialidade" maxlength="12" required value="<?php echo $row["especialidade"];?>">
                 </div>
-               
+
                 </div>
                 </div>
                 </div>
@@ -329,7 +327,7 @@ h4{
     <input type="checkbox" id="assunto12" name="assunto12" disabled value="assunto12" onchange="mostrarCampoTexto()">
     <label for="assunto12" class="ml-3">Outros</label>
 </div>
-            
+
         </div>
     </div>
     <div class="form-control col-sm-12 mb-5" id="campoTexto" style="display: none;">
@@ -339,7 +337,7 @@ h4{
 </div>
 
 
-               
+
                 <div class="border p-3 mt-4">
                 <h4><b>DESCRIÇÃO DO ATENDIMENTO</b></h4>
                 <div class="col-xl-12 col-md-6 mt-3">
@@ -361,7 +359,7 @@ h4{
                     </div>
                 </div>
                 </div>
-   
+
 
 
 
