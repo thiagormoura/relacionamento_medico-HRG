@@ -188,65 +188,63 @@ if ($result_profissionais && $result_profissionais->num_rows > 0) {
         
         // Modal para cada profissional
         echo "<div class='modal fade' id='detalhesModal{$row['id']}' tabindex='-1' role='dialog' aria-labelledby='detalhesModalLabel' aria-hidden='true'>";
-        echo "<div class='modal-dialog modal-dialog-centered modal-square-lg' role='document'>";
+        echo "<div class='modal-dialog modal-dialog-centered modal-lg' role='document'>";
         echo "<div class='modal-content'>";
-        echo "<div class='modal-header'>";
-        echo "<h5 class='modal-title' id='detalhesModalLabel'>Detalhes do Profissional</h5>";
-        echo "<button type='button' class='close' data-dismiss='modal' aria-label='Fechar'>";
-        echo "<span aria-hidden='true'>&times;</span>";
-        echo "</button>";
+        echo "<div class='modal-header' style='border: none;'>"; // Remova a borda do modal-header para não cobrir o botão de fechar
+        echo "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 384 512' width='20' height='20' style='cursor: pointer; position: absolute; right: 10px; top: 10px;' data-dismiss='modal' aria-label='Fechar'>";
+        echo "<path d='M376.6 84.5c11.3-13.6 9.5-33.8-4.1-45.1s-33.8-9.5-45.1 4.1L192 206 56.6 43.5C45.3 29.9 25.1 28.1 11.5 39.4S-3.9 70.9 7.4 84.5L150.3 256 7.4 427.5c-11.3 13.6-9.5 33.8 4.1 45.1s33.8 9.5 45.1-4.1L192 306 327.4 468.5c11.3 13.6 31.5 15.4 45.1 4.1s15.4-31.5 4.1-45.1L233.7 256 376.6 84.5z'/>";
+        echo "</svg>";
         echo "</div>";
+        
         echo "<div class='modal-body'>";
-
+        
         // Conteúdo do modal
         echo "<div class='row'>";
-
+        
         // CPF
-        echo "<div class='col'>";
+        echo "<div class='col-4'>";
         echo "<label><b>CPF:</b></label>";
-        echo "<p>{$cpf}</p>";
+        echo "<p class='form-control bg-body-secondary border rounded'>{$cpf}</p>";
         echo "</div>";
-
+        
         // Nome do Profissional
-        echo "<div class='col'>";
+        echo "<div class='col-4'>";
         echo "<label><b>Nome do Profissional:</b></label>";
-        echo "<p>" . htmlspecialchars($row['nome']) . "</p>";
+        echo "<p class='form-control bg-body-secondary border rounded'>" . htmlspecialchars($row['nome']) . "</p>";
         echo "</div>";
-
+        
         // Data de Nascimento
-        echo "<div class='col'>";
+        echo "<div class='col-4'>";
         echo "<label><b>Data de Nascimento:</b></label>";
-        echo "<p>{$data_nascimento_formatada}</p>";
+        echo "<p class='form-control bg-body-secondary border rounded'>{$data_nascimento_formatada}</p>";
         echo "</div>";
-
+        
         // Número de Celular
-        echo "<div class='col'>";
+        echo "<div class='col-4'>";
         echo "<label><b>Número de Celular:</b></label>";
-        echo "<p>{$telefone}</p>";
+        echo "<p class='form-control bg-body-secondary border rounded'>{$telefone}</p>";
         echo "</div>";
-
+        
         // Número de Celular 2
-        echo "<div class='col'>";
+        echo "<div class='col-4'>";
         echo "<label><b>Número de Celular 2:</b></label>";
-        echo "<p>{$telefone2}</p>";
+        echo "<p class='form-control bg-body-secondary border rounded'>{$telefone2}</p>";
         echo "</div>";
-
+        
         // E-mail
         echo "<div class='col'>";
         echo "<label><b>E-mail:</b></label>";
-        echo "<p>{$email}</p>";
+        echo "<p class='form-control bg-body-secondary border rounded'>{$email}</p>";
         echo "</div>";
-
-
-
-      
+        
         echo "</div>"; // row
-
+        
         echo "</div>"; // modal-body
-
+        
         echo "</div>"; // modal-content
         echo "</div>"; // modal-dialog
         echo "</div>"; // modal fade
+        
     }
 } else {
     echo "<tr><td colspan='4' class='text-center'>Nenhum profissional encontrado</td></tr>";
