@@ -1,13 +1,7 @@
 <?php
 include("conexao.php");
-
-
 $registrosPorPagina = 10;
-
-
 $paginaAtual = isset($_GET['pagina']) ? $_GET['pagina'] : 1;
-
-
 $offset = ($paginaAtual - 1) * $registrosPorPagina;
 
 $sql = "SELECT 
@@ -25,27 +19,19 @@ assunto.assunto
 JOIN 
     relacionamentomedico.assunto AS assunto ON aha.assunto = assunto.id
         LIMIT $offset, $registrosPorPagina";
-
 $result = $conn->query($sql);
-
 $sqlTotal = "SELECT COUNT(*) AS total
             FROM relacionamentomedico.atendimento AS a
             JOIN relacionamentomedico.profissionais AS im ON a.profissional = im.id
             JOIN relacionamentomedico.atendimento_has_assunto AS has ON a.id = has.id
             JOIN relacionamentomedico.assunto AS assuntos ON has.id = assuntos.id";
-
 $resultCount = $conn->query($sqlTotal);
 $totalRegistros = $resultCount->fetch_assoc()['total'];
-
-
 $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
 
 ?>
-
-
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -64,7 +50,7 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
        padding: 2em;
     }
 
-    
+
     a{
         color: black;
         text-decoration: none;
@@ -74,11 +60,9 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
 <body>
     <!-- Parte do header e nav -->
     <?php
-
     $pageTitle = "Histórico - Registro de Atendimento";
     include 'php/header.php';
     ?>
-
 <main class="container-fluid d-flex justify-content-center align-items-center">
     <div class="form-group col-10 mt-5 ">
         <div class="accordion" id="accordionPanelsStayOpenExample">
@@ -129,11 +113,9 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
                 </div>
             </div>
         </div>
-
         <br><br>
-
         <div class="border p-3">
-            <table class="table table-hover">
+            <table class="table">
                 <thead class="thead-light">
                     <tr>
                         <th>Data</th>
@@ -144,20 +126,20 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
                 </thead>
                 <tbody id="dataTable">
                     <?php
-                   if ($result && $result->num_rows > 0) {
-                    // Loop pelos resultados da consulta
-                    while($row = $result->fetch_assoc()) {
-                        echo "<tr class='clickable-row' data-href='informacoes.php?id=". $row["id"]. "'>";
-                        echo "<td>" . $row["data"] . "</td>";
-                        echo "<td>" . $row['nome_profissional'] . "</td>";
-                        echo "<td>" . $row['assunto'] . "</td>"; // Nome da coluna do assunto
-                        echo "<td>" . $row['situacao'] . "</td>";
-                        echo "</tr>";
+                    // Verificando se a consulta retornou resultados
+                    if ($result && $result->num_rows > 0) {
+                        // Loop pelos resultados da consulta
+                        while($row = $result->fetch_assoc()) {
+                            echo "<tr>";
+                            echo "<td><a href='informacoes.php?id=". $row["id"]. "'>" . $row["data"] . "</a></td>";
+                            echo "<td>" . $row['nome_profissional'] . "</td>";
+                            echo "<td>" . $row['assunto'] . "</td>"; // Nome da coluna do assunto
+                            echo "<td>" . $row['situacao'] . "</td>";
+                            echo "</tr>";
+                        }
+                    } else {
+                        echo "<tr><td colspan='4'>Nenhum resultado encontrado</td></tr>";
                     }
-                } else {
-                    echo "<tr><td colspan='4'>Nenhum resultado encontrado</td></tr>";
-                }
-             
                     ?>
                 </tbody>
             </table>
@@ -177,25 +159,21 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
                     </a>
                 </li>
             <?php endif; ?>
-
             <?php
          
             $inicio = max(1, $paginaAtual - 1);
             $fim = min($totalPaginas, $paginaAtual + 1);
-
             if ($inicio > 1) {
                 echo '<li class="page-item"><a class="page-link" href="?pagina=1">1</a></li>';
                 if ($inicio > 2) {
                     echo '<li class="page-item disabled"><span class="page-link">...</span></li>';
                 }
             }
-
             for ($i = $inicio; $i <= $fim; $i++) {
                 echo '<li class="page-item ' . ($paginaAtual == $i ? 'active' : '') . '">';
                 echo '<a class="page-link" href="?pagina=' . $i . '">' . $i . '</a>';
                 echo '</li>';
             }
-
             if ($fim < $totalPaginas) {
                 if ($fim < $totalPaginas - 1) {
                     echo '<li class="page-item disabled"><span class="page-link">...</span></li>';
@@ -203,7 +181,6 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
                 echo '<li class="page-item"><a class="page-link" href="?pagina=' . $totalPaginas . '">' . $totalPaginas . '</a></li>';
             }
             ?>
-
             <?php if ($paginaAtual < $totalPaginas) : ?>
                 <li class="page-item">
                     <a class="page-link" href="?pagina=<?php echo ($paginaAtual + 1); ?>" aria-label="Next">
@@ -220,35 +197,26 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
         </ul>
     </nav>
 </div>
-
         </div>
-
     </div>
 </main>
-
-
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
 <script>
     $(document).ready(function() {
-
         function applyFilters() {
             var dateFilter = $('#dateFilter').val();
             var inputprofissional = $('#inputprofissional').val().toLowerCase();
             var subjectFilter = $('#subjectFilter').val();
             var statusFilter = $('#statusFilter').val();
-
             $('#dataTable tr').each(function() {
                 var date = $(this).find('td:eq(0)').text();
                 var profissional = $(this).find('td:eq(1)').text().toLowerCase();
                 var assunto = $(this).find('td:eq(2)').text();
                 var status = $(this).find('td:eq(3)').text();
-
                 var dateMatch = dateFilter === '' || date === dateFilter;
                 var profissionalMatch = inputprofissional === '' || profissional.includes(inputprofissional);
                 var subjectMatch = subjectFilter === '' || assunto === subjectFilter;
                 var statusMatch = statusFilter === '' || status === statusFilter;
-
                 if (dateMatch && profissionalMatch && subjectMatch && statusMatch) {
                     $(this).show();
                 } else {
@@ -256,31 +224,17 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
                 }
             });
         }
-
  
         $('#applyFilters').on('click', function() {
             applyFilters();
         });
     });
     
-    document.addEventListener("DOMContentLoaded", function() {
-    var rows = document.querySelectorAll(".clickable-row");
-    rows.forEach(function(row) {
-        row.addEventListener("click", function() {
-            window.location.href = row.getAttribute("data-href");
-        });
-    });
-});
 </script>
-
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
     <script>
-
-
 </script>
-
 </script>
 </body>
 </html>
-
