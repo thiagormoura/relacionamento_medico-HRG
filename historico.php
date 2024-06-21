@@ -130,6 +130,7 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
     <table class="table table-bordered table-striped">
         <thead class="thead-light">
             <tr>
+                <th class="text-left">ID</th>
                 <th class="text-left">Data</th>
                 <th class="text-left">Nome do Profissional</th>
                 <th class="text-left">Assunto Tratado</th>
@@ -167,6 +168,7 @@ if ($result_profissionais && $result_profissionais->num_rows > 0) {
     while ($row = $result_profissionais->fetch_assoc()) {
         $data_nascimento = new DateTime($row['data_nascimento']);
         $data_nascimento_formatada = $data_nascimento->format('d/m/Y');
+        $id = htmlspecialchars($row['id']);
         $situacao = htmlspecialchars($row['situacao_atendimento']);
         $cpf = htmlspecialchars($row['cpf']);
         $telefone = htmlspecialchars($row['telefone']);
@@ -174,6 +176,7 @@ if ($result_profissionais && $result_profissionais->num_rows > 0) {
         $email = htmlspecialchars($row['email']);
         
         echo "<tr data-toggle='modal' data-target='#detalhesModal{$row['id']}'>";
+        echo "<td><a href='informacoes.php?id=". $row["id"]. "'>" . $row["id"] . "</a></td>";
         echo "<td class='text-left'>" . htmlspecialchars($data_nascimento_formatada) . "</td>";
         echo "<td class='text-left'>" . htmlspecialchars($row['nome']) . "</td>";
         echo "<td class='text-left'>";

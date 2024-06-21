@@ -90,22 +90,22 @@ h4{
         <input type="text" class="form-control" id="cpf" name="cpf" required placeholder="">
         <script>
     // Script para formatar e limitar o CPF (000.000.000-00)
-    document.getElementById('cpf').addEventListener('input', function() {
-        var cpf = this.value.replace(/\D/g, ''); // Remove tudo que não é dígito
-        if (cpf.length > 11) {
-            cpf = cpf.substring(0, 11); // Limita a 11 dígitos
-        }
-        if (cpf.length > 3) {
-            cpf = cpf.replace(/(\d{3})(\d)/, '$1.$2'); // Adiciona o primeiro ponto
-        }
-        if (cpf.length > 6) {
-            cpf = cpf.replace(/(\d{3})(\d)/, '$1.$2'); // Adiciona o segundo ponto
-        }
-        if (cpf.length > 9) {
-            cpf = cpf.replace(/(\d{3})(\d{1,2})$/, '$1-$2'); // Adiciona o traço
-        }
-        this.value = cpf;
-    });
+    // document.getElementById('cpf').addEventListener('input', function() {
+    //     var cpf = this.value.replace(/\D/g, ''); // Remove tudo que não é dígito
+    //     if (cpf.length > 11) {
+    //         cpf = cpf.substring(0, 11); // Limita a 11 dígitos
+    //     }
+    //     if (cpf.length > 3) {
+    //         cpf = cpf.replace(/(\d{3})(\d)/, '$1.$2'); // Adiciona o primeiro ponto
+    //     }
+    //     if (cpf.length > 6) {
+    //         cpf = cpf.replace(/(\d{3})(\d)/, '$1.$2'); // Adiciona o segundo ponto
+    //     }
+    //     if (cpf.length > 9) {
+    //         cpf = cpf.replace(/(\d{3})(\d{1,2})$/, '$1-$2'); // Adiciona o traço
+    //     }
+    //     this.value = cpf;
+    // });
 </script>
     </div>
                 
