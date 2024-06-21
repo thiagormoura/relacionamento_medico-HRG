@@ -65,19 +65,45 @@ h4{
     <div class="col-xl-2 col-md-6 mb-5">
         <div class="form-group">
             <label for="date">Data</label>
-            <input type="date" class="form-control" id="date" name="date" required>
+            <input type="date" class="form-control" id="date" name="date"  min="<?= date('Y-m-d') ?>">
         </div>
+        <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var hoje = new Date();
+        var dia = hoje.getDate();
+        var mes = hoje.getMonth() + 1; // Meses são indexados de 0 a 11, então adicionamos 1
+        var ano = hoje.getFullYear();
+
+        // Formata a data no formato "YYYY-MM-DD"
+        if (mes < 10) {
+            mes = '0' + mes; // Adiciona um zero à esquerda se for menor que 10
+        }
+        if (dia < 10) {
+            dia = '0' + dia; // Adiciona um zero à esquerda se for menor que 10
+        }
+
+        var dataFormatada = ano + '-' + mes + '-' + dia;
+
+        // Define o valor do campo de data para a data de hoje
+        document.getElementById('date').value = dataFormatada;
+    });
+</script>
     </div>
     <div class="col-xl-2 col-md-6 mb-5">
         <div class="form-group">
-            <label for="estado">Status</label>
-            <select class="form-control" id="estado" name="estado" required>
-                <option value="">Selecione um status</option>
+            <label for="status">Status</label>
+            <select class="form-control" id="status" name="status" required>
                 <option value="Fechado">Fechado</option>
                 <option value="Aberto">Aberto</option>
                 <option value="Emandamento">Em andamento</option>
             </select>
         </div>
+        <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        document.getElementById("status").value = "Aberto";
+    });
+</script>
+
     </div>
 
 
@@ -88,25 +114,25 @@ h4{
             <div class="col-xl-2 col-md-6 mt-2">
         <label for="cpf">CPF</label>
         <input type="text" class="form-control" id="cpf" name="cpf" required placeholder="">
-        <script>
+        <!-- <script>
     // Script para formatar e limitar o CPF (000.000.000-00)
-    // document.getElementById('cpf').addEventListener('input', function() {
-    //     var cpf = this.value.replace(/\D/g, ''); // Remove tudo que não é dígito
-    //     if (cpf.length > 11) {
-    //         cpf = cpf.substring(0, 11); // Limita a 11 dígitos
-    //     }
-    //     if (cpf.length > 3) {
-    //         cpf = cpf.replace(/(\d{3})(\d)/, '$1.$2'); // Adiciona o primeiro ponto
-    //     }
-    //     if (cpf.length > 6) {
-    //         cpf = cpf.replace(/(\d{3})(\d)/, '$1.$2'); // Adiciona o segundo ponto
-    //     }
-    //     if (cpf.length > 9) {
-    //         cpf = cpf.replace(/(\d{3})(\d{1,2})$/, '$1-$2'); // Adiciona o traço
-    //     }
-    //     this.value = cpf;
-    // });
-</script>
+    document.getElementById('cpf').addEventListener('input', function() {
+        var cpf = this.value.replace(/\D/g, ''); // Remove tudo que não é dígito
+        if (cpf.length > 11) {
+            cpf = cpf.substring(0, 11); // Limita a 11 dígitos
+        }
+        if (cpf.ength > 3) {
+            cpf = cpf.replace(/(\d{3})(\d)/, '$1.$2'); // Adiciona o primeiro ponto
+        }
+        if (cpf.length > 6) {
+            cpf = cpf.replace(/(\d{3})(\d)/, '$1.$2'); // Adiciona o segundo ponto
+        }
+        if (cpf.length > 9) {
+            cpf = cpf.replace(/(\d{3})(\d{1,2})$/, '$1-$2'); // Adiciona o traço
+        }
+        this.value = cpf;
+    });
+</script> -->
     </div>
                 
                 <div class="col-xl-6  col-md-6 mt-2">
@@ -202,28 +228,43 @@ h4{
                 <div class="col-xl-7 col-md-6 mt-4 mb-5">
         <label for="orgao">Veículo de manifestação</label>
         <div class="row custom-checkboxes">
-            <div class="form-check col-xl-2 col-lg-3 col-md-4 col-sm-3 mt-2">
-                <input type="radio" class="form-check-input" id="veiculo1" name="veiculo" value="Presencial">
-                <label class="form-check-label" for="veiculo1">Presencial</label>
-            </div>
-            <div class="form-check col-xl-2 col-lg-3 col-md-4 col-sm-3 mt-2">
-                <input type="radio" class="form-check-input" id="veiculo2" name="veiculo" value="E-mail">
-                <label class="form-check-label" for="veiculo2">E-mail</label>
-            </div>
-            <div class="form-check col-xl-2 col-lg-3 col-md-3 col-sm-3 mt-2">
-                <input type="radio" class="form-check-input" id="veiculo3" name="veiculo" value="WhatsApp">
-                <label  class="form-check-label" for="veiculo3">WhatsApp</label>
-            </div>
-            <div class="form-check col-xl-2 col-lg-3 col-md-3 col-sm-3 mt-2">
-                <input type="radio" class="form-check-input" id="veiculo4"  name="veiculo" value="Outros" >
-                <label class="form-check-label" for="veiculo4">Outros</label>
-            </div>
-            <div class="col-xl-2  col-lg-4 col-sm-10 mt-2">
-                <textarea class="form-control custom-textarea" id="acoes2" name="acoes2" rows="1" maxlength="1000" required></textarea>
-            </div>
-        </div>
+    <div class="form-check col-xl-2 col-lg-3 col-md-4 col-sm-3 mt-2">
+        <input type="radio" class="form-check-input" id="presencial" name="veiculo" value="Presencial" onclick="toggleOutroCampo(this)">
+        <label class="form-check-label" for="veiculo1">Presencial</label>
+    </div>
+    <div class="form-check col-xl-2 col-lg-3 col-md-4 col-sm-3 mt-2">
+        <input type="radio" class="form-check-input" id="email" name="veiculo" value="E-mail" onclick="toggleOutroCampo(this)">
+        <label class="form-check-label" for="veiculo2">E-mail</label>
+    </div>
+    <div class="form-check col-xl-2 col-lg-3 col-md-3 col-sm-3 mt-2">
+        <input type="radio" class="form-check-input" id="WhatsApp" name="veiculo" value="WhatsApp" onclick="toggleOutroCampo(this)">
+        <label  class="form-check-label" for="veiculo3">WhatsApp</label>
+    </div>
+    <div class="form-check col-xl-2 col-lg-3 col-md-3 col-sm-3 mt-2">
+        <input type="radio" class="form-check-input" id="outros" name="veiculo" value="Outros" onclick="toggleOutroCampo(this)">
+        <label class="form-check-label" for="veiculo4">Outros</label>
+    </div>
+    <div class="col-xl-2 col-lg-4 col-sm-10 mt-2" id="campoOutros" style="display: none;">
+        <textarea class="form-control custom-textarea" id="outro" name="outro" rows="1" maxlength="1000" ></textarea>
     </div>
 </div>
+
+</div>
+
+<script>
+    function toggleOutroCampo(radio) {
+        // Seleciona o campo de texto
+        let campoOutros = document.getElementById('campoOutros');
+
+        // Verifica se a opção "Outros" foi selecionada
+        if (radio.value === 'Outros') {
+            campoOutros.style.display = 'block'; // Mostra o campo de texto
+            document.getElementById('outro').focus(); // Coloca o foco no campo de texto
+        } else {
+            campoOutros.style.display = 'none'; // Esconde o campo de texto se outra opção for selecionada
+        }
+    }
+</script>
 
 <div class="row">
     <div class="col-xl-4 col-md-6 mb-5">

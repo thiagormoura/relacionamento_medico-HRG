@@ -6,22 +6,41 @@ $dbuser = "root";
 $dbpass = "";
 
 
-function enviarParaBanco($conn, $date, $situacaoatendimento, $nome, $registro, $orgao, $celular, $celulardois, $nascimento, $email, $endereco, $especialidade, $assunto, $descricao, $acoes, $cpf, $tipo_atendimento) {
+function enviarParaBanco($conn, $date, $situacaoatendimento, $nome, $registro, $orgao, $celular, $celulardois, $nascimento, $email, $endereco, $especialidade, $assunto, $descricao, $acoes, $cpf, $tipo_atendimento,$veiculoselecionado) {
     $sucesso = true;
 
+
     
-
-   
-   
-
-// Inserir dados na tabela profissionais
-$sql_medicos = "INSERT INTO profissionais (data_nascimento, cpf, email, telefone,telefone2, nome ,registro,especialidades ,orgao, endereco) VALUES ('$nascimento', '$cpf', '$email', '$celular','$celulardois', '$nome','$registro','$especialidade','$orgao','$endereco')";
+ 
+       // Inserir dados na tabela acoes
+$sql_medicos = "INSERT INTO descricao (descricao) VALUES ('$descricao')";
 if ($conn->query($sql_medicos) !== TRUE) {
     echo "Erro ao inserir dados do médico na tabela profissionais: " . $conn->error . "<br>";
     $sucesso = false;
 } else {
     
-        $id_atendimento = $conn->insert_id;
+      
+    }
+
+   // Inserir dados na tabela acoes
+$sql_medicos = "INSERT INTO acoes (acoes) VALUES ('$acoes')";
+if ($conn->query($sql_medicos) !== TRUE) {
+    echo "Erro ao inserir dados do médico na tabela profissionais: " . $conn->error . "<br>";
+    $sucesso = false;
+} else {
+    
+      
+    }
+   
+
+// Inserir dados na tabela profissionais
+$sql_medicos = "INSERT INTO profissionais (data_nascimento, cpf, email, telefone,telefone2, nome ,registro,especialidades ,orgao, endereco,veiculo_manifestacao) VALUES ('$nascimento', '$cpf', '$email', '$celular','$celulardois', '$nome','$registro','$especialidade','$orgao','$endereco','$veiculoselecionado')";
+if ($conn->query($sql_medicos) !== TRUE) {
+    echo "Erro ao inserir dados do médico na tabela profissionais: " . $conn->error . "<br>";
+    $sucesso = false;
+} else {
+    
+      
     }
 
     return $sucesso;
@@ -52,9 +71,10 @@ $assunto = isset($_POST['assunto']) ? $_POST['assunto'] : null;
 $descricao = isset($_POST['descricao']) ? $_POST['descricao'] : null;
 $acoes = isset($_POST['acoes']) ? $_POST['acoes'] : null;
 $cpf = isset($_POST['cpf']) ? $_POST['cpf'] : null;
+$veiculoselecionado = isset($_POST['veiculoselecionado']) ? $_POST['veiculoselecionado'] : null;
 
 
-if (enviarParaBanco($conn, $date, $situacaoatendimento, $nome, $registro, $orgao, $celular, $celulardois, $nascimento, $email, $endereco, $especialidade, $assunto, $descricao, $acoes, $cpf, $tipo_atendimento)) {
+if (enviarParaBanco($conn, $date, $situacaoatendimento, $nome, $registro, $orgao, $celular, $celulardois, $nascimento, $email, $endereco, $especialidade, $assunto, $descricao, $acoes, $cpf, $tipo_atendimento,$veiculoselecionado)) {
     echo "Dados enviados com sucesso para o banco de dados.";
 } else {
     echo "Erro ao enviar dados para o banco de dados.";

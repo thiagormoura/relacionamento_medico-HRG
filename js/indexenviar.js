@@ -14,18 +14,16 @@ document.addEventListener('DOMContentLoaded', function() {
         assunto12: ''
     };
 
-    let veiculo = '';
     function formatarDataExibicao(data) {
         if (!data) return '';
         // Convertendo a data para formato ISO para garantir consistência
-    var dataObj = new Date(data + 'T00:00:00'); // Adicionando 'T00:00:00' para garantir a hora zero
-    
+        var dataObj = new Date(data + 'T00:00:00'); // Adicionando 'T00:00:00' para garantir a hora zero
         var dia = dataObj.getDate().toString().padStart(2, '0');
-        
         var mes = (dataObj.getMonth() + 1).toString().padStart(2, '0');
         var ano = dataObj.getFullYear();
         return ano + '-' + mes + '-' + dia; // Formato yyyy-MM-dd
     }
+
     // Função para preencher os campos do formulário com os dados recebidos
     function preencherCampos(data) {
         document.getElementById('nome').value = data.nome || '';
@@ -118,7 +116,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    
     // Evento para enviar o formulário
     var enviarButton = document.getElementById("enviarbutton");
     enviarButton.addEventListener("click", function(event) {
@@ -139,10 +136,21 @@ document.addEventListener('DOMContentLoaded', function() {
         var registro = document.getElementById("registro").value || '';
         var orgao = document.getElementById("orgao").value || '';
         var date = document.getElementById("date").value || '';
-        var status = document.getElementById("estado").value || '';
+        var status = document.getElementById("status").value || '';
         var endereco = document.getElementById("endereco").value || '';
         var descricao = document.getElementById("descricao").value || '';
         var acoes = document.getElementById("acoes").value || '';
+        
+        // Obter o valor selecionado dos botões de rádio
+        let veiculoselecionado = document.querySelector('input[name="veiculo"]:checked').value;
+        
+        // Obter o valor do campo de texto "Outros" se estiver visível e concatenar
+        if (veiculoselecionado === 'Outros') {
+            veiculoselecionado += ': ' + document.getElementById('outro').value;
+        }
+
+        // Exemplo de uso:
+        console.log(veiculoselecionado);
 
         // Obter o valor do elemento selecionado em situacao_atendimento
         var situacao_atendimento = '';
@@ -170,8 +178,7 @@ document.addEventListener('DOMContentLoaded', function() {
             especialidade: especialidade,
             descricao: descricao,
             acoes: acoes,
-            cpf: cpf,
-            veiculo: veiculo
+            cpf: cpf
         });
 
         var camposObrigatorios = [
@@ -234,7 +241,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 especialidade: especialidade,
                 descricao: descricao,
                 acoes: acoes,
-                veiculo: veiculo
+                veiculoselecionado: veiculoselecionado // Enviar a string JSON
             },
             success: function(response) {
                 Swal.fire({
@@ -254,6 +261,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
 document.getElementById('enviarbutton').addEventListener('click', function(event) {
     if (!validateNumbers()) {
         event.preventDefault();
