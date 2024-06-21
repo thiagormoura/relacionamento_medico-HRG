@@ -282,33 +282,6 @@ $(document).ready(function() {
     });
 });
 </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     <script>
         function applyFilters() {
             var filterData = document.getElementById('filterData').value;
