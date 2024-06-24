@@ -127,137 +127,211 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
             </div>
         </div>
     </div>
+
+
+
+
     <table class="table table-bordered table-striped">
-        <thead class="thead-light">
-            <tr>
-                <th class="text-left">Data</th>
-                <th class="text-left">Nome do Profissional</th>
-                <th class="text-left">Assunto Tratado</th>
-                <th class="text-left">Status</th>
-            </tr>
-        </thead>
-        <tbody id="tableBody">
-        <?php
-function getBadgeClass($situacao) {
-    switch ($situacao) {
-        case 'Ativo':
-            return 'badge bg-success';
-        case 'Fechado':
-            return 'badge bg-danger';
-        case 'Andamento':
-            return 'badge bg-warning';
-        default:
-            return 'badge bg-secondary';
-    }
-}
-
-$sql_profissionais = "SELECT id, data_nascimento, nome, situacao_atendimento, cpf, telefone, telefone2, email FROM profissionais";
-$result_profissionais = $conn->query($sql_profissionais);
-$sql_assunto = "SELECT assunto FROM assunto ORDER BY id DESC";
-$result_assunto = $conn->query($sql_assunto);
-$assuntos = [];
-
-if ($result_assunto && $result_assunto->num_rows > 0) {
-    while ($row_assunto = $result_assunto->fetch_assoc()) {
-        $assuntos[] = $row_assunto['assunto'];
-    }
-}
-
-if ($result_profissionais && $result_profissionais->num_rows > 0) {
-    while ($row = $result_profissionais->fetch_assoc()) {
-        $data_nascimento = new DateTime($row['data_nascimento']);
-        $data_nascimento_formatada = $data_nascimento->format('d/m/Y');
-        $situacao = htmlspecialchars($row['situacao_atendimento']);
-        $cpf = htmlspecialchars($row['cpf']);
-        $telefone = htmlspecialchars($row['telefone']);
-        $telefone2 = htmlspecialchars($row['telefone2']);
-        $email = htmlspecialchars($row['email']);
-        
-        echo "<tr data-toggle='modal' data-target='#detalhesModal{$row['id']}'>";
-        echo "<td class='text-left'>" . htmlspecialchars($data_nascimento_formatada) . "</td>";
-        echo "<td class='text-left'>" . htmlspecialchars($row['nome']) . "</td>";
-        echo "<td class='text-left'>";
-        if (isset($assuntos[$row['id']])) {
-            echo htmlspecialchars($assuntos[$row['id']]);
-        } else {
-            echo "Nenhum assunto encontrado";
+    <thead class="thead-light">
+        <tr>
+            <th class="text-left">Data</th>
+            <th class="text-left">Nome do Profissional</th>
+            <th class="text-left">Assunto Tratado</th>
+            <th class="text-left">Status</th>
+        </tr>
+    </thead>
+    <tbody id="tableBody">
+    <?php
+    function getBadgeClass($situacao) {
+        switch ($situacao) {
+            case 'Aberto':
+                return 'badge bg-success';  // Correção: "Aberto" deve ser verde
+            case 'Andamento':
+                return 'badge bg-warning';
+            case 'Desconhecido':
+                return 'badge bg-warning';
+            default:
+                return 'badge bg-success';
         }
-        echo "</td>";
-        echo "<td class='text-left'><span class='" . getBadgeClass($situacao) . "'>" . $situacao . "</span></td>";
-        echo "</tr>";
-        
-        // Modal para cada profissional
-        echo "<div class='modal fade' id='detalhesModal{$row['id']}' tabindex='-1' role='dialog' aria-labelledby='detalhesModalLabel' aria-hidden='true'>";
-        echo "<div class='modal-dialog modal-dialog-centered modal-lg' role='document'>";
-        echo "<div class='modal-content'>";
-        echo "<div class='modal-header' style='border: none;'>"; // Remova a borda do modal-header para não cobrir o botão de fechar
-        echo "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 384 512' width='20' height='20' style='cursor: pointer; position: absolute; right: 10px; top: 10px;' data-dismiss='modal' aria-label='Fechar'>";
-        echo "<path d='M376.6 84.5c11.3-13.6 9.5-33.8-4.1-45.1s-33.8-9.5-45.1 4.1L192 206 56.6 43.5C45.3 29.9 25.1 28.1 11.5 39.4S-3.9 70.9 7.4 84.5L150.3 256 7.4 427.5c-11.3 13.6-9.5 33.8 4.1 45.1s33.8 9.5 45.1-4.1L192 306 327.4 468.5c11.3 13.6 31.5 15.4 45.1 4.1s15.4-31.5 4.1-45.1L233.7 256 376.6 84.5z'/>";
-        echo "</svg>";
-        echo "</div>";
-        
-        echo "<div class='modal-body'>";
-        
-        // Conteúdo do modal
-        echo "<div class='row'>";
-        
-        // CPF
-        echo "<div class='col-4'>";
-        echo "<label><b>CPF:</b></label>";
-        echo "<p class='form-control bg-body-secondary border rounded'>{$cpf}</p>";
-        echo "</div>";
-        
-        // Nome do Profissional
-        echo "<div class='col-4'>";
-        echo "<label><b>Nome do Profissional:</b></label>";
-        echo "<p class='form-control bg-body-secondary border rounded'>" . htmlspecialchars($row['nome']) . "</p>";
-        echo "</div>";
-        
-        // Data de Nascimento
-        echo "<div class='col-4'>";
-        echo "<label><b>Data de Nascimento:</b></label>";
-        echo "<p class='form-control bg-body-secondary border rounded'>{$data_nascimento_formatada}</p>";
-        echo "</div>";
-        
-        // Número de Celular
-        echo "<div class='col-4'>";
-        echo "<label><b>Número de Celular:</b></label>";
-        echo "<p class='form-control bg-body-secondary border rounded'>{$telefone}</p>";
-        echo "</div>";
-        
-        // Número de Celular 2
-        echo "<div class='col-4'>";
-        echo "<label><b>Número de Celular 2:</b></label>";
-        echo "<p class='form-control bg-body-secondary border rounded'>{$telefone2}</p>";
-        echo "</div>";
-        
-        // E-mail
-        echo "<div class='col'>";
-        echo "<label><b>E-mail:</b></label>";
-        echo "<p class='form-control bg-body-secondary border rounded'>{$email}</p>";
-        echo "</div>";
-        
-        echo "</div>"; // row
-        
-        echo "</div>"; // modal-body
-        
-        echo "</div>"; // modal-content
-        echo "</div>"; // modal-dialog
-        echo "</div>"; // modal fade
-        
     }
-} else {
-    echo "<tr><td colspan='4' class='text-center'>Nenhum profissional encontrado</td></tr>";
-}
-$conn->close();
-?>
+
+    // Modificar a query para incluir o JOIN entre as tabelas "profissionais" e "atendimento"
+     $sql_profissionais = "
+        SELECT p.id, p.nome, p.cpf, p.telefone, p.telefone2, p.email, p.endereco, p.estados, p.registro, p.especialidades, p.orgao, a.assunto, a.situacao, a.data, a.descricao, a.acoes, a.veiculo_atendimento
+        FROM profissionais p
+        LEFT JOIN atendimento a ON p.id = a.profissional
+        ORDER BY p.id ASC";
+    $result_profissionais = $conn->query($sql_profissionais);
+
+    if ($result_profissionais && $result_profissionais->num_rows > 0) {
+        while ($row = $result_profissionais->fetch_assoc()) {
+            $data_atendimento = new DateTime($row['data']);
+            $data_atendimento_formatada = $data_atendimento->format('d/m/Y');
+            $cpf = htmlspecialchars($row['cpf']);
+            $telefone = htmlspecialchars($row['telefone']);
+            $telefone2 = htmlspecialchars($row['telefone2']);
+            $email = htmlspecialchars($row['email']);
+            $assunto = htmlspecialchars($row['assunto']) ? htmlspecialchars($row['assunto']) : "Nenhum assunto encontrado";
+            $situacao = htmlspecialchars($row['situacao']) ? htmlspecialchars($row['situacao']) : "Desconhecido";
+            $badge_class = getBadgeClass($situacao);
+
+            echo "<tr data-toggle='modal' data-target='#detalhesModal{$row['id']}'>";
+            echo "<td class='text-left'>" . htmlspecialchars($data_atendimento_formatada) . "</td>";
+            echo "<td class='text-left'>" . htmlspecialchars($row['nome']) . "</td>";
+            echo "<td class='text-left'>" . $assunto . "</td>";
+            echo "<td class='text-left'><span class='$badge_class'>" . $situacao . "</span></td>";
+            echo "</tr>";
+            
+            // Modal para cada profissional
+            echo "<div class='modal fade' id='detalhesModal{$row['id']}' tabindex='-1' role='dialog' aria-labelledby='detalhesModalLabel' aria-hidden='true'>";
+            echo "<div class='modal-dialog modal-dialog-centered modal-lg' role='document'>";
+            echo "<div class='modal-content'>";
+            echo "<div class='modal-header' style='border: none;'>"; // Remova a borda do modal-header para não cobrir o botão de fechar
+            echo "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 384 512' width='20' height='20' style='cursor: pointer; position: absolute; right: 10px; top: 10px;' data-dismiss='modal' aria-label='Fechar'>";
+            echo "<path d='M376.6 84.5c11.3-13.6 9.5-33.8-4.1-45.1s-33.8-9.5-45.1 4.1L192 206 56.6 43.5C45.3 29.9 25.1 28.1 11.5 39.4S-3.9 70.9 7.4 84.5L150.3 256 7.4 427.5c-11.3 13.6-9.5 33.8 4.1 45.1s33.8 9.5 45.1-4.1L192 306 327.4 468.5c11.3 13.6 31.5 15.4 45.1 4.1s15.4-31.5 4.1-45.1L233.7 256 376.6 84.5z'/>";
+            echo "</svg>";
+            echo "</div>";
+            
+            echo "<div class='modal-body'>";
+            
+            // Dados do Profissional
+            echo "<div class='mb-3'>";
+            echo "<h5>Dados do Profissional</h5>";
+            echo "<hr>";
+            
+            echo "<div class='row'>";
+            
+            // Nome
+            echo "<div class='col-6'>";
+            echo "<label><b>Nome:</b></label>";
+            echo "<p class='form-control bg-body-secondary border rounded'>" . htmlspecialchars($row['nome']) . "</p>";
+            echo "</div>";
+            
+            // CPF
+            echo "<div class='col-6'>";
+            echo "<label><b>CPF:</b></label>";
+            echo "<p class='form-control bg-body-secondary border rounded'>" . $cpf . "</p>";
+            echo "</div>";
+            
+            // Telefone
+            echo "<div class='col-4'>";
+            echo "<label><b>Número de Celular:</b></label>";
+            echo "<p class='form-control bg-body-secondary border rounded'>" . $telefone . "</p>";
+            echo "</div>";
+            
+            // Telefone 2
+            echo "<div class='col-4'>";
+            echo "<label><b>Número de Celular 2:</b></label>";
+            echo "<p class='form-control bg-body-secondary border rounded'>" . $telefone2 . "</p>";
+            echo "</div>";
+            
+            // Registro
+            echo "<div class='col-4'>";
+            echo "<label><b>Registro:</b></label>";
+            echo "<p class='form-control bg-body-secondary border rounded'>" . htmlspecialchars($row['registro']) . "</p>";
+            echo "</div>";
+
+
+            // Email
+            echo "<div class='col-6'>";
+            echo "<label><b>E-mail:</b></label>";
+            echo "<p class='form-control bg-body-secondary border rounded'>" . $email . "</p>";
+            echo "</div>";
+            
+            // Endereço
+            echo "<div class='col-6'>";
+            echo "<label><b>Endereço:</b></label>";
+            echo "<p class='form-control bg-body-secondary border rounded'>" . htmlspecialchars($row['endereco']) . "</p>";
+            echo "</div>";
+            
+            // Estados
+            echo "<div class='col-4'>";
+            echo "<label><b>Estado:</b></label>";
+            echo "<p class='form-control bg-body-secondary border rounded'>" . htmlspecialchars($row['estados']) . "</p>";
+            echo "</div>";
+            
+            
+            // Especialidades
+            echo "<div class='col-4'>";
+            echo "<label><b>Especialidades:</b></label>";
+            echo "<p class='form-control bg-body-secondary border rounded'>" . htmlspecialchars($row['especialidades']) . "</p>";
+            echo "</div>";
+            
+            // Orgão
+            echo "<div class='col-4'>";
+            echo "<label><b>Órgão:</b></label>";
+            echo "<p class='form-control bg-body-secondary border rounded'>" . htmlspecialchars($row['orgao']) . "</p>";
+            echo "</div>";
+            
+            echo "</div>"; // row
+            
+            echo "</div>"; // mb-3
+            
+            // Dados do Atendimento
+            
+            echo "<div class='mb-3'>";
+            echo "<h5>Dados do Atendimento</h5>";
+            echo "<hr>";
+
+            echo "<div class='row'>";
+
+            // Data de Atendimento
+            echo "<div class='col-4'>";
+    echo "<label><b>Data de Atendimento:</b></label>";
+    echo "<p class='form-control bg-body-secondary border rounded'>" . $data_atendimento_formatada . "</p>";
+    echo "</div>";
+
+    echo "<div class='col-4'>";
+    echo "<label><b>Assunto Tratado:</b></label>";
+    echo "<p class='form-control bg-body-secondary border rounded'>" . $assunto . "</p>";
+    echo "</div>";
+
+    echo "<div class='col-4'>";
+    echo "<label><b>Status:</b></label>";
+    echo "<p><span class='$badge_class'>" . $situacao . "</span></p>";
+    echo "</div>";
+
+    // Descrição
+    echo "<div class='col-12'>";
+    echo "<label><b>Descrição:</b></label>";
+    echo "<p class='form-control bg-body-secondary border rounded'>" . htmlspecialchars($row['descricao']) . "</p>";
+    echo "</div>";
+
+    // Ações
+    echo "<div class='col-6'>";
+    echo "<label><b>Ações:</b></label>";
+    echo "<p class='form-control bg-body-secondary border rounded'>" . htmlspecialchars($row['acoes']) . "</p>";
+    echo "</div>";
+
+    // Veículo de Atendimento
+    echo "<div class='col-6'>";
+    echo "<label><b>Veículo de Atendimento:</b></label>";
+    echo "<p class='form-control bg-body-secondary border rounded'>" . htmlspecialchars($row['veiculo_atendimento']) . "</p>";
+    echo "</div>";
+
+    echo "</div>"; // row
+
+    echo "</div>"; // mb-3
+
+    echo "</div>"; // modal-body
+
+    echo "</div>"; // modal-content
+    echo "</div>"; // modal-dialog
+    echo "</div>"; // modal fade
+
+        }
+    } else {
+        echo "<tr><td colspan='4' class='text-center'>Nenhum profissional encontrado</td></tr>";
+    }
+    $conn->close();
+    ?>
+    </tbody>
+</table>
 
 
 
 
 
-        </tbody>
-    </table>
 
 
 <script>
