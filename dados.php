@@ -12,7 +12,7 @@ function dadosProf($id, $conn) {
 
     $sql = "SELECT a.data AS data_atendimento, a.situacao AS situacao_atendimento, a.assunto, a.descricao, a.acoes, a.veiculo_atendimento,
                    p.nome AS nome_profissional, p.data_nascimento AS data_nascimento_profissional, p.cpf, p.telefone AS telefone_profissional, p.telefone2, p.registro, p.email AS email_profissional, 
-                   p.endereco, p.estados, p.especialidades, p.orgao
+                   p.endereco, p.especialidades, p.orgao
             FROM atendimento a
             INNER JOIN profissionais p ON a.profissional = p.id
             WHERE a.id = $id";
@@ -22,6 +22,7 @@ $result = $conn->query($sql);
 if ($result === false) {
     echo "Erro na consulta: " . $conn->error;
 } elseif ($result->num_rows > 0) {
+
     // Obtém os dados
     $row = $result->fetch_assoc();
     $dados['data_atendimento'] = $row['data_atendimento'];
@@ -37,7 +38,7 @@ if ($result === false) {
     $dados['registro_profissional'] = $row['registro'];
     $dados['email_profissional'] = $row['email_profissional'];
     $dados['endereco_profissional'] = $row['endereco'];
-    $dados['estados_profissional'] = $row['estados'];
+    // $dados['estados_profissional'] = $row['estados'];
     $dados['especialidades_profissional'] = $row['especialidades'];
     $dados['orgao_profissional'] = $row['orgao'];
     $dados['data_nascimento_profissional'] = $row['data_nascimento_profissional']; // Correção aqui

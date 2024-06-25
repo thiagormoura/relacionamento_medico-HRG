@@ -160,7 +160,7 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
 
     // Modificar a query para incluir o JOIN entre as tabelas "profissionais" e "atendimento"
     $sql_profissionais = "
-    SELECT p.id, p.nome, p.cpf, p.telefone, p.telefone2, p.email, p.endereco, p.estados, p.registro, p.especialidades, p.orgao, a.id AS id_atendimento, a.assunto, a.situacao, a.data, a.descricao, a.acoes, a.veiculo_atendimento
+    SELECT p.id, p.nome, p.cpf, p.telefone, p.telefone2, p.email, p.endereco, p.registro, p.especialidades, p.orgao, a.id AS id_atendimento, a.assunto, a.situacao, a.data, a.descricao, a.acoes, a.veiculo_atendimento
     FROM profissionais p
     LEFT JOIN atendimento a ON p.id = a.profissional
     ORDER BY p.id ASC";
@@ -254,10 +254,10 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
             echo "</div>";
             
             // Estados
-            echo "<div class='col-4'>";
-            echo "<label><b>Estado:</b></label>";
-            echo "<p class='form-control bg-body-secondary border rounded'>" . htmlspecialchars($row['estados']) . "</p>";
-            echo "</div>";
+            // echo "<div class='col-4'>";
+            // echo "<label><b>Estado:</b></label>";
+            // echo "<p class='form-control bg-body-secondary border rounded'>" . htmlspecialchars($row['estados']) . "</p>";
+            // echo "</div>";
             
             
             // Especialidades
