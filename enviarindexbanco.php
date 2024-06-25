@@ -28,7 +28,7 @@ function enviarParaBanco($conn, $date, $status, $nome, $registro, $orgao, $celul
             $id_atendimento = $conn->insert_id;
 
             // Inserir dados na tabela atendimento_has_assunto
-            $sql_atendimento_has_assunto = "INSERT INTO atendimento_has_assunto (atendimento , assunto) VALUES ('$id_atendimento', '$assuntosselecionados')";
+            $sql_atendimento_has_assunto = "INSERT INTO atendimento_has_assunto (atendimento,  assunto) VALUES ('$id_atendimento ' , '$assuntosselecionados')";
             if ($conn->query($sql_atendimento_has_assunto) !== TRUE) {
                 echo "Erro ao inserir dados na tabela atendimento_has_assunto: " . $conn->error . "<br>";
                 $sucesso = false;
@@ -46,6 +46,7 @@ $conn = new mysqli($dbhost, $dbuser, $dbpass, $dbname);
 if ($conn->connect_error) {
     die("Falha na conexão: " . $conn->connect_error);
 }
+echo($assuntosselecionados );
 
 // Obter dados do formulário via POST
 $date = isset($_POST['date']) ? $_POST['date'] : null;
@@ -66,7 +67,7 @@ $acoes = isset($_POST['acoes']) ? $_POST['acoes'] : null;
 $cpf = isset($_POST['cpf']) ? $_POST['cpf'] : null;
 $veiculoselecionado = isset($_POST['veiculoselecionado']) ? $_POST['veiculoselecionado'] : null;
 $assuntoatendimento = isset($_POST['assuntoatendimento']) ? $_POST['assuntoatendimento'] : null;
-$assuntosselecionados = isset($_POST['assuntosselecionadosString']) ? $_POST['assuntosselecionadosString'] : null;
+$assuntosselecionados = isset($_POST['assuntosselecionados']) ? $_POST['assuntosselecionados'] : null;
 
 // Enviar dados para o banco de dados
 if (enviarParaBanco($conn, $date, $status, $nome, $registro, $orgao, $celular, $celulardois, $nascimento, $email, $endereco, $especialidade, $assunto, $descricao, $acoes, $cpf, $tipo_atendimento, $veiculoselecionado, $assuntoatendimento, $assuntosselecionados)) {

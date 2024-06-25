@@ -266,8 +266,9 @@ h4{
     }
 </script>
 
-<div class="row">
-    <div class="col-xl-4 col-md-6 mb-5">
+<!-- <div class="row">
+     -->
+    <!-- <div class="col-xl-4 col-md-6 mb-5">
         <label for="orgao">Assuntos Tratados</label>
         <div class="row custom-checkboxes">
             <div class="form-control col-sm-12">
@@ -335,7 +336,88 @@ h4{
     <b><p>Se "Outros" for assinalado, indique a qual assunto se refere:</p></b>
     <textarea class="form-control" id="acoes3" name="assuntotratado" rows="1" maxlength="1000" required></textarea>
 </div>
+</div> -->
+
+
+<?php
+$dbhost = "localhost";
+$dbname = "relacionamentomedico";
+$dbuser = "root";
+$dbpass = "";
+
+// Cria conexão
+$conn = new mysqli($dbhost, $dbuser, $dbpass, $dbname);
+
+// Verifica conexão
+if ($conn->connect_error) {
+    die("Conexão falhou: " . $conn->connect_error);
+}
+
+// Consulta SQL com ordenação decrescente pelo ID
+$sql = "SELECT id, assunto FROM assunto ORDER BY id ASC";
+$result = $conn->query($sql);
+?>
+
+  
+   
+    <!-- Inclua o CSS do Choices.js -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+    <!-- Inclua o CSS do Bootstrap -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
+
+
+<div class="container"> 
+    <title>Assuntos Tratados</title>
+    
+        <div class="col-12 ">
+            <label for="assuntotratado">Assuntos Tratados</label>
+            <select class="form-control" id="assuntotratado" name="assunto[]" multiple>
+                <optgroup label="Selecione Assunto">
+                    <?php
+                    if ($result->num_rows > 0) {
+                        // Output data de cada linha
+                        while($row = $result->fetch_assoc()) {
+                            echo "<option value='" . $row["id"] . "'>" . $row["assunto"] . "</option>";
+                        }
+                    } else {
+                        echo "<option value=''>Nenhum assunto encontrado</option>";
+                    }
+                    $conn->close();
+                    ?>
+                </optgroup>
+            </select>
+        
+   
+    <div class="row mt-3" style="display: none;">
+        <div class="col">
+            <label for="selectedIds">IDs Selecionados:</label>
+            <input type="text" id="selectedIds" class="form-control" readonly>
+        </div>
+    </div>
+<!-- Inclua o JS do jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Inclua o JS do Choices.js -->
+<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const element = document.getElementById('assuntotratado');
+    const choices = new Choices(element, {
+        removeItemButton: true,
+        placeholderValue: 'Selecione assuntos',
+        searchPlaceholderValue: 'Procurar'
+    });
+
+    element.addEventListener('change', function() {
+        const selectedValues = Array.from(element.selectedOptions).map(option => option.value);
+        document.getElementById('selectedIds').value = selectedValues.join(',');
+        console.log(selectedIds)
+    });
+});
+</script>
+
+ </div>
 </div>
+
 
 
                
@@ -343,7 +425,7 @@ h4{
                 <h4><b>DESCRIÇÃO DO ATENDIMENTO</b></h4>
                 <div class="col-xl-12 col-md-6 mt-3">
                     <label for="assunto">Assunto</label>
-                    <textarea class="form-control custom-textarea2" id="assuntoatendimento" name="assunto" rows="1" maxlength="1000" required></textarea>
+                    <textarea class="form-control custom-textarea2" id="assuntoatendimento" name="assunto atendimento" rows="1" maxlength="1000" ></textarea>
                 </div>
 
 
