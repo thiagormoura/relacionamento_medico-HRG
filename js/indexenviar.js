@@ -141,6 +141,10 @@ document.addEventListener('DOMContentLoaded', function() {
         var endereco = document.getElementById("endereco").value || '';
         var descricao = document.getElementById("descricao").value || '';
         var acoes = document.getElementById("acoes").value || '';
+        var assuntosselecionados = document.getElementById("selectedIds").value || '';
+        console.log("Assuntos de TRATADO:", assuntosselecionados);
+
+
         var assuntoatendimento = document.getElementById("assuntoatendimento").value || '';
         let veiculoselecionado = document.querySelector('input[name="veiculo"]:checked').value;
         // Obter o valor do campo de texto "Outros" se estiver visível e concatenar
@@ -151,17 +155,8 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log(veiculoselecionado);
 
 
-        var checkboxesassunto = document.querySelectorAll('input[name="assuntotratado"]:checked');
-        var assuntosselecionados = [];
         
-        checkboxesassunto.forEach(function(checkbox) {
-            var valor = checkbox.value.trim(); // Obtém o valor do checkbox e remove espaços em branco desnecessários
-            if (!isNaN(valor) && parseInt(valor) >= 1 && parseInt(valor) <= 12) { // Verifica se é um número válido entre 1 e 12
-                assuntosselecionados.push(parseInt(valor)); // Converte para número inteiro e adiciona ao array
-            }
-        });
-        
-        console.log("Assuntos selecionados:", assuntosselecionados);
+        console.log("Assuntos de atendimento:", assuntoatendimento);
         
 
 
