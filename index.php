@@ -113,7 +113,7 @@ h4{
             <h4><b>DADOS DO PROFISSIONAL</b></h4>
             <div class="col-xl-2 col-md-6 mt-2">
         <label for="cpf">CPF</label>
-        <input type="text" class="form-control" id="cpf" name="cpf" required placeholder="">
+        <input type="text" class="form-control" id="cpf" name="cpf" placeholder="">
         <!-- <script>
     // Script para formatar e limitar o CPF (000.000.000-00)
     document.getElementById('cpf').addEventListener('input', function() {
@@ -271,39 +271,41 @@ h4{
         <label for="orgao">Assuntos Tratados</label>
         <div class="row custom-checkboxes">
             <div class="form-control col-sm-12">
-                <input type="checkbox" id="assunto1" name="assunto1" value="assunto1">
+                <input type="checkbox" id="assunto1" name="assuntotratado" value="1">
                 <label for="assunto1" class="ml-2">Atualização cadastral do Médico</label>
             </div>
             <div class="form-control col-sm-12">
-                <input type="checkbox" id="assunto2" name="assunto2" value="assunto2">
+                <input type="checkbox" id="assunto2" name="assuntotratado" value="2">
                 <label for="assunto2" class="ml-3">Autorização de procedimentos</label>
             </div>
             <div class="form-control col-sm-12">
-                <input type="checkbox" id="assunto3" name="assunto3" value="assunto3">
+                <input type="checkbox" id="assunto3" name="assuntotratado" value="3">
                 <label for="assunto3" class="ml-2">Cadastro Médico</label>
             </div>
             <div class="form-control col-sm-12">
-                <input type="checkbox" id="assunto4" name="assunto4" value="assunto4">
+                <input type="checkbox" id="assunto4" name="assuntotratado" value="4">
                 <label for="assunto4" class="ml-2">Demandas da Contabilidade</label>
             </div>
         </div>
+        
+
     </div>
     <div class="col-xl-4 col-md-6 mt-4">
         <div class="row custom-checkboxes">
             <div class="form-control col-sm-12">
-                <input type="checkbox" id="assunto5" name="assunto5" value="assunto5">
+                <input type="checkbox" id="assunto5" name="assuntotratado" value="5">
                 <label for="assunto5" class="ml-2">Demandas do Faturamento</label>
             </div>
             <div class="form-control col-sm-12">
-                <input type="checkbox" id="assunto6" name="assunto6" value="assunto6">
+                <input type="checkbox" id="assunto6" name="assuntotratado" value="6">
                 <label for="assunto6" class="ml-3">Demandas do INCOR</label>
             </div>
             <div class="form-control col-sm-12">
-                <input type="checkbox" id="assunto7" name="assunto7" value="assunto7">
+                <input type="checkbox" id="assunto7" name="assuntotratado" value="7">
                 <label for="orgao7" class="ml-2">Demandas do RH</label>
             </div>
             <div class="form-control col-sm-12">
-                <input type="checkbox" id="assunto8" name="assunto8" value="assunto8">
+                <input type="checkbox" id="assunto8" name="assuntotratado" value="8">
                 <label for="assunto8" class="ml-2">Demandas do setor Financeiro</label>
             </div>
         </div>
@@ -311,19 +313,19 @@ h4{
     <div class="col-xl-4 col-md-6 mt-4 mb-4">
         <div class="row custom-checkboxes">
             <div class="form-control col-sm-12">
-                <input type="checkbox" id="assunto9" name="assunto9" value="assunto9">
+                <input type="checkbox" id="assunto9" name="assuntotratado" value="9">
                 <label for="assunto9" class="ml-3">Demandas do setor de TI</label>
             </div>
             <div class="form-control col-sm-12">
-                <input type="checkbox" id="assunto10" name="assunto10" value="assunto10">
+                <input type="checkbox" id="assunto10" name="assuntotratado" value="10">
                 <label for="assunto10" class="ml-3">Estacionamento</label>
             </div>
             <div class="form-control col-sm-12">
-                <input type="checkbox" id="assunto11" name="assunto11" value="assunto11">
+                <input type="checkbox" id="assunto11" name="assuntotratado" value="11">
                 <label for="assunto11" class="ml-3">Repasse Médico</label>
             </div>
             <div class="form-control col-sm-12">
-    <input type="checkbox" id="assunto12" name="assunto12" value="assunto12" onchange="mostrarCampoTexto()">
+    <input type="checkbox" id="assunto12" name="assuntotratado" value="12" onchange="mostrarCampoTexto()">
     <label for="assunto12" class="ml-3">Outros</label>
 </div>
             
@@ -331,7 +333,7 @@ h4{
     </div>
     <div class="form-control col-sm-12 mb-5" id="campoTexto" style="display: none;">
     <b><p>Se "Outros" for assinalado, indique a qual assunto se refere:</p></b>
-    <textarea class="form-control" id="acoes3" name="acoes3" rows="1" maxlength="1000" required></textarea>
+    <textarea class="form-control" id="acoes3" name="assuntotratado" rows="1" maxlength="1000" required></textarea>
 </div>
 </div>
 
@@ -341,7 +343,7 @@ h4{
                 <h4><b>DESCRIÇÃO DO ATENDIMENTO</b></h4>
                 <div class="col-xl-12 col-md-6 mt-3">
                     <label for="assunto">Assunto</label>
-                    <textarea class="form-control custom-textarea2" id="assunto" name="assunto" rows="1" maxlength="1000" required></textarea>
+                    <textarea class="form-control custom-textarea2" id="assuntoatendimento" name="assunto" rows="1" maxlength="1000" required></textarea>
                 </div>
 
 

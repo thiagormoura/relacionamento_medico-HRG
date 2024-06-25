@@ -72,6 +72,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     });
+    console.log("CPF a ser enviado:", cpf); // Adicione esta linha para depuração
 
     // Função para verificar o CPF
     function verificarCPF(cpf) {
@@ -140,17 +141,29 @@ document.addEventListener('DOMContentLoaded', function() {
         var endereco = document.getElementById("endereco").value || '';
         var descricao = document.getElementById("descricao").value || '';
         var acoes = document.getElementById("acoes").value || '';
-        
-        // Obter o valor selecionado dos botões de rádio
+        var assuntoatendimento = document.getElementById("assuntoatendimento").value || '';
         let veiculoselecionado = document.querySelector('input[name="veiculo"]:checked').value;
-        
         // Obter o valor do campo de texto "Outros" se estiver visível e concatenar
         if (veiculoselecionado === 'Outros') {
             veiculoselecionado += ': ' + document.getElementById('outro').value;
         }
-
         // Exemplo de uso:
         console.log(veiculoselecionado);
+
+
+        var checkboxesassunto = document.querySelectorAll('input[name="assuntotratado"]:checked');
+        var assuntosselecionados = [];
+        
+        checkboxesassunto.forEach(function(checkbox) {
+            var valor = checkbox.value.trim(); // Obtém o valor do checkbox e remove espaços em branco desnecessários
+            if (!isNaN(valor) && parseInt(valor) >= 1 && parseInt(valor) <= 12) { // Verifica se é um número válido entre 1 e 12
+                assuntosselecionados.push(parseInt(valor)); // Converte para número inteiro e adiciona ao array
+            }
+        });
+        
+        console.log("Assuntos selecionados:", assuntosselecionados);
+        
+
 
         // Obter o valor do elemento selecionado em situacao_atendimento
         var situacao_atendimento = '';
@@ -178,7 +191,8 @@ document.addEventListener('DOMContentLoaded', function() {
             especialidade: especialidade,
             descricao: descricao,
             acoes: acoes,
-            cpf: cpf
+            cpf: cpf,
+            assuntoatendimento:assuntoatendimento
         });
 
         var camposObrigatorios = [
@@ -192,7 +206,10 @@ document.addEventListener('DOMContentLoaded', function() {
             { campo: especialidade, nome: "Descrição da Especialidade" },
             { campo: descricao, nome: "Descrição" },
             { campo: acoes, nome: "Ações" },
-            { campo: cpf, nome: "CPF" }
+            { campo: cpf, nome: "CPF" },
+            { campo: assuntoatendimento, nome: "Assunto Atendimento" }
+
+
         ];
 
         var camposVazios = camposObrigatorios.filter(function(campo) {
@@ -216,18 +233,7 @@ document.addEventListener('DOMContentLoaded', function() {
             url: 'enviarindexbanco.php',
             method: 'POST',
             data: {
-                assunto1: assunto.assunto1,
-                assunto2: assunto.assunto2,
-                assunto3: assunto.assunto3,
-                assunto4: assunto.assunto4,
-                assunto5: assunto.assunto5,
-                assunto6: assunto.assunto6,
-                assunto7: assunto.assunto7,
-                assunto8: assunto.assunto8,
-                assunto9: assunto.assunto9,
-                assunto10: assunto.assunto10,
-                assunto11: assunto.assunto11,
-                assunto12: assunto.assunto12,
+                assuntoatendimento: assuntoatendimento,
                 status: status,
                 cpf: cpf,
                 nome: nome,
@@ -241,7 +247,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 especialidade: especialidade,
                 descricao: descricao,
                 acoes: acoes,
-                veiculoselecionado: veiculoselecionado // Enviar a string JSON
+                veiculoselecionado: veiculoselecionado, // Enviar a string JSON
+                date :date ,
+                assuntosselecionados:assuntosselecionados
             },
             success: function(response) {
                 Swal.fire({
