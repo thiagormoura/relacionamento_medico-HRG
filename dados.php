@@ -88,147 +88,166 @@ $conn->close(); // Fecha a conexão com o banco de dados
         }
     </style>
 </head>
+<style>
+    .form-control{
+font-size: 0.8rem;
+}
+
+.form-check-label{
+font-size: 0.8rem;
+}
+
+label{
+font-size: 0.8rem;
+font-weight: 700;
+}
+
+.custom-textarea2{
+resize: none; 
+}
+
+.custom-textarea {
+width: 20em; 
+resize: none; 
+}
+
+#assunto{
+    resize: none; 
+}
+
+h4{
+    font-family: sans-serif;
+}
+</style>
+<body>
+
+
 
 <body>
-<header>
-        <nav class="navbar navbar-expand-lg navbar-light bg-light navbar-border-hrg">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="http://10.1.1.31:80/centralservicos/">
-                    <img src="http://10.1.1.31:80/centralservicos/resources/img/central-servicos.png" alt="Central de Serviço" style="width: 160px">
-                </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navBarCentral" aria-controls="navBarCentral" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navBarCentral">
-                </div>
-            </div>
-        </nav>
-        <div class="content-header shadow" style="border-bottom: solid 1px gray;">
-            <div class="container-fluid">
-                <div class="row py-1">
-                    <div class="titulo">
-                        <p class="h1  text-light shadow" style="font-size: 25px;" > <?php echo isset($pageTitle) ? $pageTitle : "<b><p class='rm'> Relacionamento Médico </p></b>  <p class='ra'> Dados do atendimento <p/>"; ?></p>
-                    </div>
-                </div>
+    <?php include 'php/header.php'; ?>
+    <main class="container_fluid d-flex justify-content-center align-items-center">
+        <div class="form-group col-8 mt-5">
+            <form  id="formulario_index" method="post" action="/seu_script_php.php">
+            <div class="row">
+        <div class="col-xl-2 col-md-6 mb-5">
+            <div class="form-group">
+                <label for="date">Data</label>
+                <input type="date" class="form-control bg-white" id="date" name="date" readonly value="<?= isset($dados['data_atendimento']) ? htmlspecialchars($dados['data_atendimento']) : "" ?>">
             </div>
         </div>
-    </header>
-<br>
-    <main class="container">
+        <div class="col-xl-2 col-md-6 mb-5">
+            <div class="form-group">
+                <label for="status">Status</label>
+                <input type="text" class="form-control bg-white" id="status" name="status" readonly value="<?= isset($dados['situacao_atendimento']) ? htmlspecialchars($dados['situacao_atendimento']) : "" ?>">
+            </div>
+        </div>
         <div class="border p-3">
-        <div class="row">
-            <h4><b>DADOS DO PROFISSIONAL</b></h4>
-        </div>
-        <div class="row">
-            <div>
-                <div class="row">
-                    <div class="form-group col-md-4">
-                        <label for="cpf"><b>CPF:</b></label>
-                        <div class="form-control" readonly><?= isset($dados['cpf_profissional']) ? htmlspecialchars($dados['cpf_profissional']) : "" ?></div>
-                    </div>
-
-                    <div class="form-group col-md-4">
-                        <label for="nome"><b><i>Nome:</i></b></label>
-                        <div class="form-control" readonly><?= isset($dados['nome_profissional']) ? htmlspecialchars($dados['nome_profissional']) : "" ?></div>
-                    </div>
-
-                    <div class="form-group col-md-4">
-                        <label for="nascimento"><b><i>Data de Nascimento:</i></b></label>
-                        <div class="form-control" readonly><?= isset($dados['data_nascimento_profissional']) ? htmlspecialchars($dados['data_nascimento_profissional']) : "" ?></div>
-                    </div>
+            <div class="row ">
+                <h4><b>DADOS DO PROFISSIONAL</b></h4>
+                <div class="col-xl-2 col-md-6 mt-2">
+                <label for="cpf">CPF</label>
+                <input type="text" class="form-control bg-white" id="cpf" name="cpf" placeholder="" readonly value="<?= isset($dados['cpf_profissional']) ? htmlspecialchars($dados['cpf_profissional']) : "" ?>">
+            </div>      
+            <div class="col-xl-6  col-md-6 mt-2">
+                <label for="nome">Nome</label>
+                <input type="text" class="form-control bg-white" id="nome" name="nome" maxlength="80" required readonly value="<?= isset($dados['nome_profissional']) ? htmlspecialchars($dados['nome_profissional']) : "" ?>">
+            </div>
+            <div class="col-xl-3 col-md-6 mt-2">
+                <div class="form-group">
+                    <label for="nascimento">Data de Nascimento</label>
+                    <input type="date" class="form-control bg-white" id="nascimento"  name="nascimento" readonly value="<?= isset($dados['data_nascimento_profissional']) ? htmlspecialchars($dados['data_nascimento_profissional']) : "" ?>">
                 </div>
-
-                <div class="row">
-                    <div class="form-group col-md-4">
-                        <label for="celular"><b><i>Celular 1:</i></b></label>
-                        <div class="form-control" readonly><?= isset($dados['telefone_profissional']) ? htmlspecialchars($dados['telefone_profissional']) : "" ?></div>
-                    </div>
-
-                    <div class="form-group col-md-4">
-                        <label for="celulardois"><b><i>Celular 2:</i></b></label>
-                        <div class="form-control" readonly><?= isset($dados['telefone2_profissional']) ? htmlspecialchars($dados['telefone2_profissional']) : "" ?></div>
-                    </div>
-
-                    <div class="form-group col-md-4">
-                        <label for="email"><b><i>E-mail:</i></b></label>
-                        <div class="form-control" readonly><?= isset($dados['email_profissional']) ? htmlspecialchars($dados['email_profissional']) : "" ?></div>
-                    </div>
+            </div>  
+            <div class="col-xl-2 col-md-6 mt-2">
+                <label for="celular">Celular 1</label>
+                <input type="tel" class="form-control bg-white" id="celular" name="celular" readonly value="<?= isset($dados['telefone_profissional']) ? htmlspecialchars($dados['telefone_profissional']) : "" ?>">
+            </div> 
+            <div class="col-xl-2 col-md-6 mt-2">
+                <label for="celulardois">Celular 2</label>
+                <input type="tel" class="form-control bg-white" id="celular" name="celular" readonly value="<?= isset($dados['telefone2_profissional']) ? htmlspecialchars($dados['telefone2_profissional']) : "" ?>">
+            </div>
+            <div class="col-xl-3 col-md-6 mt-2">
+                <label for="email">E-mail</label>
+                <input type="email" class="form-control bg-white" id="email" name="email"  required readonly value="<?= isset($dados['email_profissional']) ? htmlspecialchars($dados['email_profissional']) : "" ?>">
+            </div>
+            <div class="col-xl-4 col-md-6 mt-2">
+                <label for="endereco">Endereço</label>
+                <input type="text" class="form-control bg-white" id="endereco" name="endereco" placeholder="Digite o endereço completo" required readonly value="<?= isset($dados['endereco_profissional']) ? htmlspecialchars($dados['endereco_profissional']) : "" ?>">
+            </div>
+            <div class="row">
+            <div class="col-xl-2 col-md-6 mt-2">
+                <label for="registro">CRM</label>
+                <input type="text" class="form-control bg-white" id="registro" name="registro" maxlength="6" required readonly value="<?= isset($dados['registro_profissional']) ? htmlspecialchars($dados['registro_profissional']) : "" ?>">
+            </div>
+            <div class="col-xl-2 col-md-6 mt-2">
+                <div class="form-group">
+                    <label for="orgao">Órgão</label>
+                    <input type="text" class="form-control bg-white" id="registro" name="registro" maxlength="6" required readonly value="<?= isset($dados['orgao_profissional']) ? htmlspecialchars($dados['orgao_profissional']) : "" ?>">
                 </div>
             </div>
+            </label>
+            <div class="col-xl-2 col-md-6 mt-2 mb-4">
+                <label for="especialidade">Especialidade(s)</label>
+                <input type="text" class="form-control bg-white" id="especialidade" name="especialidade" maxlength="12" required readonly value="<?= isset($dados['especialidades_profissional']) ? htmlspecialchars($dados['especialidades_profissional']) : "" ?>">
+            </div> 
+        </div>
+    </div>
+</div>
+<br>
+<div class="col-xl-7 col-md-6 mt-4 mb-5">
+    <label for="orgao">Veículo de manifestação</label>
+        <div class="form-group col-md-6">
+            <div readonly><?= isset($dados['veiculo_atendimento']) ? htmlspecialchars($dados['veiculo_atendimento']) : "" ?></div>
+        </div>
+</div>
+</div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
+<div class="container"> 
+    <title>Assuntos Tratados</title>
+    <div class="col-12 ">        
+    <div class="row mt-3" style="display: none;">
+        <div class="col">
+            <label for="selectedIds">IDs Selecionados:</label>
+            <input type="text" id="selectedIds" class="form-control" readonly>
+        </div>
+    </div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+ </div>
+</div>     
+    <div class="border p-3 mt-4">
+        <h4><b>DESCRIÇÃO DO ATENDIMENTO</b></h4>
+        <div class="col-xl-12 col-md-6 mt-3">
+    <label for="assunto">Assunto</label>
+    <textarea class="form-control bg-white custom-textarea2" id="assuntoatendimento" name="assunto atendimento" rows="1" maxlength="1000" readonly><?= isset($dados['assunto']) ? htmlspecialchars($dados['assunto']) : "" ?></textarea>
+</div>
 
-            <div>
-                <div class="row">
-                    <div class="form-group col-md-12">
-                        <label for="endereco"><b><i>Endereço:</i></b></label>
-                        <div class="form-control" readonly><?= isset($dados['endereco_profissional']) ? htmlspecialchars($dados['endereco_profissional']) : "" ?></div>
-                    </div>
-
-                    <div class="form-group col-md-4">
-                        <label for="registro"><b><i>CRM:</i></b></label>
-                        <div class="form-control" readonly><?= isset($dados['registro_profissional']) ? htmlspecialchars($dados['registro_profissional']) : "" ?></div>
-                    </div>
-
-                    <div class="form-group col-md-4">
-                        <label for="orgao"><b><i>Órgão:</i></b></label>
-                        <div class="form-control" readonly><?= isset($dados['orgao_profissional']) ? htmlspecialchars($dados['orgao_profissional']) : "" ?></div>
-                    </div>
-            
-                    <div class="form-group col-md-4">
-                        <label for="especialidade"><b><i>Especialidade(s):</i></b></label>
-                        <div class="form-control" readonly><?= isset($dados['especialidades_profissional']) ? htmlspecialchars($dados['especialidades_profissional']) : "" ?></div>
-                    </div>
-                    </div>
+        <div class="row ">
+            <div class="col-xl-12 col-md-6 mt-3">
+                <label for="descricao">Descrição</label>
+                <textarea class="form-control bg-white" id="descricao" name="descricao" rows="3" maxlength="1000" required readonly><?= isset($dados['descricao']) ? htmlspecialchars($dados['descricao']) : "" ?></textarea>
+            </div>
+            <div class="col-xl-12 col-md-6 mt-3 mb-3">
+                <label for="acoes">Ações</label>
+                <textarea class="form-control bg-white" id="acoes" name="acoes" rows="3" maxlength="1000"  readonly><?= isset($dados['acoes']) ? htmlspecialchars($dados['acoes']) : "" ?></textarea>
             </div>
         </div>
     </div>
-    <br>
-    <div class="border p-3">
-        <div class="row">
-            <h4><b>DADOS DO ATENDIMENTO</b></h4>
-        </div>
-        <div class="row">
-            <div>
-                <div class="row">
-                    <div class="form-group col-md-4">
-                        <label for="data_atendimento"><b>Data do Atendimento:</b></label>
-                        <div class="form-control" readonly><?= isset($dados['data_atendimento']) ? htmlspecialchars($dados['data_atendimento']) : "" ?></div>
-                    </div>
-                    <div class="form-group col-md-4">
-                        <label for="situacao_atendimento"><b><i>Situação do Atendimento:</i></b></label>
-                        <div class="form-control" readonly><?= isset($dados['situacao_atendimento']) ? htmlspecialchars($dados['situacao_atendimento']) : "" ?></div>
-                    </div>
-                    <div class="form-group col-md-4">
-                        <label for="assunto"><b><i>Assunto:</i></b></label>
-                        <div class="form-control" readonly><?= isset($dados['assunto']) ? htmlspecialchars($dados['assunto']) : "" ?></div>
-                    </div>
-                </div>
-                <div class="row">
-                <div class="form-group col-md-12">
-                    <label for="descricao"><b><i>Descrição:</i></b></label>
-                    <div class="form-control custom-textarea" readonly><?= isset($dados['descricao']) ? htmlspecialchars($dados['descricao']) : "" ?></div>
-                </div>
-                    <div class="form-group col-md-6">
-                        <label for="acoes"><b><i>Ações:</i></b></label>
-                        <div class="form-control" readonly><?= isset($dados['acoes']) ? htmlspecialchars($dados['acoes']) : "" ?></div>
-                    </div>
-
-                    <div class="form-group col-md-6">
-                        <label for="veiculo_atendimento"><b><i>Veículo de Atendimento:</i></b></label>
-                        <div class="form-control" readonly><?= isset($dados['veiculo_atendimento']) ? htmlspecialchars($dados['veiculo_atendimento']) : "" ?></div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        </form>
         <br>
-    </div>
 </main>
-
+    <script>
+        $(document).ready(function() {
+            $('#cpf').mask('000.000.000-00', {reverse: true});
+        });
+    </script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="js/indexenviar.js"></script>
 </body>
-
 </html>
-
-
