@@ -19,7 +19,7 @@ im.registro as crm,
 im.orgao as orgao,
 im.especialidades as especialidade,
 a.veiculo_atendimento as veiculo,
-assuntos.assunto as assuntos_tratados,
+
 a.assunto as assunto,
 a.descricao as descricao,
 a.acoes as acoes
