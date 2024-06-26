@@ -14,7 +14,26 @@ document.addEventListener('DOMContentLoaded', function() {
         assunto12: ''
     };
 
-    let veiculo = '';
+    function formatarDataExibicao(data) {
+        if (!data) return '';
+        // Convertendo a data para formato ISO para garantir consistência
+        var dataObj = new Date(data + 'T00:00:00'); // Adicionando 'T00:00:00' para garantir a hora zero
+        var dia = dataObj.getDate().toString().padStart(2, '0');
+        var mes = (dataObj.getMonth() + 1).toString().padStart(2, '0');
+        var ano = dataObj.getFullYear();
+        return ano + '-' + mes + '-' + dia; // Formato yyyy-MM-dd
+    }
+
+    // Função para preencher os campos do formulário com os dados recebidos
+    function preencherCampos(data) {
+        document.getElementById('nome').value = data.nome || '';
+        document.getElementById('nascimento').value = formatarDataExibicao(data.data_nascimento) || '';
+        document.getElementById('celular').value = data.telefone || '';
+        document.getElementById('celulardois').value = data.telefone2 || '';
+        document.getElementById('email').value = data.email || '';
+        document.getElementById('registro').value = data.registro || '';
+        document.getElementById('endereco').value = data.endereco || '';
+        document.getElementById('especialidade').value = data.especialidades || '';
 
     function verificarCamposPreenchidos() {
         if (Object.values(assunto).some(campo => campo.trim() !== '')) {
@@ -28,68 +47,55 @@ document.addEventListener('DOMContentLoaded', function() {
         assunto.repasse = event.target.value;
         verificarCamposPreenchidos();
     });
+    console.log("CPF a ser enviado:", cpf); // Adicione esta linha para depuração
 
-    document.getElementById('assunto2').addEventListener('input', function(event) {
-        assunto.admissao = event.target.value;
-        verificarCamposPreenchidos();
-    });
+    // Função para verificar o CPF
+    function verificarCPF(cpf) {
+        $.ajax({
+            url: 'verificarcpf.php',
+            method: 'POST',
+            data: { cpf: cpf },
+            dataType: 'json',
+            success: function(response) {
+                console.log("Resposta da verificação do CPF:", response);
+                if (response.exists) {
+                    Swal.fire({
+                        title: "CPF já cadastrado",
+                        text: "O CPF informado já está registrado no sistema. As informações foram preenchidas.",
+                        icon: "info"
+                    });
 
-    document.getElementById('assunto3').addEventListener('input', function(event) {
-        assunto.atualizardados = event.target.value;
-        verificarCamposPreenchidos();
-    });
-    document.getElementById('assunto4').addEventListener('input', function(event) {
-        assunto.atualizardados = event.target.value;
-        verificarCamposPreenchidos();
-    });
-    document.getElementById('assunto5').addEventListener('input', function(event) {
-        assunto.atualizardados = event.target.value;
-        verificarCamposPreenchidos();
-    });
-    document.getElementById('assunto6').addEventListener('input', function(event) {
-        assunto.atualizardados = event.target.value;
-        verificarCamposPreenchidos();
-    });
-    document.getElementById('assunto7').addEventListener('input', function(event) {
-        assunto.atualizardados = event.target.value;
-        verificarCamposPreenchidos();
-    });
-    document.getElementById('assunto8').addEventListener('input', function(event) {
-        assunto.atualizardados = event.target.value;
-        verificarCamposPreenchidos();
-    });
-    document.getElementById('assunto9').addEventListener('input', function(event) {
-        assunto.atualizardados = event.target.value;
-        verificarCamposPreenchidos();
-    });
-    document.getElementById('assunto10').addEventListener('input', function(event) {
-        assunto.atualizardados = event.target.value;
-        verificarCamposPreenchidos();
-    });
-    document.getElementById('assunto11').addEventListener('input', function(event) {
-        assunto.atualizardados = event.target.value;
-        verificarCamposPreenchidos();
-    });
-    document.getElementById('assunto12').addEventListener('input', function(event) {
-        assunto.atualizardados = event.target.value;
-        verificarCamposPreenchidos();
-    });
+                    preencherCampos(response.data); // Preencher os campos com os dados existentes
 
+                    // Formatar e exibir data de nascimento no formato dia/mês/ano
+                    if (response.data && response.data.data_nascimento) {
+                        document.getElementById('nascimento').value = formatarDataExibicao(response.data.data_nascimento);
+                    }
+                } else {
+                    Swal.fire({
+                        title: "CPF disponível",
+                        text: "O CPF informado está disponível para cadastro.",
+                        icon: "success"
+                    });
 
-    document.getElementById('veiculo1').addEventListener('change', function(event) {
-        veiculo = event.target.value;
-    });
+                    limparCampos(); // Limpar os campos do formulário
+                }
+            },
+            error: function(error) {
+                Swal.fire({
+                    title: "Erro",
+                    text: "Ocorreu um erro ao verificar o CPF.",
+                    icon: "error"
+                });
+                console.error('Erro na verificação do CPF:', error);
+            }
+        });
+    }
 
-    document.getElementById('veiculo2').addEventListener('change', function(event) {
-        veiculo = event.target.value;
-    });
-
-    document.getElementById('veiculo3').addEventListener('change', function(event) {
-        veiculo = event.target.value;
-    });
-
-    document.getElementById('veiculo4').addEventListener('change', function(event) {
-        veiculo = event.target.value;
+    // Evento para enviar o formulário
+    var enviarButton = document.getElementById("enviarbutton");
+    enviarButton.addEventListener("click", function(event) {
+        enviarFormulario(event);
     });
 
     function enviarFormulario(event) {
@@ -103,6 +109,11 @@ document.addEventListener('DOMContentLoaded', function() {
         var celular = document.getElementById("celular").value || '';
         var celulardois = document.getElementById("celulardois").value || '';
         var email = document.getElementById("email").value || '';
+        var especialidade = document.getElementById("especialidade").value || '';
+        var registro = document.getElementById("registro").value || '';
+        var orgao = document.getElementById("orgao").value || '';
+        var date = document.getElementById("date").value || '';
+        var status = document.getElementById("status").value || '';
         var endereco = document.getElementById("endereco").value || '';
         var crm = document.getElementById("registro").value || '';
         var orgao = document.getElementById("orgao").value || '';
@@ -110,7 +121,28 @@ document.addEventListener('DOMContentLoaded', function() {
         var assunto = document.getElementById("assunto").value || '';
         var descricao = document.getElementById("descricao").value || '';
         var acoes = document.getElementById("acoes").value || '';
-        var acoes3 = document.getElementById("acoes3").value || '';
+        var assuntosselecionados = document.getElementById("selectedIds").value || '';
+        console.log("Assuntos de TRATADO:", assuntosselecionados);
+
+
+        var assuntoatendimento = document.getElementById("assuntoatendimento").value || '';
+        let veiculoselecionado = document.querySelector('input[name="veiculo"]:checked').value;
+        // Obter o valor do campo de texto "Outros" se estiver visível e concatenar
+        if (veiculoselecionado === 'Outros') {
+            veiculoselecionado += ': ' + document.getElementById('outro').value;
+        }
+        // Exemplo de uso:
+        console.log(veiculoselecionado);
+
+
+        
+        console.log("Assuntos de atendimento:", assuntoatendimento);
+        
+
+
+        // Obter o valor do elemento selecionado em situacao_atendimento
+        var situacao_atendimento = '';
+        var situacao_atendimento_elements = document.getElementsByName("situacao_atendimento");
         
         // Obter o valor do elemento selecionado em situacao_atendimento
         // var situacao_atendimento = '';
@@ -141,8 +173,7 @@ document.addEventListener('DOMContentLoaded', function() {
             descricao: descricao,
             acoes: acoes,
             cpf: cpf,
-            veiculo: veiculo,
-            acoes3 : acoes3
+            assuntoatendimento:assuntoatendimento
         });
 
         var camposObrigatorios = [
@@ -158,7 +189,10 @@ document.addEventListener('DOMContentLoaded', function() {
             { campo: assunto, nome: "Assunto" },
             { campo: descricao, nome: "Descrição" },
             { campo: acoes, nome: "Ações" },
-            { campo: cpf, nome: "CPF" }
+            { campo: cpf, nome: "CPF" },
+            { campo: assuntoatendimento, nome: "Assunto Atendimento" }
+
+
         ];
 
         var camposVazios = camposObrigatorios.filter(function(campo) {
@@ -182,19 +216,7 @@ document.addEventListener('DOMContentLoaded', function() {
             url: 'enviarindexbanco.php',
             method: 'POST',
             data: {
-                assunto1: assunto.assunto1,
-                assunto2: assunto.assunto2,
-                assunto3: assunto.assunto3,
-                assunto4: assunto.assunto4,
-                assunto5: assunto.assunto5,
-                assunto6: assunto.assunto6,
-                assunto7: assunto.assunto7,
-                assunto8: assunto.assunto8,
-                assunto9: assunto.assunto9,
-                assunto10: assunto.assunto10,
-                assunto11: assunto.assunto11,
-                assunto12: assunto.assunto12,
-                date: date,
+                assuntoatendimento: assuntoatendimento,
                 status: status,
                 cpf: cpf,
                 nome: nome,
@@ -209,7 +231,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 assunto: assunto,
                 descricao: descricao,
                 acoes: acoes,
-                veiculo: veiculo
+                veiculoselecionado: veiculoselecionado, // Enviar a string JSON
+                date :date ,
+                assuntosselecionados:assuntosselecionados
             },
             success: function(response) {
                 Swal.fire({
@@ -227,113 +251,40 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.error('Erro na requisição AJAX:', error);
             }
         });
-    }
+    }}
+});
 
-    var enviarButton = document.getElementById("enviarbutton");
-    enviarButton.addEventListener("click", function(event) {
-        enviarFormulario(event);
-    });
-
-    // Evento para verificar CPF ao pressionar Enter no campo CPF
-    document.getElementById('cpf').addEventListener('keydown', function(event) {
-        if (event.key === 'Enter') {
-            event.preventDefault();
-            var cpf = event.target.value.trim();
-            console.log("CPF digitado:", cpf);
-
-            if (cpf !== '') {
-                verificarCPF(cpf);
-            }
-        }
-    });
-
-    // Função para verificar o CPF
-function verificarCPF(cpf) {
-    $.ajax({
-        url: 'verificarcpf.php',
-        method: 'POST',
-        data: { cpf: cpf },
-        dataType: 'json',
-        success: function(response) {
-            console.log("Resposta da verificação do CPF:", response);
-            if (response.exists) {
-                Swal.fire({
-                    title: "CPF já cadastrado",
-                    text: "O CPF informado já está registrado no sistema. As informações foram preenchidas.",
-                    icon: "info"
-                });
-
-                preencherCampos(response.data); // Preencher os campos com os dados existentes
-            } else {
-               
-            }
-        },
-        error: function(error) {
-            Swal.fire({
-                title: "Erro",
-                text: "Ocorreu um erro ao verificar o CPF.",
-                icon: "error"
-            });
-            console.error('Erro na verificação do CPF:', error);
-        }
-    });
-}
-
-    // Função para preencher os campos do formulário
-function preencherCampos(data) {
-
-    document.getElementById('nome').value = data.nome || '';
-    document.getElementById('nascimento').value = formatarDataParaCampo(data.nascimento) || '';
-    console.log("Data de nascimento recebida:", data.nascimento);
-    document.getElementById('celular').value = data.telefone || '';
-    document.getElementById('celulardois').value = data.telefone2 || '';
-    document.getElementById('email').value = data.email || '';
-    document.getElementById('endereco').value = data.endereco || '';
-    document.getElementById('registro').value = data.crm || '';
-    document.getElementById('assunto').value = data.assunto || '';
-    document.getElementById('descricao').value = data.descricao || '';
-    document.getElementById('acoes').value = data.acoes || '';
-    document.getElementById('especialidade').value = data.especialidade || '';
-
-    
-    // Preencher o campo 'orgao'
-    var orgaoSelect = document.getElementById('orgao');
-    for (var i = 0; i < orgaoSelect.options.length; i++) {
-        if (orgaoSelect.options[i].value === data.orgao) {
-            orgaoSelect.selectedIndex = i;
-            break;
-        }
-    }
-
-}
-
-
-    // Função para limpar os campos do formulário
-    function limparCampos() {
-        document.getElementById('nome').value = '';
-        document.getElementById('nascimento').value = '';
-        document.getElementById('celular').value = '';
-        document.getElementById('celulardois').value = '';
-        document.getElementById('email').value = '';
-        document.getElementById('especialidade').value = '';
-        document.getElementById('registro').value = '';
-        document.getElementById('orgao').value = '';
-        document.getElementById('assunto').value = '';
-        document.getElementById('descricao').value = '';
-        document.getElementById('acoes').value = '';
-    }
-
-    function formatarDataParaCampo(data) {
-        if (!data) return '';
-    
-        var partes = data.split('-');
-        if (partes.length !== 3) return '';
-    
-        var ano = partes[0];
-        var mes = partes[1];
-        var dia = partes[2];
-    
-   
-        return `${ano}-${mes}-${dia}`;
+document.getElementById('enviarbutton').addEventListener('click', function(event) {
+    if (!validateNumbers()) {
+        event.preventDefault();
     }
 });
+
+function validateNumbers() {
+    const celular = document.getElementById('celular');
+    const celulardois = document.getElementById('celulardois');
+    const celularFeedback = document.getElementById('celularFeedback');
+    const celulardoisFeedback = document.getElementById('celulardoisFeedback');
+
+    let isValid = true;
+
+    if (celular.value.length !== 11) {
+        celular.classList.add('is-invalid');
+        celularFeedback.style.display = 'block';
+        isValid = false;
+    } else {
+        celular.classList.remove('is-invalid');
+        celularFeedback.style.display = 'none';
+    }
+
+    if (celulardois.value.length !== 11) {
+        celulardois.classList.add('is-invalid');
+        celulardoisFeedback.style.display = 'block';
+        isValid = false;
+    } else {
+        celulardois.classList.remove('is-invalid');
+        celulardoisFeedback.style.display = 'none';
+    }
+
+    return isValid;
+}
