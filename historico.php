@@ -80,7 +80,7 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
     <div class="accordion" id="accordionPanelsStayOpenExample">
         <div class="accordion-item">
             <h2 class="accordion-header">
-                <button class="accordion-button shadow-sm text-white text-center" type="button" data-toggle="collapse" data-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne" style="background-color: #1c8f69">
+                <button class="accordion-button shadow-sm text-white text-center" type="button" data-toggle="collapse" data-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne" style="background-color: #001f3f">
                     <i id="filter" class="fa-solid fa-filter mb-1"></i>
                     <h5>Filtro - Atendimentos</h5>
                 </button>
@@ -124,6 +124,12 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
                     <br>
                     <div class="d-flex justify-content-center">
                         <button class="btn btn-primary" id="applyFilters" onclick="applyFilters()">Aplicar Filtros</button>
+                        <style>
+                            #applyFilters {
+                                background-color: #001f3f;
+                                border: 2px solid #001f3f;
+                            }
+                        </style>
                     </div>
                 </div>
             </div>
@@ -148,7 +154,7 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
     function getBadgeClass($situacao) {
         switch ($situacao) {
             case 'Aberto':
-                return 'badge bg-success';  // Correção: "Aberto" deve ser verde
+                return 'badge bg-success';
             case 'Andamento':
                 return 'badge bg-warning';
             case 'Desconhecido':
@@ -158,7 +164,7 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
         }
     }
 
-    // Modificar a query para incluir o JOIN entre as tabelas "profissionais" e "atendimento"
+
     $sql_profissionais = "
     SELECT p.id, p.nome, p.cpf, p.telefone, p.telefone2, p.email, p.endereco, p.registro, p.especialidades, p.orgao, a.id AS id_atendimento, a.assunto, a.situacao, a.data, a.descricao, a.acoes, a.veiculo_atendimento
     FROM profissionais p
@@ -184,12 +190,11 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
             echo "<td class='text-left'>" . $assunto . "</td>";
             echo "<td class='text-left'><span class='$badge_class'>" . $situacao . "</span></td>";
             echo "<td class='text-center'>
-                <button class='btn btn-primary' onclick='redirectToDetails({$row['id_atendimento']})'>
+                <button class='btn btn-primary' onclick='redirectToDetails({$row['id_atendimento']})' style='background-color: #001f3f; border: none;'>
                     <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' width='20' height='20'>
                         <path fill='#ffffff' d='M471.6 21.7c-21.9-21.9-57.3-21.9-79.2 0L362.3 51.7l97.9 97.9 30.1-30.1c21.9-21.9 21.9-57.3 0-79.2L471.6 21.7zm-299.2 220c-6.1 6.1-10.8 13.6-13.5 21.9l-29.6 88.8c-2.9 8.6-.6 18.1 5.8 24.6s15.9 8.7 24.6 5.8l88.8-29.6c8.2-2.7 15.7-7.4 21.9-13.5L437.7 172.3 339.7 74.3 172.4 241.7zM96 64C43 64 0 107 0 160V416c0 53 43 96 96 96H352c53 0 96-43 96-96V320c0-17.7-14.3-32-32-32s-32 14.3-32 32v96c0 17.7-14.3 32-32 32H96c-17.7 0-32-14.3-32-32V160c0-17.7 14.3-32 32-32h96c17.7 0 32-14.3 32-32s-14.3-32-32-32H96z'/>
                     </svg>
-                </button>
-            </td>";
+                </button></td>";
             echo "</tr>";
             
             echo "<div class='modal fade' id='detalhesModal{$row['id']}' tabindex='-1' role='dialog' aria-labelledby='detalhesModalLabel' aria-hidden='true'>";
