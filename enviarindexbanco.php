@@ -35,7 +35,7 @@ function enviarParaBanco($conn, $date, $status, $nome, $registro, $orgao, $celul
             }
         }
     }
-
+echo($assuntosselecionados);
     return $sucesso;
 }
 
@@ -46,8 +46,6 @@ $conn = new mysqli($dbhost, $dbuser, $dbpass, $dbname);
 if ($conn->connect_error) {
     die("Falha na conexão: " . $conn->connect_error);
 }
-echo($assuntosselecionados );
-
 // Obter dados do formulário via POST
 $date = isset($_POST['date']) ? $_POST['date'] : null;
 $tipo_atendimento = isset($_POST['tipo_atendimento']) ? $_POST['tipo_atendimento'] : null;
@@ -68,6 +66,7 @@ $cpf = isset($_POST['cpf']) ? $_POST['cpf'] : null;
 $veiculoselecionado = isset($_POST['veiculoselecionado']) ? $_POST['veiculoselecionado'] : null;
 $assuntoatendimento = isset($_POST['assuntoatendimento']) ? $_POST['assuntoatendimento'] : null;
 $assuntosselecionados = isset($_POST['assuntosselecionados']) ? $_POST['assuntosselecionados'] : null;
+
 
 // Enviar dados para o banco de dados
 if (enviarParaBanco($conn, $date, $status, $nome, $registro, $orgao, $celular, $celulardois, $nascimento, $email, $endereco, $especialidade, $assunto, $descricao, $acoes, $cpf, $tipo_atendimento, $veiculoselecionado, $assuntoatendimento, $assuntosselecionados)) {

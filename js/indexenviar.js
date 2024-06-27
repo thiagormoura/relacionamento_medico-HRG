@@ -142,7 +142,7 @@ document.addEventListener('DOMContentLoaded', function() {
         var descricao = document.getElementById("descricao").value || '';
         var acoes = document.getElementById("acoes").value || '';
         var assuntosselecionados = document.getElementById("selectedIds").value || '';
-        console.log("Assuntos de TRATADO:", assuntosselecionados);
+       
 
 
         var assuntoatendimento = document.getElementById("assuntoatendimento").value || '';
@@ -160,19 +160,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
 
 
-        // Obter o valor do elemento selecionado em situacao_atendimento
-        var situacao_atendimento = '';
-        var situacao_atendimento_elements = document.getElementsByName("situacao_atendimento");
         
-        for (var i = 0; i < situacao_atendimento_elements.length; i++) {
-            if (situacao_atendimento_elements[i].checked) {
-                situacao_atendimento = situacao_atendimento_elements[i].value;
-                break;
-            }
-        }
-
-        console.log("Situação Atendimento selecionada:", situacao_atendimento);
-
         console.log({
             assunto: assunto,
             date: date,
