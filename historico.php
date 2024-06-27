@@ -166,7 +166,7 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
 
 
     $sql_profissionais = "
-    SELECT p.id, p.nome, p.cpf, p.telefone, p.telefone2, p.email, p.endereco, p.estados, p.registro, p.especialidades, p.orgao, a.id AS id_atendimento, a.assunto, a.situacao, a.data, a.descricao, a.acoes, a.veiculo_atendimento
+    SELECT p.id, p.nome, p.cpf, p.telefone, p.telefone2, p.email, p.endereco, p.registro, p.especialidades, p.orgao, a.id AS id_atendimento, a.assunto, a.situacao, a.data, a.descricao, a.acoes, a.veiculo_atendimento
     FROM profissionais p
     LEFT JOIN atendimento a ON p.id = a.profissional
     ORDER BY p.id ASC";
