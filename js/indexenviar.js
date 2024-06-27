@@ -84,11 +84,7 @@ document.addEventListener('DOMContentLoaded', function() {
             success: function(response) {
                 //console.log("Resposta da verificação do CPF:", response);
                 if (response.exists) {
-                    Swal.fire({
-                        title: "CPF já cadastrado",
-                        text: "O CPF informado já está registrado no sistema. As informações foram preenchidas.",
-                        icon: "info"
-                    });
+                  
 
                     preencherCampos(response.data); // Preencher os campos com os dados existentes
 
@@ -244,9 +240,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     text: response,
                     icon: "success"
                 }).then(function() {
-                    window.location.reload(); // Recarregar a página
+                    window.location.reload(); 
                 });
-                
+                setTimeout(function() {
+                    window.location.href = 'historico.php'
+                })
+    
             },
             error: function(error) {
                 Swal.fire({

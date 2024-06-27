@@ -116,7 +116,7 @@ include("conexao.php")
                     <div class="border p-3">
                         <div class="row ">
                             <h4><b>DADOS DO PROFISSIONAL</b></h4>
-                            <div class="col-xl-2 col-md-6 mt-2">
+                            <div class="col-xl-3 col-md-6 mt-2">
                                 <label for="cpf">CPF</label>
                                 <input type="text" class="form-control" id="cpf" name="cpf" placeholder="">
     
@@ -147,14 +147,14 @@ include("conexao.php")
 
                             <div class="col-xl-2 col-md-6 mt-2">
                                 <label for="celular">Celular 1</label>
-                                <input type="tel" class="form-control" id="celular" name="celular" required placeholder="">
+                                <input type="tel" class="form-control" id="celular" name="celular" maxlength="11" required placeholder="">
                             </div>
 
                             <div class="col-xl-2 col-md-6 mt-2">
                                 <label for="celulardois">Celular 2</label>
-                                <input type="tel" class="form-control" id="celulardois" name="celulardois" required placeholder="">
+                                <input type="tel" class="form-control" id="celulardois" name="celulardois" maxlength="11" required placeholder="">
                             </div>
-                            <div class="col-xl-3 col-md-6 mt-2">
+                            <div class="col-xl-4 col-md-6 mt-2">
                                 <label for="email">E-mail</label>
                                 <input type="email" class="form-control" id="email" name="email" required placeholder="Digite um e-mail valido">
                                 
@@ -167,11 +167,11 @@ include("conexao.php")
 
 
                             <div class="row">
-                                <div class="col-xl-2 col-md-6 mt-2">
+                                <div class="col-xl-3 col-md-6 mt-2">
                                     <label for="registro">CRM</label>
                                     <input type="text" class="form-control" id="registro" name="registro" maxlength="6" required>
                                 </div>
-                                <div class="col-xl-2 col-md-6 mt-2">
+                                <div class="col-xl-3 col-md-6 mt-2">
                                     <div class="form-group">
                                         <label for="orgao">Órgão</label>
                                         <select class="form-control" id="orgao" name="orgao" required>
@@ -208,9 +208,9 @@ include("conexao.php")
                                 </div>
                                 </label>
 
-                                <div class="col-xl-2 col-md-6 mt-2 mb-4">
+                                <div class="col-xl-6 col-md-6 mt-2 mb-4">
                                     <label for="especialidade">Especialidade(s)</label>
-                                    <input type="text" class="form-control" id="especialidade" name="especialidade" maxlength="12" required>
+                                    <input type="text" class="form-control" id="especialidade" name="especialidade" maxlength="30" required>
                                 </div>
 
                             </div>
@@ -375,7 +375,12 @@ include("conexao.php")
 
                     <div class=" container_fluid d-flex justify-content-center align-items-center mt-4">
                         <button type="submit" id="enviarbutton" class="btn btn-primary">Enviar</button>
+                        <button type="submit" id="irparahistorico" class="btn btn-success ml-5" onclick="window.location.href='historico.php'">Historico</button>
 
+
+                    </div>
+                    <div class=" container_fluid d-flex justify-content-center align-items-center mt-4">
+                      
                     </div>
 
 
