@@ -6,36 +6,44 @@ $dbuser = "root";
 $dbpass = "";
 
 // Função para enviar dados para o banco de dados
-function enviarParaBanco($conn, $date, $status, $nome, $registro, $orgao, $celular, $celulardois, $nascimento, $email, $endereco, $especialidade, $assunto, $descricao, $acoes, $cpf, $tipo_atendimento, $veiculoselecionado, $assuntoatendimento, $assuntosselecionados) {
+function enviarParaBanco($conn, $date, $status, $nome, $registro, $orgao, $celular, $celulardois, $nascimento, $email, $endereco, $especialidade, $assunto, $descricao, $acoes, $cpf, $tipo_atendimento, $veiculoselecionado, $assuntoatendimento, $assuntosselecionados_array) {
     $sucesso = true;
 
     // Inserir dados na tabela profissionais
-    $sql_profissionais = "INSERT INTO profissionais (data_nascimento, cpf, email, telefone, telefone2, nome, registro, especialidades, orgao, endereco) VALUES ('$nascimento', '$cpf', '$email', '$celular', '$celulardois', '$nome', '$registro', '$especialidade', '$orgao', '$endereco')";
-    if ($conn->query($sql_profissionais) !== TRUE) {
-        echo "Erro ao inserir dados na tabela profissionais: " . $conn->error . "<br>";
+    $stmt_profissionais = $conn->prepare("INSERT INTO profissionais (data_nascimento, cpf, email, telefone, telefone2, nome, registro, especialidades, orgao, endereco) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt_profissionais->bind_param("ssssssssss", $nascimento, $cpf, $email, $celular, $celulardois, $nome, $registro, $especialidade, $orgao, $endereco);
+
+    if (!$stmt_profissionais->execute()) {
+        echo "Erro ao inserir dados na tabela profissionais: " . $stmt_profissionais->error . "<br>";
         $sucesso = false;
     } else {
-        // Obter o ID inserido na tabela profissionais
-        $id_profissional = $conn->insert_id;
 
-        // Inserir dados na tabela atendimento
-        $sql_atendimento = "INSERT INTO atendimento (profissional, assunto , acoes , descricao , situacao , veiculo_atendimento, data) VALUES ('$id_profissional', '$assuntoatendimento', '$acoes', '$descricao', '$status', '$veiculoselecionado', '$date')";
-        if ($conn->query($sql_atendimento) !== TRUE) {
-            echo "Erro ao inserir dados na tabela atendimento: " . $conn->error . "<br>";
+        print_r($assuntosselecionados_array);
+        $id_profissional = $stmt_profissionais->insert_id;
+
+        $stmt_atendimento = $conn->prepare("INSERT INTO atendimento (profissional, assunto, acoes, descricao, situacao, veiculo_atendimento, data) VALUES (?, ?, ?, ?, ?, ?, ?)");
+        $stmt_atendimento->bind_param("issssss", $id_profissional, $assuntoatendimento, $acoes, $descricao, $status, $veiculoselecionado, $date);
+
+        if (!$stmt_atendimento->execute()) {
+            echo "Erro ao inserir dados na tabela atendimento: " . $stmt_atendimento->error . "<br>";
             $sucesso = false;
         } else {
             // Obter o ID inserido na tabela atendimento
-            $id_atendimento = $conn->insert_id;
+            $id_atendimento = $stmt_atendimento->insert_id;
 
-            // Inserir dados na tabela atendimento_has_assunto
-            $sql_atendimento_has_assunto = "INSERT INTO atendimento_has_assunto (atendimento,  assunto) VALUES ('$id_atendimento ' , '$assuntosselecionados')";
-            if ($conn->query($sql_atendimento_has_assunto) !== TRUE) {
-                echo "Erro ao inserir dados na tabela atendimento_has_assunto: " . $conn->error . "<br>";
-                $sucesso = false;
+            foreach ($assuntosselecionados_array as $assuntosse) {
+                // Inserir dados na tabela atendimento_has_assunto
+                $stmt_atendimento_has_assunto = $conn->prepare("INSERT INTO atendimento_has_assunto (atendimento, assunto) VALUES (?, ?)");
+                $stmt_atendimento_has_assunto->bind_param("is", $id_atendimento, $assuntosse);
+
+                if (!$stmt_atendimento_has_assunto->execute()) {
+                    echo "Erro ao inserir dados na tabela atendimento_has_assunto: " . $stmt_atendimento_has_assunto->error . "<br>";
+                    $sucesso = false;
+                }
             }
         }
     }
-echo($assuntosselecionados);
+
     return $sucesso;
 }
 
@@ -46,30 +54,40 @@ $conn = new mysqli($dbhost, $dbuser, $dbpass, $dbname);
 if ($conn->connect_error) {
     die("Falha na conexão: " . $conn->connect_error);
 }
-// Obter dados do formulário via POST
-$date = isset($_POST['date']) ? $_POST['date'] : null;
-$tipo_atendimento = isset($_POST['tipo_atendimento']) ? $_POST['tipo_atendimento'] : null;
-$celulardois = isset($_POST['celulardois']) ? $_POST['celulardois'] : null;
-$status = isset($_POST['status']) ? $_POST['status'] : null;
-$nome = isset($_POST['nome']) ? $_POST['nome'] : null;
-$registro = isset($_POST['registro']) ? $_POST['registro'] : null;
-$orgao = isset($_POST['orgao']) ? $_POST['orgao'] : null;
-$celular = isset($_POST['celular']) ? $_POST['celular'] : null;
-$nascimento = isset($_POST['nascimento']) ? $_POST['nascimento'] : null;
-$email = isset($_POST['email']) ? $_POST['email'] : null;
-$endereco = isset($_POST['endereco']) ? $_POST['endereco'] : null;
-$especialidade = isset($_POST['especialidade']) ? $_POST['especialidade'] : null;
-$assunto = isset($_POST['assunto']) ? $_POST['assunto'] : null;
-$descricao = isset($_POST['descricao']) ? $_POST['descricao'] : null;
-$acoes = isset($_POST['acoes']) ? $_POST['acoes'] : null;
-$cpf = isset($_POST['cpf']) ? $_POST['cpf'] : null;
-$veiculoselecionado = isset($_POST['veiculoselecionado']) ? $_POST['veiculoselecionado'] : null;
-$assuntoatendimento = isset($_POST['assuntoatendimento']) ? $_POST['assuntoatendimento'] : null;
-$assuntosselecionados = isset($_POST['assuntosselecionados']) ? $_POST['assuntosselecionados'] : null;
 
+// Obter dados do formulário via POST
+$date = $_POST['date'] ?? null;
+$tipo_atendimento = $_POST['tipo_atendimento'] ?? null;
+$celulardois = $_POST['celulardois'] ?? null;
+$status = $_POST['status'] ?? null;
+$nome = $_POST['nome'] ?? null;
+$registro = $_POST['registro'] ?? null;
+$orgao = $_POST['orgao'] ?? null;
+$celular = $_POST['celular'] ?? null;
+$nascimento = $_POST['nascimento'] ?? null;
+$email = $_POST['email'] ?? null;
+$endereco = $_POST['endereco'] ?? null;
+$especialidade = $_POST['especialidade'] ?? null;
+$assunto = $_POST['assunto'] ?? null;
+$descricao = $_POST['descricao'] ?? null;
+$acoes = $_POST['acoes'] ?? null;
+$cpf = $_POST['cpf'] ?? null;
+$veiculoselecionado = $_POST['veiculoselecionado'] ?? null;
+$assuntoatendimento = $_POST['assuntoatendimento'] ?? null;
+$assuntosselecionados_array = $_POST['assuntosselecionados_array'] ?? [];
+
+if (!is_array($assuntosselecionados_array)) {
+    echo "Erro: assuntosselecionados não é um array.<br>";
+    print_r($assuntosselecionados_array);
+    exit;
+}
+
+echo "<pre>";
+print_r($assuntosselecionados_array);
+echo "</pre>";
 
 // Enviar dados para o banco de dados
-if (enviarParaBanco($conn, $date, $status, $nome, $registro, $orgao, $celular, $celulardois, $nascimento, $email, $endereco, $especialidade, $assunto, $descricao, $acoes, $cpf, $tipo_atendimento, $veiculoselecionado, $assuntoatendimento, $assuntosselecionados)) {
+if (enviarParaBanco($conn, $date, $status, $nome, $registro, $orgao, $celular, $celulardois, $nascimento, $email, $endereco, $especialidade, $assunto, $descricao, $acoes, $cpf, $tipo_atendimento, $veiculoselecionado, $assuntoatendimento, $assuntosselecionados_array)) {
     echo "Dados enviados com sucesso para o banco de dados.";
 } else {
     echo "Erro ao enviar dados para o banco de dados.";

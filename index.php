@@ -207,6 +207,7 @@ include("conexao.php")
                     </div>
                     <br>
 
+                    
 
                     <div class="col-xl-7 col-md-6 mt-4 mb-5">
                         <label for="orgao">Veículo de manifestação</label>
@@ -278,18 +279,18 @@ include("conexao.php")
                     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
 
 
-                    <div class="container">
+                    <div class="row">
                         <title>Assuntos Tratados</title>
 
-                        <div class="col-12 ">
+                        <div class="col">
                             <label for="assuntotratado">Assuntos Tratados</label>
-                            <select class="form-control" id="assuntotratado" name="assunto[]" multiple>
+                            <select class="form-controlcol" id="assuntotratado" name="assunto[]" multiple>
                                 <optgroup label="Selecione Assunto">
                                     <?php
                                     if ($result->num_rows > 0) {
                                         // Output data de cada linha
                                         while ($row = $result->fetch_assoc()) {
-                                            echo "<option value='" . $row["id"] . "'>" . $row["assunto"] . "</option>";
+                                            echo "<option id='valoresoption' value='" . $row["id"] . "'>" . $row["assunto"] . "</option>";
                                         }
                                     } else {
                                         echo "<option value=''>Nenhum assunto encontrado</option>";
@@ -320,8 +321,12 @@ include("conexao.php")
 
                                     element.addEventListener('change', function() {
                                         const selectedValues = Array.from(element.selectedOptions).map(option => option.value);
+                                        // document.getElementById('valoresoption').value = selectedValues.join(',');
                                         document.getElementById('selectedIds').value = selectedValues.join(',');
+
+
                                         console.log(selectedIds)
+
                                     });
                                 });
                             </script>

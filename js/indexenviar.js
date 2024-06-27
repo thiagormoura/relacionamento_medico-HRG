@@ -65,14 +65,14 @@ document.addEventListener('DOMContentLoaded', function() {
         if (event.key === 'Enter') {
             event.preventDefault();
             var cpf = event.target.value.trim();
-            console.log("CPF digitado:", cpf);
+            //console.log("CPF digitado:", cpf);
 
             if (cpf !== '') {
                 verificarCPF(cpf);
             }
         }
     });
-    console.log("CPF a ser enviado:", cpf); // Adicione esta linha para depuração
+    //console.log("CPF a ser enviado:", cpf); // Adicione esta linha para depuração
 
     // Função para verificar o CPF
     function verificarCPF(cpf) {
@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', function() {
             data: { cpf: cpf },
             dataType: 'json',
             success: function(response) {
-                console.log("Resposta da verificação do CPF:", response);
+                //console.log("Resposta da verificação do CPF:", response);
                 if (response.exists) {
                     Swal.fire({
                         title: "CPF já cadastrado",
@@ -142,6 +142,9 @@ document.addEventListener('DOMContentLoaded', function() {
         var descricao = document.getElementById("descricao").value || '';
         var acoes = document.getElementById("acoes").value || '';
         var assuntosselecionados = document.getElementById("selectedIds").value || '';
+
+        var assuntosselecionados_array = assuntosselecionados.split(",");
+        console.log(typeof assuntosselecionados_array);
        
 
 
@@ -152,31 +155,31 @@ document.addEventListener('DOMContentLoaded', function() {
             veiculoselecionado += ': ' + document.getElementById('outro').value;
         }
         // Exemplo de uso:
-        console.log(veiculoselecionado);
+        //console.log(veiculoselecionado);
 
 
         
-        console.log("Assuntos de atendimento:", assuntoatendimento);
+        //console.log("Assuntos de atendimento:", assuntoatendimento);
         
 
 
         
-        console.log({
-            assunto: assunto,
-            date: date,
-            nome: nome,
-            crm: registro,
-            orgao: orgao,
-            celular: celular,
-            celulardois: celulardois,
-            nascimento: nascimento,
-            email: email,
-            especialidade: especialidade,
-            descricao: descricao,
-            acoes: acoes,
-            cpf: cpf,
-            assuntoatendimento:assuntoatendimento
-        });
+        // console.log({
+        //     assunto: assunto,
+        //     date: date,
+        //     nome: nome,
+        //     crm: registro,
+        //     orgao: orgao,
+        //     celular: celular,
+        //     celulardois: celulardois,
+        //     nascimento: nascimento,
+        //     email: email,
+        //     especialidade: especialidade,
+        //     descricao: descricao,
+        //     acoes: acoes,
+        //     cpf: cpf,
+        //     assuntoatendimento:assuntoatendimento
+        // });
 
         var camposObrigatorios = [
             { campo: nome, nome: "Nome" },
@@ -232,7 +235,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 acoes: acoes,
                 veiculoselecionado: veiculoselecionado, // Enviar a string JSON
                 date :date ,
-                assuntosselecionados:assuntosselecionados
+                assuntosselecionados_array:assuntosselecionados_array
             },
             success: function(response) {
                 Swal.fire({
