@@ -142,26 +142,21 @@ document.addEventListener('DOMContentLoaded', function() {
         var descricao = document.getElementById("descricao").value || '';
         var acoes = document.getElementById("acoes").value || '';
         var assuntosselecionados = document.getElementById("selectedIds").value || '';
-       
-
-
         var assuntoatendimento = document.getElementById("assuntoatendimento").value || '';
+        
         let veiculoselecionado = document.querySelector('input[name="veiculo"]:checked').value;
         // Obter o valor do campo de texto "Outros" se estiver visível e concatenar
         if (veiculoselecionado === 'Outros') {
             veiculoselecionado += ': ' + document.getElementById('outro').value;
         }
         // Exemplo de uso:
-        console.log(veiculoselecionado);
+        console.log("o veiculo selecionado foi:",veiculoselecionado);
 
 
         
-        console.log("Assuntos de atendimento:", assuntoatendimento);
-        
-
-
         
         console.log({
+            assuntoatendimento:assuntoatendimento,
             assunto: assunto,
             date: date,
             nome: nome,
@@ -239,7 +234,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     title: "Cadastro realizado com sucesso!",
                     text: response,
                     icon: "success"
+                }).then(function() {
+                    window.location.reload(); // Recarregar a página
                 });
+                
             },
             error: function(error) {
                 Swal.fire({

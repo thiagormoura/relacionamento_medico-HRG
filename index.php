@@ -63,10 +63,10 @@ include("conexao.php")
             <form id="formulario_index" method="post" action="/seu_script_php.php">
 
                 <div class="row">
-                    <div class="col-xl-2 col-md-6 mb-5">
+                    <div class="col-xl-3 col-md-6 mb-5">
                         <div class="form-group">
                             <label for="date">Data</label>
-                            <input type="date" class="form-control" id="date" name="date" min="<?= date('Y-m-d') ?>">
+                            <input type="date" class="form-control" id="date" name="date" onkeydown="return false; " min="<?= date('Y-m-d') ?>">
                         </div>
                         <script>
                             document.addEventListener("DOMContentLoaded", function() {
@@ -90,7 +90,7 @@ include("conexao.php")
                             });
                         </script>
                     </div>
-                    <div class="col-xl-2 col-md-6 mb-5">
+                    <div class="col-xl-3 col-md-6 mb-5">
                         <div class="form-group">
                             <label for="status">Status</label>
                             <select class="form-control" id="status" name="status" required>
@@ -125,28 +125,35 @@ include("conexao.php")
                             <div class="col-xl-3 col-md-6 mt-2">
                                 <div class="form-group">
                                     <label for="nascimento">Data de Nascimento</label>
-                                    <input type="date" class="form-control" id="nascimento" name="nascimento">
+                                    <input type="date" class=" form-control " id="nascimento" name="nascimento" onkeydown="return false; ">
                                 </div>
-
+                                <script> document.addEventListener('DOMContentLoaded', function() {
+        var dataInput = document.getElementById('nascimento');
+        var hoje = new Date();
+        var anoMax = hoje.getFullYear() - 18;
+        var mes = ('0' + (hoje.getMonth() + 1)).slice(-2);
+        var dia = ('0' + hoje.getDate()).slice(-2);
+        var dataMax = anoMax + '-' + mes + '-' + dia;
+        dataInput.setAttribute('max', dataMax);
+    });
+</script>
 
                             </div>
 
 
                             <div class="col-xl-2 col-md-6 mt-2">
                                 <label for="celular">Celular 1</label>
-                                <input type="tel" class="form-control" id="celular" name="celular" required placeholder="(99) 9 9999-9999">
+                                <input type="tel" class="form-control" id="celular" name="celular" required placeholder="">
                             </div>
 
                             <div class="col-xl-2 col-md-6 mt-2">
                                 <label for="celulardois">Celular 2</label>
-                                <input type="tel" class="form-control" id="celulardois" name="celulardois" required placeholder="(99) 9 9999-9999">
+                                <input type="tel" class="form-control" id="celulardois" name="celulardois" required placeholder="">
                             </div>
                             <div class="col-xl-3 col-md-6 mt-2">
                                 <label for="email">E-mail</label>
-                                <input type="email" class="form-control" id="email" name="email" required>
-                                <div class="invalid-feedback">
-                                    Por favor, insira um e-mail válido.
-                                </div>
+                                <input type="email" class="form-control" id="email" name="email" required placeholder="Digite um e-mail valido">
+                                
                             </div>
                             <div class="col-xl-4 col-md-6 mt-2">
                                 <label for="endereco">Endereço</label>
@@ -334,14 +341,14 @@ include("conexao.php")
 
                     <div class="border p-3 mt-4">
                         <h4><b>DESCRIÇÃO DO ATENDIMENTO</b></h4>
-                        <div class="col-xl-12 col-md-6 mt-3">
-                            <label for="assunto">Assunto</label>
-                            <textarea class="form-control custom-textarea2" id="assuntoatendimento" name="assunto atendimento" rows="1" maxlength="1000"></textarea>
-                        </div>
+                       
 
 
                         <div class="row ">
-
+ <div class="col-xl-12 col-md-6 mt-3">
+                            <label for="assunto">Assunto</label>
+                            <textarea class="form-control custom-textarea2" id="assuntoatendimento" name="assunto atendimento" rows="1" maxlength="1000"></textarea>
+                        </div>
                             <div class="col-xl-12 col-md-6 mt-3">
                                 <label for="descricao">Descrição</label>
                                 <textarea class="form-control" id="descricao" name="descricao" rows="3" maxlength="1000" required></textarea>
