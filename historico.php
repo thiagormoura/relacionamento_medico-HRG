@@ -78,7 +78,7 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
 
 <main class="container-fluid d-flex justify-content-center align-items-center">
 <div class="form-group col-10 mt-5">
-    <div class="accordion" id="accordionPanelsStayOpenExample">
+    <div class="accordion shadow" id="accordionPanelsStayOpenExample">
         <div class="accordion-item">
             <h2 class="accordion-header">
                 <button class="accordion-button shadow-sm text-white text-center" type="button" data-toggle="collapse" data-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne" style="background-color: #001f3f">
@@ -140,7 +140,7 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
 
 
 
-    <table class="table table-bordered table-striped">
+    <table class="table table-bordered table-striped shadow mt-4">
     <thead class="thead-light">
         <tr>
             <th class="text-left">Data</th>

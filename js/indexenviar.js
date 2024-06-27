@@ -242,10 +242,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 }).then(function() {
                     window.location.reload(); 
                 });
-                setTimeout(function() {
-                    window.location.href = 'historico.php'
-                })
-    
             },
             error: function(error) {
                 Swal.fire({

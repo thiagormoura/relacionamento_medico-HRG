@@ -350,11 +350,8 @@ include("conexao.php")
 
                     <div class="border p-3 mt-4">
                         <h4><b>DESCRIÇÃO DO ATENDIMENTO</b></h4>
-                       
-
-
                         <div class="row ">
- <div class="col-xl-12 col-md-6 mt-3">
+                                <div class="col-xl-12 col-md-6 mt-3">
                             <label for="assunto">Assunto</label>
                             <textarea class="form-control custom-textarea2" id="assuntoatendimento" name="assunto atendimento" rows="1" maxlength="1000"></textarea>
                         </div>
