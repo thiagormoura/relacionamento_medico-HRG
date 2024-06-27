@@ -68,8 +68,8 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
 <body>
     <!-- Parte do header e nav -->
     <?php
-
-    $pageTitle = "Histórico - Registro de Atendimento";
+    $pageTitle = "Histórico de Registro de Atendimento";
+    $subTitle =  "Registro de atendimento" ;           
     include 'php/header.php';
     ?>
 

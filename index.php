@@ -56,7 +56,11 @@ include("conexao.php")
 <body>
 
     <!-- Parte do header e nav -->
-    <?php include 'php/header.php'; ?>
+    <?php 
+    $pageTitle = "Relacionamento Médico";
+    $subTitle =  "Registro de atendimento" ;           
+    include 'php/header.php'; 
+    ?>
 
     <main class="container_fluid d-flex justify-content-center align-items-center">
         <div class="form-group col-8 mt-5">
