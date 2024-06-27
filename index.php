@@ -10,7 +10,7 @@ include("conexao.php")
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Relacionamento Medico - HRG</title>
-    <link rel="icon" href="view/img/Logobordab.png" type="image/x-icon">
+    <link rel="icon" href="img\Logobordab.png" type="image/x-icon">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="css/styles.css">
