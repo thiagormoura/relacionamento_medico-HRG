@@ -58,7 +58,7 @@ if ($conn->connect_error) {
 // Obter dados do formulário via POST
 $date = $_POST['date'] ?? null;
 $tipo_atendimento = $_POST['tipo_atendimento'] ?? null;
-$celulardois = $_POST['celulardois'] ?? null;
+$celulardois = $_POST['celulardois']  ;
 $status = $_POST['status'] ?? null;
 $nome = $_POST['nome'] ?? null;
 $registro = $_POST['registro'] ?? null;
@@ -78,13 +78,13 @@ $assuntosselecionados_array = $_POST['assuntosselecionados_array'] ?? [];
 
 if (!is_array($assuntosselecionados_array)) {
     echo "Erro: assuntosselecionados não é um array.<br>";
-    print_r($assuntosselecionados_array);
+    
     exit;
 }
 
-echo "<pre>";
-print_r($assuntosselecionados_array);
-echo "</pre>";
+// echo "<pre>";
+// print_r($assuntosselecionados_array);
+// echo "</pre>";
 
 // Enviar dados para o banco de dados
 if (enviarParaBanco($conn, $date, $status, $nome, $registro, $orgao, $celular, $celulardois, $nascimento, $email, $endereco, $especialidade, $assunto, $descricao, $acoes, $cpf, $tipo_atendimento, $veiculoselecionado, $assuntoatendimento, $assuntosselecionados_array)) {
