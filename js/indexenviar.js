@@ -241,10 +241,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }).then(function() {
                     window.location.reload(); 
                 });
-<<<<<<< HEAD
     
-=======
->>>>>>> origin/gabrielmendes
             },
             error: function(error) {
                 Swal.fire({

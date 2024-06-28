@@ -20,6 +20,15 @@ include("conexao.php")
     <link rel="stylesheet" href="css/bootstrap.css">
     <link rel="stylesheet" href="css/selectize.bootstrap5.min.css">
     <link rel="stylesheet" href="css/multi-select-tag.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+    
+    <script src="js/indexenviar.js"></script>
 </head>
 <style>
     .form-control {
@@ -115,12 +124,16 @@ include("conexao.php")
 
                     <div class="border p-3">
                         <div class="row ">
-                            <h4><b>DADOS DO PROFISSIONAL</b></h4>
-                            <div class="col-xl-3 col-md-6 mt-2">
+                            <<div class="col-xl-3 col-md-6 mt-2">
                                 <label for="cpf">CPF</label>
                                 <input type="text" class="form-control" id="cpf" name="cpf" placeholder="">
-    
-                            </div>
+                                <script>
+    $(document).ready(function() {
+        $('cpf').mask('000.000.000-00', {reverse: true});
+    });
+</script>
+                            </div>h4><b>DADOS DO PROFISSIONAL</b></h4>
+                            
 
                             <div class="col-xl-6  col-md-6 mt-2">
                                 <label for="nome">Nome</label>
@@ -405,15 +418,7 @@ include("conexao.php")
         }
     </script>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-
-
-    <script src="js/indexenviar.js"></script>
+    
 </body>
 
 </html>

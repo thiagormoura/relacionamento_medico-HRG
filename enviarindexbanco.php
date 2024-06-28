@@ -75,7 +75,7 @@ $cpf = $_POST['cpf'] ?? null;
 $veiculoselecionado = $_POST['veiculoselecionado'] ?? null;
 $assuntoatendimento = $_POST['assuntoatendimento'] ?? null;
 $assuntosselecionados_array = $_POST['assuntosselecionados_array'] ?? [];
-
+echo($cpf);
 if (!is_array($assuntosselecionados_array)) {
     echo "Erro: assuntosselecionados não é um array.<br>";
     
