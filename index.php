@@ -371,10 +371,7 @@ include("conexao.php")
 
 
                     <div class=" container_fluid d-flex justify-content-center align-items-center mt-4">
-                        <button type="submit" id="enviarbutton" class="btn btn-primary">Enviar</button>
-                        <button type="submit" id="irparahistorico" class="btn btn-success ml-5" onclick="window.location.href='historico.php'">Historico</button>
-
-
+                        <button type="submit" id="enviarbutton" class="btn col-2 btn-primary">Registrar Atendimento</button>
                     </div>
                     <div class=" container_fluid d-flex justify-content-center align-items-center mt-4">
                       

@@ -10,6 +10,16 @@
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navBarCentral" aria-controls="navBarCentral" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+                <button class="btn">
+                      <div class="btn nav-item">
+                        <a class="nav-link" href="index.php">Registrar Atendimento</a>
+                        </div>      
+                    </button>
+                    <button class="btn">
+                      <div class="btn nav-item">
+                        <a class="nav-link" href="historico.php">Histórico</a>
+                        </div>      
+                    </button>
                 <div class="collapse navbar-collapse" id="navBarCentral">
                 </div>
             </div>
