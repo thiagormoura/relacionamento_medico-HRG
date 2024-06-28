@@ -89,37 +89,17 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
                 <div class="accordion-body mt-4 mb-4">
                     <div class="row">
                         <div class="col-xl-3 col-sm-12 col-md-6">
-                            <input type="date" class="form-control" id="filterData" onkeydown="if(event.key==='Enter'){applyFilters();}">
+                            <input type="text" class="form-control" id="filterCPF" placeholder="CPF" onkeydown="if(event.key==='Enter'){applyFilters();}">
                         </div>
                         <div class="col-xl-3 col-sm-12 col-md-6">
-                            <input type="text" class="form-control" id="filterNome" placeholder="Profissional" onkeydown="if(event.key==='Enter'){applyFilters();}">
+                            <input type="text" class="form-control" id="filterNome" placeholder="Nome" onkeydown="if(event.key==='Enter'){applyFilters();}">
                         </div>
                         <div class="col-xl-3 col-sm-12 col-md-6">
-                            <select class="form-control" id="filterAssunto">
-                                <option value="">Todos os assuntos</option>
-                                <option value="Atualização cadastral do Médico">Atualização cadastral do Médico</option>
-                                <option value="Autorização de procedimentos">Autorização de procedimentos</option>
-                                <option value="Cadastro Médico">Cadastro Médico</option>
-                                <option value="Demandas da Contabilidade">Demandas da Contabilidade</option>
-                                <option value="Demandas do Faturamento">Demandas do Faturamento</option>
-                                <option value="Demandas do INCOR">Demandas do INCOR</option>
-                                <option value="Demandas do RH">Demandas do RH</option>
-                                <option value="Demandas do setor Financeiro">Demandas do setor Financeiro</option>
-                                <option value="Demandas do setor de TI">Demandas do setor de TI</option>
-                                <option value="Estacionamento">Estacionamento</option>
-                                <option value="Repasse Médico">Repasse Médico</option>
-                            </select>
+                            <input type="text" class="form-control" id="filterEmail" placeholder="Email" onkeydown="if(event.key==='Enter'){applyFilters();}">
                         </div>
                         <div class="col-xl-3 col-sm-12 col-md-6">
-                            <select class="form-control" id="filterStatus">
-                                <option value="">Todos os status</option>
-                                <option value="Aberto">Aberto</option>
-                                <option value="Andamento">Andamento</option>
-                                <option value="Desconhecido">Desconhecido</option>
-                                <option value="Fechado">Fechado</option>
-                            </select>
+                            <input type="text" class="form-control" id="filterTelefone" placeholder="Telefone" onkeydown="if(event.key==='Enter'){applyFilters();}">
                         </div>
-
                     </div>
                     <br>
                     <div class="d-flex justify-content-center">
@@ -139,6 +119,7 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
 
 
 
+
     <table class="table table-bordered table-striped">
     <thead class="thead-light">
         <tr>
@@ -151,19 +132,6 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
     </thead>
     <tbody id="tableBody">
     <?php
-    function getBadgeClass($situacao) {
-        switch ($situacao) {
-            case 'Aberto':
-                return 'badge badge-custom bg-success';
-            case 'Concluido':
-                return 'badge badge-custom bg-primary';
-            case 'Análise':
-                return 'badge badge-custom bg-warning';
-            default:
-                return 'badge badge-custom bg-secondary';
-        }
-    }
-
     $sql_profissionais = "
         SELECT p.id, p.nome, p.cpf, p.telefone, p.telefone2, p.email, a.id AS id_atendimento, a.data, a.assunto, a.situacao
         FROM profissionais p
@@ -209,10 +177,6 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
     }
 </script>
 
-
-
-
-
 <script>
 $(document).ready(function() {
     $('#tableBody').on('click', 'tr', function() {
@@ -237,29 +201,31 @@ $(document).ready(function() {
 </script>
 <script>
     function applyFilters() {
-        var filterData = document.getElementById('filterData').value;
+        var filterCPF = document.getElementById('filterCPF').value.trim().toLowerCase();
         var filterNome = document.getElementById('filterNome').value.trim().toLowerCase();
-        var filterAssunto = document.getElementById('filterAssunto').value.toLowerCase();
-        var filterStatus = document.getElementById('filterStatus').value;
+        var filterEmail = document.getElementById('filterEmail').value.trim().toLowerCase();
+        var filterTelefone = document.getElementById('filterTelefone').value.trim().toLowerCase();
         var table = document.getElementById('tableBody');
         var tr = table.getElementsByTagName('tr');
+
         for (var i = 0; i < tr.length; i++) {
-            var tdData = tr[i].getElementsByTagName('td')[0];
+            var tdCPF = tr[i].getElementsByTagName('td')[0];
             var tdNome = tr[i].getElementsByTagName('td')[1];
-            var tdAssunto = tr[i].getElementsByTagName('td')[2];
-            var tdStatus = tr[i].getElementsByTagName('td')[3];
-            if (tdData && tdNome && tdAssunto && tdStatus) {
-                var txtValueData = tdData.textContent || tdData.innerText;
+            var tdEmail = tr[i].getElementsByTagName('td')[2];
+            var tdTelefone = tr[i].getElementsByTagName('td')[3];
+
+            if (tdCPF && tdNome && tdEmail && tdTelefone) {
+                var txtValueCPF = tdCPF.textContent || tdCPF.innerText;
                 var txtValueNome = tdNome.textContent || tdNome.innerText;
-                var txtValueAssunto = tdAssunto.textContent || tdAssunto.innerText;
-                var txtValueStatus = tdStatus.textContent || tdStatus.innerText;
-                var tableDateFormatted = txtValueData.split('/').reverse().join('-');
-                var cleanTxtValueNome = txtValueNome.trim().toLowerCase();
-                var dataMatches = filterData === "" || tableDateFormatted === filterData;
-                var nomeMatches = cleanTxtValueNome.indexOf(filterNome) > -1;
-                var assuntoMatches = txtValueAssunto.toLowerCase().indexOf(filterAssunto) > -1;
-                var statusMatches = filterStatus === "" || txtValueStatus.toLowerCase() === filterStatus.toLowerCase();
-                if (dataMatches && nomeMatches && assuntoMatches && statusMatches) {
+                var txtValueEmail = tdEmail.textContent || tdEmail.innerText;
+                var txtValueTelefone = tdTelefone.textContent || tdTelefone.innerText;
+
+                var cpfMatches = txtValueCPF.toLowerCase().indexOf(filterCPF) > -1;
+                var nomeMatches = txtValueNome.toLowerCase().indexOf(filterNome) > -1;
+                var emailMatches = txtValueEmail.toLowerCase().indexOf(filterEmail) > -1;
+                var telefoneMatches = txtValueTelefone.toLowerCase().indexOf(filterTelefone) > -1;
+
+                if (cpfMatches && nomeMatches && emailMatches && telefoneMatches) {
                     tr[i].style.display = "";
                 } else {
                     tr[i].style.display = "none";
@@ -267,8 +233,10 @@ $(document).ready(function() {
             }
         }
     }
+
     document.getElementById('applyFilters').addEventListener('click', applyFilters);
 </script>
+
 
 
 
