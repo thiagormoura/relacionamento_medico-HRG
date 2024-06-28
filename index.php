@@ -219,12 +219,12 @@ include("conexao.php")
 
                             <div class="col-xl-2 col-md-6 mt-2">
                                 <label for="celular">Celular 1</label>
-                                <input type="tel" class="form-control" id="celular" name="celular" maxlength="11" required placeholder="">
+                                <input type="tel" class="form-control" id="celular" maxlength="11" name="celular"    placeholder="">
                             </div>
 
                             <div class="col-xl-2 col-md-6 mt-2">
                                 <label for="celulardois">Celular 2</label>
-                                <input type="tel" class="form-control" id="celulardois" name="celulardois" maxlength="11" required placeholder="">
+                                <input type="tel" class="form-control" id="celulardois" maxlength="11" name="celulardois"   placeholder="">
                             </div>
                             <div class="col-xl-4 col-md-6 mt-2">
                                 <label for="email">E-mail</label>
