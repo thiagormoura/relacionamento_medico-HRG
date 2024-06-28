@@ -166,38 +166,53 @@ h4{
                     <label for="id_profissional">ID do Profissional</label>
                     <input type="text" class="form-control bg-white" id="id_profissional" name="id_profissional" value="<?= isset($dados['id_profissional']) ? htmlspecialchars($dados['id_profissional']) : "" ?>" readonly>
                 </div>
+<div class="col-xl-3 col-md-6 mt-2">
+    <label for="cpf">CPF</label>
+    <input type="text" class="form-control bg-white" id="cpf" name="cpf" value="<?= isset($dados['cpf_profissional']) ? htmlspecialchars($dados['cpf_profissional']) : "" ?>" onblur="validarCPF(this.value)">
+    <small id="cpf-error" class="text-danger"></small>
+</div>
 
-                <div class="col-xl-3 col-md-6 mt-2">
-                    <label for="cpf">CPF</label>
-                    <input type="text" class="form-control bg-white" id="cpf" name="cpf" value="<?= isset($dados['cpf_profissional']) ? htmlspecialchars($dados['cpf_profissional']) : "" ?>">
-                </div>
+
                 <div class="col-xl-6 col-md-6 mt-2">
                     <label for="nome">Nome</label>
                     <input type="text" class="form-control bg-white" id="nome" name="nome" maxlength="80" required value="<?= isset($dados['nome_profissional']) ? htmlspecialchars($dados['nome_profissional']) : "" ?>">
                 </div>
                 <div class="col-xl-3 col-md-6 mt-2">
-                    <div class="form-group">
-                        <label for="nascimento">Data de Nascimento</label>
-                        <input type="date" class="form-control bg-white" id="nascimento" name="nascimento" value="<?= isset($dados['data_nascimento_profissional']) ? htmlspecialchars($dados['data_nascimento_profissional']) : "" ?>">
-                    </div>
+                <div class="form-group">
+                    <label for="nascimento">Data de Nascimento</label>
+                    <input type="date" class="form-control bg-white" id="nascimento" name="nascimento" value="<?= isset($dados['data_nascimento_profissional']) ? htmlspecialchars($dados['data_nascimento_profissional']) : "" ?>" max="<?= date('Y-m-d', strtotime('-16 years')) ?>">
                 </div>
-                <div class="col-xl-2 col-md-6 mt-2">
+                <script>
+                    var inputNascimento = document.getElementById('nascimento');
+                    var maxDate = new Date();
+                    maxDate.setFullYear(maxDate.getFullYear() - 18);
+                    var maxDateFormatted = maxDate.toISOString().split('T')[0];
+                    inputNascimento.setAttribute('max', maxDateFormatted);
+                </script>
+                </div>
+                <div class="col-xl-3 col-md-6 mt-2">
                     <label for="celular">Celular 1</label>
                     <input type="tel" class="form-control bg-white" id="celular" name="celular" value="<?= isset($dados['telefone_profissional']) ? htmlspecialchars($dados['telefone_profissional']) : "" ?>">
                 </div>
-                <div class="col-xl-2 col-md-6 mt-2">
+                <div class="col-xl-3 col-md-6 mt-2">
                     <label for="celular2">Celular 2</label>
                     <input type="tel" class="form-control bg-white" id="celular2" name="celular2" value="<?= isset($dados['telefone2_profissional']) ? htmlspecialchars($dados['telefone2_profissional']) : "" ?>">
                 </div>
-                <div class="col-xl-4 col-md-6 mt-2">
+                <?php
+                function formatarTelefone($telefone) {
+                    $telefone_formatado = preg_replace("/(\d{2})(\d{4,5})(\d{4})/", "($1) $2-$3", $telefone);
+                    return $telefone_formatado;
+                }
+                ?>
+                <div class="col-xl-6 col-md-6 mt-2">
                     <label for="email">E-mail</label>
                     <input type="email" class="form-control bg-white" id="email" name="email" required value="<?= isset($dados['email_profissional']) ? htmlspecialchars($dados['email_profissional']) : "" ?>">
                 </div>
-                <div class="col-xl-4 col-md-6 mt-2">
+                <div class="row">
+                <div class="col-xl-6 col-md-6 mt-2">
                     <label for="endereco">Endereço</label>
                     <input type="text" class="form-control bg-white" id="endereco" name="endereco" placeholder="Digite o endereço completo" required value="<?= isset($dados['endereco_profissional']) ? htmlspecialchars($dados['endereco_profissional']) : "" ?>">
                 </div>
-                <div class="row">
                     <div class="col-xl-2 col-md-6 mt-2">
                         <label for="registro">CRM</label>
                         <input type="text" class="form-control bg-white" id="registro" name="registro" maxlength="6" required value="<?= isset($dados['registro_profissional']) ? htmlspecialchars($dados['registro_profissional']) : "" ?>">
@@ -254,11 +269,35 @@ $(document).ready(function() {
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 $(document).ready(function() {
+    // Formatação automática do celular 1
+    $('#celular').on('input', function() {
+        var telefone = $(this).val().replace(/[^\d]/g, ''); // Remove tudo que não é número
+        if (telefone.length > 2) {
+            telefone = '(' + telefone.substring(0, 2) + ') ' + telefone.substring(2);
+        }
+        $(this).val(telefone);
+    });
+
+    // Formatação automática do celular 2
+    $('#celular2').on('input', function() {
+        var telefone = $(this).val().replace(/[^\d]/g, ''); // Remove tudo que não é número
+        if (telefone.length > 2) {
+            telefone = '(' + telefone.substring(0, 2) + ') ' + telefone.substring(2);
+        }
+        $(this).val(telefone);
+    });
+
     // Intercepta o envio do formulário via AJAX
     $('#formulario_index').submit(function(event) {
         // Impede o envio padrão do formulário
         event.preventDefault();
         
+        // Verifica CPF antes de enviar
+        var cpfValido = validarCPF($('#cpf').val());
+        if (!cpfValido) {
+            return; // Se CPF inválido, não envia o formulário
+        }
+
         // Obtém os dados do formulário
         var formData = $(this).serialize();
 
@@ -285,8 +324,61 @@ $(document).ready(function() {
             }
         });
     });
+
+    // Função para validar CPF
+    function validarCPF(cpf) {
+        cpf = cpf.replace(/[^\d]+/g,''); // Remove tudo que não é número
+
+        if (cpf.length !== 11 ||
+            cpf === "00000000000" ||
+            cpf === "11111111111" ||
+            cpf === "22222222222" ||
+            cpf === "33333333333" ||
+            cpf === "44444444444" ||
+            cpf === "55555555555" ||
+            cpf === "66666666666" ||
+            cpf === "77777777777" ||
+            cpf === "88888888888" ||
+            cpf === "99999999999") {
+            $('#cpf-error').text("CPF inválido");
+            return false;
+        }
+
+        // Verifica primeiro dígito verificador
+        var soma = 0;
+        for (var i = 0; i < 9; i++) {
+            soma += parseInt(cpf.charAt(i)) * (10 - i);
+        }
+        var resto = 11 - (soma % 11);
+        var digitoVerificador1 = (resto === 10 || resto === 11) ? 0 : resto;
+
+        if (digitoVerificador1 !== parseInt(cpf.charAt(9))) {
+            $('#cpf-error').text("CPF inválido");
+            return false;
+        }
+
+        // Verifica segundo dígito verificador
+        soma = 0;
+        for (var i = 0; i < 10; i++) {
+            soma += parseInt(cpf.charAt(i)) * (11 - i);
+        }
+        resto = 11 - (soma % 11);
+        var digitoVerificador2 = (resto === 10 || resto === 11) ? 0 : resto;
+
+        if (digitoVerificador2 !== parseInt(cpf.charAt(10))) {
+            $('#cpf-error').text("CPF inválido");
+            return false;
+        }
+
+        // CPF válido, limpa mensagem de erro
+        $('#cpf-error').text("");
+        return true;
+    }
 });
 </script>
+
+
+
 
 
 
