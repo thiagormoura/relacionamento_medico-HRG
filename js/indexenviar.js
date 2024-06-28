@@ -93,11 +93,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         document.getElementById('nascimento').value = formatarDataExibicao(response.data.data_nascimento);
                     }
                 } else {
-                    Swal.fire({
-                        title: "CPF disponível",
-                        text: "O CPF informado está disponível para cadastro.",
-                        icon: "success"
-                    });
+                    
 
                     limparCampos(); // Limpar os campos do formulário
                 }
@@ -127,7 +123,7 @@ document.addEventListener('DOMContentLoaded', function() {
         var cpf = document.getElementById("cpf").value || '';
         var nascimento = document.getElementById("nascimento").value || '';
         var celular = document.getElementById("celular").value || '';
-        var celulardois = document.getElementById("celulardois").value || '';
+        var celulardois = document.getElementById("celulardois").value ;
         var email = document.getElementById("email").value || '';
         var especialidade = document.getElementById("especialidade").value || '';
         var registro = document.getElementById("registro").value || '';
@@ -184,7 +180,6 @@ document.addEventListener('DOMContentLoaded', function() {
             { campo: registro, nome: "Registro" },
             { campo: orgao, nome: "Órgão" },
             { campo: celular, nome: "Celular" },
-            { campo: celulardois, nome: "Segundo Celular" },
             { campo: nascimento, nome: "Data de Nascimento" },
             { campo: especialidade, nome: "Descrição da Especialidade" },
             { campo: descricao, nome: "Descrição" },
@@ -242,6 +237,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }).then(function() {
                     window.location.reload(); 
                 });
+    
             },
             error: function(error) {
                 Swal.fire({
@@ -260,32 +256,3 @@ document.getElementById('enviarbutton').addEventListener('click', function(event
         event.preventDefault();
     }
 });
-
-function validateNumbers() {
-    const celular = document.getElementById('celular');
-    const celulardois = document.getElementById('celulardois');
-    const celularFeedback = document.getElementById('celularFeedback');
-    const celulardoisFeedback = document.getElementById('celulardoisFeedback');
-
-    let isValid = true;
-
-    if (celular.value.length !== 11) {
-        celular.classList.add('is-invalid');
-        celularFeedback.style.display = 'block';
-        isValid = false;
-    } else {
-        celular.classList.remove('is-invalid');
-        celularFeedback.style.display = 'none';
-    }
-
-    if (celulardois.value.length !== 11) {
-        celulardois.classList.add('is-invalid');
-        celulardoisFeedback.style.display = 'block';
-        isValid = false;
-    } else {
-        celulardois.classList.remove('is-invalid');
-        celulardoisFeedback.style.display = 'none';
-    }
-
-    return isValid;
-}
