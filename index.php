@@ -124,16 +124,75 @@ include("conexao.php")
 
                     <div class="border p-3">
                         <div class="row ">
-                            <<div class="col-xl-3 col-md-6 mt-2">
+                            <h4><b>DADOS DO PROFISSIONAL</b></h4>
+                            <div class="col-xl-3 col-md-6 mt-2">
                                 <label for="cpf">CPF</label>
                                 <input type="text" class="form-control" id="cpf" name="cpf" placeholder="">
+                                <small id="cpfValidationMessage" class="text-danger"></small>
                                 <script>
-    $(document).ready(function() {
-        $('cpf').mask('000.000.000-00', {reverse: true});
+   $(document).ready(function() {
+        $('#cpf').mask('000.000.000-00', {reverse: true});
+
+        $('#cpf').keydown(function(event) {
+            if (event.keyCode === 13) { // Verifica se a tecla pressionada é Enter
+                event.preventDefault();
+                validarCPF();
+            }
+        });
+
+        $('#cpf').blur(function() {
+            validarCPF();
+        });
+
+        function validarCPF() {
+            var cpf = $('#cpf').val().replace(/[^\d]+/g,'');
+
+            if (cpf.length !== 11 || /^(.)\1{10}$/.test(cpf)) {
+                $('#cpfValidationMessage').text('CPF inválido').css('color', 'red');
+                return;
+            }
+
+            // Validação básica do CPF
+            var sum = 0;
+            var rest;
+
+            for (var i = 1; i <= 9; i++) {
+                sum += parseInt(cpf.substring(i-1, i)) * (11 - i);
+            }
+
+            rest = (sum * 10) % 11;
+
+            if ((rest === 10) || (rest === 11)) {
+                rest = 0;
+            }
+
+            if (rest !== parseInt(cpf.substring(9, 10))) {
+                $('#cpfValidationMessage').text('CPF inválido').css('color', 'red');
+                return;
+            }
+
+            sum = 0;
+            for (var i = 1; i <= 10; i++) {
+                sum += parseInt(cpf.substring(i-1, i)) * (12 - i);
+            }
+
+            rest = (sum * 10) % 11;
+
+            if ((rest === 10) || (rest === 11)) {
+                rest = 0;
+            }
+
+            if (rest !== parseInt(cpf.substring(10, 11))) {
+                $('#cpfValidationMessage').text('CPF inválido').css('color', 'red');
+                return;
+            }
+
+            // CPF válido
+            $('#cpfValidationMessage').text('CPF válido').css('color', 'green');
+        }
     });
 </script>
-                            </div>h4><b>DADOS DO PROFISSIONAL</b></h4>
-                            
+                            </div>
 
                             <div class="col-xl-6  col-md-6 mt-2">
                                 <label for="nome">Nome</label>
