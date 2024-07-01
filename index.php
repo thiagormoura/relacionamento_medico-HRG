@@ -230,7 +230,45 @@ include("conexao.php")
                             <div class="col-xl-4 col-md-6 mt-2">
                                 <label for="email">E-mail</label>
                                 <input type="email" class="form-control" id="email" name="email" required placeholder="Digite um e-mail valido">
-                                
+                                <small id="emailValidationMessage" class="text-danger"></small>
+                            <script> $(document).ready(function() {
+            $('#email').blur(function() {
+                validarEmail();
+            });
+
+            $('#enviarbutton').click(function(event) {
+                event.preventDefault();
+                validarEmail();
+            });
+
+            function validarEmail() {
+                var email = $('#email').val().trim();
+
+                if (!isValidEmail(email)) {
+                    $('#emailValidationMessage').text('Por favor, insira um e-mail válido.').css('color', 'red');
+                    return;
+                }
+
+                // Aqui você pode realizar uma verificação no servidor para validar se o e-mail já existe
+                // Vamos simular isso verificando o domínio do e-mail
+                var existeEmail = email.endsWith('@example.com'); // Substitua pela lógica real
+
+                if (existeEmail) {
+                    $('#emailValidationMessage').text('O e-mail inserido já existe. Insira outro e-mail.').css('color', 'orange');
+                } else {
+                    $('#emailValidationMessage').text('E-mail válido').css('color', 'green');
+                }
+            }
+
+            function isValidEmail(email) {
+                // Expressão regular para validar o formato do e-mail
+                var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return emailRegex.test(email);
+            }
+        });
+
+
+</script>
                             </div>
                             <div class="col-xl-4 col-md-6 mt-2">
                                 <label for="endereco">Endereço</label>
