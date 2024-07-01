@@ -219,13 +219,14 @@ include("conexao.php")
 
                             <div class="col-xl-2 col-md-6 mt-2">
                                 <label for="celular">Celular 1</label>
-                                <input type="tel" class="form-control" id="celular" maxlength="11" name="celular"    placeholder="">
+                                <input type="tel" class="form-control" id="celular" maxlength="11" name="celular"  pattern="[0-9]*"   placeholder="">
+                        
                             </div>
 
                             <div class="col-xl-2 col-md-6 mt-2">
-                                <label for="celulardois">Celular 2</label>
-                                <input type="tel" class="form-control" id="celulardois" maxlength="11" name="celulardois"   placeholder="">
-                            </div>
+    <label for="celular2">Celular 2</label>
+    <input type="tel" class="form-control" id="celulardois" maxlength="11" name="celulardois" placeholder="" pattern="[0-9]*">
+</div>
                             <div class="col-xl-4 col-md-6 mt-2">
                                 <label for="email">E-mail</label>
                                 <input type="email" class="form-control" id="email" name="email" required placeholder="Digite um e-mail valido">
@@ -233,16 +234,17 @@ include("conexao.php")
                             </div>
                             <div class="col-xl-4 col-md-6 mt-2">
                                 <label for="endereco">Endereço</label>
-                                <input type="text" class="form-control" id="endereco" name="endereco" placeholder="Digite o endereço completo" required>
+                                <input type="text" class="form-control" id="endereco" name="endereco" placeholder="Digite o endereço completo"  required>
                             </div>
 
 
 
                             <div class="row">
-                                <div class="col-xl-3 col-md-6 mt-2">
-                                    <label for="registro">CRM</label>
-                                    <input type="text" class="form-control" id="registro" name="registro" maxlength="6" required>
-                                </div>
+                            <div class="col-xl-2 col-md-6 mt-2">
+    <label for="crm">CRM</label>
+    <input type="text" class="form-control" id="registro" maxlength="10" name="registro" placeholder="" pattern="[0-9]*">
+</div>
+
                                 <div class="col-xl-3 col-md-6 mt-2">
                                     <div class="form-group">
                                         <label for="orgao">Órgão</label>
@@ -476,7 +478,16 @@ include("conexao.php")
             }
         }
     </script>
+    
+        <script>
+    function enforceNumericInput(event) {
+        event.target.value = event.target.value.replace(/\D/g, '');
+    }
 
+    document.getElementById('celular').addEventListener('input', enforceNumericInput);
+    document.getElementById('celulardois').addEventListener('input', enforceNumericInput);
+    document.getElementById('registro').addEventListener('input', enforceNumericInput);
+</script>
     
 </body>
 
