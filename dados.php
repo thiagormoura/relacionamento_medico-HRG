@@ -38,10 +38,6 @@ if ($result === false) {
     $dados['registro_profissional'] = $row['registro'];
     $dados['email_profissional'] = $row['email_profissional'];
     $dados['endereco_profissional'] = $row['endereco'];
-<<<<<<< HEAD
-=======
-    // $dados['estados_profissional'] = $row['estados'];
->>>>>>> origin/gabrielmendes
     $dados['especialidades_profissional'] = $row['especialidades'];
     $dados['orgao_profissional'] = $row['orgao'];
     $dados['data_nascimento_profissional'] = $row['data_nascimento_profissional']; // Correção aqui
