@@ -145,7 +145,7 @@ document.addEventListener('DOMContentLoaded', function() {
         let veiculoselecionado = document.querySelector('input[name="veiculo"]:checked').value;
         // Obter o valor do campo de texto "Outros" se estiver visível e concatenar
         if (veiculoselecionado === 'Outros') {
-            veiculoselecionado += ': ' + document.getElementById('outro').value;
+            veiculoselecionado = document.getElementById('outro').value;
         }
         // Exemplo de uso:
         //console.log(veiculoselecionado);

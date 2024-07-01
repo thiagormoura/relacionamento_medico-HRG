@@ -40,7 +40,19 @@ function dadosProf($id, $conn) {
 
             WHERE a.id = $id";
 
-$result = $conn->query($sql);
+$result = mysqli_query($conn, $sql);
+
+// if($result && mysqli_num_row($result) > 0) {
+//     while($row = mysqli_fetch_assoc($result)) {
+
+//         $assuntonome = $row['assuntonome'];
+//         // var_dump($assuntonome);
+//     }
+
+//     } else {
+//         echo "Assunto não selecionados";
+//     }
+
 
 if ($result === false) {
     echo "Erro na consulta: " . $conn->error;
@@ -65,8 +77,8 @@ if ($result === false) {
     $dados['especialidades_profissional'] = $row['especialidades'];
     $dados['orgao_profissional'] = $row['orgao'];
     $dados['data_nascimento_profissional'] = $row['data_nascimento_profissional']; // Correção aqui
-
     $dados['assuntonome'] = $row['assuntonome']; 
+
 } else {
     echo "<p>Nenhum dado encontrado para o ID informado.</p>";
 }
@@ -236,6 +248,7 @@ h4{
 
 <div class="row">
     <label class="fs-4" for="">Assuntos Selecionados:</label>
+
     <input class="col-12 form-control p-3" value="<?= isset($dados['assuntonome']) ? htmlspecialchars($dados['assuntonome']) : "" ?>" type="text" disabled>
 
     <!-- <?php foreach ($dados['assuntonome'] as $assunto): ?>
