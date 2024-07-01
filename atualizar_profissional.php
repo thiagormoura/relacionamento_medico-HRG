@@ -40,14 +40,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $orgao = $_POST['orgao'] ?? null;
     $especialidades = $_POST['especialidades'] ?? null;
 
-    if ($id_profissional && $cpf !== null && $nome !== null && $data_nascimento !== null && $telefone !== null && $telefone2 !== null && $email !== null && $endereco !== null && $registro !== null && $orgao !== null && $especialidades !== null) {
-        if (atualizarDadosProfissional($conn, $id_profissional, $cpf, $nome, $data_nascimento, $telefone, $telefone2, $email, $endereco, $registro, $orgao, $especialidades)) {
-            echo "Dados do profissional atualizados com sucesso.";
+    // Verificar se os números de celular são diferentes antes de atualizar
+    if ($telefone !== $telefone2) {
+        if ($id_profissional && $cpf !== null && $nome !== null && $data_nascimento !== null && $telefone !== null && $telefone2 !== null && $email !== null && $endereco !== null && $registro !== null && $orgao !== null && $especialidades !== null) {
+            if (atualizarDadosProfissional($conn, $id_profissional, $cpf, $nome, $data_nascimento, $telefone, $telefone2, $email, $endereco, $registro, $orgao, $especialidades)) {
+                echo "Dados do profissional atualizados com sucesso.";
+            } else {
+                echo "Erro ao atualizar dados do profissional.";
+            }
         } else {
-            echo "Erro ao atualizar dados do profissional.";
+            echo "Todos os campos devem ser preenchidos.";
         }
     } else {
-        echo "Todos os campos devem ser preenchidos.";
+        echo "Os números de celular não podem ser iguais.";
     }
 }
 

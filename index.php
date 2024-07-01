@@ -284,7 +284,7 @@ include("conexao.php")
 
                                 <div class="col-xl-6 col-md-6 mt-2 mb-4">
                                     <label for="especialidade">Especialidade(s)</label>
-                                    <input type="text" class="form-control" id="especialidade" name="especialidade" maxlength="30" required>
+                                    <input type="text" class="form-control" id="especialidade" name="especialidade" required>
                                 </div>
 
                             </div>
@@ -294,7 +294,7 @@ include("conexao.php")
 
                     
 
-                    <div class="col-xl-7 col-md-6 mt-4 mb-5">
+                    <div class="col-xl-7 col-md-6 mt-4 mb-3">
                         <label for="orgao">Veículo de manifestação</label>
                         <div class="row custom-checkboxes">
                             <div class="form-check col-xl-2 col-lg-3 col-md-4 col-sm-3 mt-2">
@@ -313,8 +313,11 @@ include("conexao.php")
                                 <input type="radio" class="form-check-input" id="outros" name="veiculo" value="Outros" onclick="toggleOutroCampo(this)">
                                 <label class="form-check-label" for="veiculo4">Outros</label>
                             </div>
-                            <div class="col-xl-2 col-lg-4 col-sm-10 mt-2" id="campoOutros" style="display: none;">
+
+                            <div class="row"></div>
+                            <div class="col-xl-8 col-lg-12 col-sm-12 mt-4" id="campoOutros" style="display: none;">
                                 <textarea class="form-control custom-textarea" id="outro" name="outro" rows="1" maxlength="1000"></textarea>
+                            </div>
                             </div>
                         </div>
 
@@ -416,13 +419,9 @@ include("conexao.php")
                                 });
                             </script>
 
-                        </div>
-                    </div>
 
 
-
-
-                    <div class="border p-3 mt-4">
+                    <div class="border p-3 mt-2">
                         <h4><b>DESCRIÇÃO DO ATENDIMENTO</b></h4>
                         <div class="row ">
                                 <div class="col-xl-12 col-md-6 mt-3">
@@ -445,10 +444,7 @@ include("conexao.php")
 
 
                     <div class=" container_fluid d-flex justify-content-center align-items-center mt-4">
-                        <button type="submit" id="enviarbutton" class="btn btn-primary">Enviar</button>
-                        <button type="submit" id="irparahistorico" class="btn btn-success ml-5" onclick="window.location.href='historico.php'">Historico</button>
-
-
+                        <button type="submit" id="enviarbutton" class="btn col-2 btn-primary">Registrar Atendimento</button>
                     </div>
                     <div class=" container_fluid d-flex justify-content-center align-items-center mt-4">
                       

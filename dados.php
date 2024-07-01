@@ -10,37 +10,26 @@ $dbpass = "";
 function dadosProf($id, $conn) {
     $dados = array();
 
-    $sql = "SELECT 
-            a.data AS data_atendimento, 
-            a.situacao AS situacao_atendimento, 
-            a.assunto, 
-            a.descricao, 
-            a.acoes, 
-            a.veiculo_atendimento,
-
-            p.nome AS nome_profissional, 
-            p.data_nascimento AS data_nascimento_profissional, 
-            p.cpf, 
-            p.telefone AS telefone_profissional, 
-            p.telefone2, 
-            p.registro, 
-            p.email AS email_profissional, 
-            p.endereco, 
-            p.especialidades, 
-            p.orgao,
-
-            rela.assunto,
-            ass.assunto as assuntonome
-
-            FROM relacionamentomedico.atendimento as a
-
-                INNER JOIN relacionamentomedico.profissionais as p ON a.profissional = p.id
-                INNER JOIN relacionamentomedico.atendimento_has_assunto as rela ON a.id = rela.atendimento
-                INNER JOIN relacionamentomedico.assunto as ass on ass.id = rela.assunto
-
+    $sql = "SELECT a.data AS data_atendimento, a.situacao AS situacao_atendimento, a.assunto, a.descricao, a.acoes, a.veiculo_atendimento,
+                   p.nome AS nome_profissional, p.data_nascimento AS data_nascimento_profissional, p.cpf, p.telefone AS telefone_profissional, p.telefone2, p.registro, p.email AS email_profissional, 
+                   p.endereco, p.especialidades, p.orgao
+            FROM atendimento a
+            INNER JOIN profissionais p ON a.profissional = p.id
             WHERE a.id = $id";
 
-$result = $conn->query($sql);
+$result = mysqli_query($conn, $sql);
+
+// if($result && mysqli_num_row($result) > 0) {
+//     while($row = mysqli_fetch_assoc($result)) {
+
+//         $assuntonome = $row['assuntonome'];
+//         // var_dump($assuntonome);
+//     }
+
+//     } else {
+//         echo "Assunto não selecionados";
+//     }
+
 
 if ($result === false) {
     echo "Erro na consulta: " . $conn->error;
@@ -61,12 +50,11 @@ if ($result === false) {
     $dados['registro_profissional'] = $row['registro'];
     $dados['email_profissional'] = $row['email_profissional'];
     $dados['endereco_profissional'] = $row['endereco'];
-    // $dados['estados_profissional'] = $row['estados'];
     $dados['especialidades_profissional'] = $row['especialidades'];
     $dados['orgao_profissional'] = $row['orgao'];
     $dados['data_nascimento_profissional'] = $row['data_nascimento_profissional']; // Correção aqui
-
     $dados['assuntonome'] = $row['assuntonome']; 
+
 } else {
     echo "<p>Nenhum dado encontrado para o ID informado.</p>";
 }
@@ -165,13 +153,13 @@ h4{
         <div class="col-xl-3 col-md-6 mb-5">
             <div class="form-group">
                 <label for="date">Data</label>
-                <input type="date" class="form-control bg-white" id="date" name="date" readonly value="<?= isset($dados['data_atendimento']) ? htmlspecialchars($dados['data_atendimento']) : "" ?>">
+                <input type="date" class="form-control bg-muted" id="date" name="date"  readonly value="<?= isset($dados['data_atendimento']) ? htmlspecialchars($dados['data_atendimento']) : "" ?>">
             </div>
         </div>
         <div class="col-xl-3 col-md-6 mb-5">
             <div class="form-group">
                 <label for="status">Status</label>
-                <input type="text" class="form-control bg-white" id="status" name="status" readonly value="<?= isset($dados['situacao_atendimento']) ? htmlspecialchars($dados['situacao_atendimento']) : "" ?>">
+                <input type="text" class="form-control bg-muted" id="status" name="status" readonly value="<?= isset($dados['situacao_atendimento']) ? htmlspecialchars($dados['situacao_atendimento']) : "" ?>">
             </div>
         </div>
         <div class="border p-3">
@@ -179,49 +167,49 @@ h4{
                 <h4><b>DADOS DO PROFISSIONAL</b></h4>
                 <div class="col-xl-3 col-md-6 mt-2">
                 <label for="cpf">CPF</label>
-                <input type="text" class="form-control bg-white" id="cpf" name="cpf" placeholder="" readonly value="<?= isset($dados['cpf_profissional']) ? htmlspecialchars($dados['cpf_profissional']) : "" ?>">
+                <input type="text" class="form-control bg-muted" id="cpf" name="cpf" placeholder="" disabled  value="<?= isset($dados['cpf_profissional']) ? htmlspecialchars($dados['cpf_profissional']) : "" ?>">
             </div>      
             <div class="col-xl-6  col-md-6 mt-2">
                 <label for="nome">Nome</label>
-                <input type="text" class="form-control bg-white" id="nome" name="nome" maxlength="80" required readonly value="<?= isset($dados['nome_profissional']) ? htmlspecialchars($dados['nome_profissional']) : "" ?>">
+                <input type="text" class="form-control bg-muted" id="nome" name="nome" maxlength="80" required readonly value="<?= isset($dados['nome_profissional']) ? htmlspecialchars($dados['nome_profissional']) : "" ?>">
             </div>
             <div class="col-xl-3 col-md-6 mt-2">
                 <div class="form-group">
                     <label for="nascimento">Data de Nascimento</label>
-                    <input type="date" class="form-control bg-white" id="nascimento"  name="nascimento" readonly value="<?= isset($dados['data_nascimento_profissional']) ? htmlspecialchars($dados['data_nascimento_profissional']) : "" ?>">
+                    <input type="date" class="form-control bg-muted" id="nascimento"  name="nascimento" readonly value="<?= isset($dados['data_nascimento_profissional']) ? htmlspecialchars($dados['data_nascimento_profissional']) : "" ?>">
                 </div>
             </div>  
             <div class="col-xl-2 col-md-6 mt-2">
                 <label for="celular">Celular 1</label>
-                <input type="tel" class="form-control bg-white" id="celular" name="celular" readonly value="<?= isset($dados['telefone_profissional']) ? htmlspecialchars($dados['telefone_profissional']) : "" ?>">
+                <input type="tel" class="form-control bg-muted" id="celular" name="celular" readonly value="<?= isset($dados['telefone_profissional']) ? htmlspecialchars($dados['telefone_profissional']) : "" ?>">
             </div> 
             <div class="col-xl-2 col-md-6 mt-2">
                 <label for="celulardois">Celular 2</label>
-                <input type="tel" class="form-control bg-white" id="celular" name="celular" readonly value="<?= isset($dados['telefone2_profissional']) ? htmlspecialchars($dados['telefone2_profissional']) : "" ?>">
+                <input type="tel" class="form-control bg-muted" id="celular" name="celular" readonly value="<?= isset($dados['telefone2_profissional']) ? htmlspecialchars($dados['telefone2_profissional']) : "" ?>">
             </div>
             <div class="col-xl-4 col-md-6 mt-2">
                 <label for="email">E-mail</label>
-                <input type="email" class="form-control bg-white" id="email" name="email"  required readonly value="<?= isset($dados['email_profissional']) ? htmlspecialchars($dados['email_profissional']) : "" ?>">
+                <input type="email" class="form-control bg-muted" id="email" name="email"  required readonly value="<?= isset($dados['email_profissional']) ? htmlspecialchars($dados['email_profissional']) : "" ?>">
             </div>
             <div class="col-xl-4 col-md-6 mt-2">
                 <label for="endereco">Endereço</label>
-                <input type="text" class="form-control bg-white" id="endereco" name="endereco" placeholder="Digite o endereço completo" required readonly value="<?= isset($dados['endereco_profissional']) ? htmlspecialchars($dados['endereco_profissional']) : "" ?>">
+                <input type="text" class="form-control bg-muted" id="endereco" name="endereco" placeholder="Digite o endereço completo" required readonly value="<?= isset($dados['endereco_profissional']) ? htmlspecialchars($dados['endereco_profissional']) : "" ?>">
             </div>
             <div class="row">
             <div class="col-xl-3 col-md-6 mt-2">
                 <label for="registro">CRM</label>
-                <input type="text" class="form-control bg-white" id="registro" name="registro" maxlength="6" required readonly value="<?= isset($dados['registro_profissional']) ? htmlspecialchars($dados['registro_profissional']) : "" ?>">
+                <input type="text" class="form-control bg-muted" id="registro" name="registro" maxlength="6" required readonly value="<?= isset($dados['registro_profissional']) ? htmlspecialchars($dados['registro_profissional']) : "" ?>">
             </div>
             <div class="col-xl-3 col-md-6 mt-2">
                 <div class="form-group">
                     <label for="orgao">Órgão</label>
-                    <input type="text" class="form-control bg-white" id="registro" name="registro" maxlength="6" required readonly value="<?= isset($dados['orgao_profissional']) ? htmlspecialchars($dados['orgao_profissional']) : "" ?>">
+                    <input type="text" class="form-control bg-muted" id="registro" name="registro" maxlength="6" required readonly value="<?= isset($dados['orgao_profissional']) ? htmlspecialchars($dados['orgao_profissional']) : "" ?>">
                 </div>
             </div>
             </label>
             <div class="col-xl-6 col-md-6 mt-2 mb-4">
                 <label for="especialidade">Especialidade(s)</label>
-                <input type="text" class="form-control bg-white" id="especialidade" name="especialidade" maxlength="12" required readonly value="<?= isset($dados['especialidades_profissional']) ? htmlspecialchars($dados['especialidades_profissional']) : "" ?>">
+                <input type="text" class="form-control bg-muted" id="especialidade" name="especialidade" maxlength="12" required readonly value="<?= isset($dados['especialidades_profissional']) ? htmlspecialchars($dados['especialidades_profissional']) : "" ?>">
             </div> 
         </div>
     </div>
@@ -236,6 +224,7 @@ h4{
 
 <div class="row">
     <label class="fs-4" for="">Assuntos Selecionados:</label>
+
     <input class="col-12 form-control p-3" value="<?= isset($dados['assuntonome']) ? htmlspecialchars($dados['assuntonome']) : "" ?>" type="text" disabled>
 
     <!-- <?php foreach ($dados['assuntonome'] as $assunto): ?>
@@ -267,18 +256,18 @@ h4{
         <div class="row">
             <div class="col-xl-12 col-md-6 mt-3">
                 <label for="assunto">Assunto</label>
-                <textarea class="form-control bg-white custom-textarea2" id="assuntoatendimento" name="assunto atendimento" rows="1" 
+                <textarea class="form-control bg-muted custom-textarea2" id="assuntoatendimento" name="assunto atendimento" rows="1" 
                 maxlength="1000" readonly><?= isset($dados['assunto']) ? htmlspecialchars($dados['assunto']) : "" ?>
             </textarea>
 
         <div class="row ">
             <div class="col-xl-12 col-md-6 mt-3">
                 <label for="descricao">Descrição</label>
-                <textarea class="form-control bg-white" id="descricao" name="descricao" rows="3" maxlength="1000" required readonly><?= isset($dados['descricao']) ? htmlspecialchars($dados['descricao']) : "" ?></textarea>
+                <textarea class="form-control bg-muted" id="descricao" name="descricao" rows="3" maxlength="1000" required readonly><?= isset($dados['descricao']) ? htmlspecialchars($dados['descricao']) : "" ?></textarea>
             </div>
             <div class="col-xl-12 col-md-6 mt-3 mb-3">
                 <label for="acoes">Ações</label>
-                <textarea class="form-control bg-white" id="acoes" name="acoes" rows="3" maxlength="1000"  readonly><?= isset($dados['acoes']) ? htmlspecialchars($dados['acoes']) : "" ?></textarea>
+                <textarea class="form-control bg-muted" id="acoes" name="acoes" rows="3" maxlength="1000"  readonly><?= isset($dados['acoes']) ? htmlspecialchars($dados['acoes']) : "" ?></textarea>
             </div>
         </div>
     </div>

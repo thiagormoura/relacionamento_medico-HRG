@@ -128,7 +128,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Se o valor selecionado for "Outros", concatenar com o valor do campo "outro"
             if (veiculoselecionado === 'Outros') {
-                veiculoselecionado += ': ' + document.getElementById('outro').value;
+                veiculoselecionado = document.getElementById('outro').value;
 
                 // Verificar se o campo "outro" está preenchido
                 if (!document.getElementById('outro').value.trim()) {
