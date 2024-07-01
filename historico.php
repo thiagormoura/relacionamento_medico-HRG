@@ -54,16 +54,10 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
     <link rel="stylesheet" href="css/multi-select-tag.css">
 </head>
 <style>
-    main{
-       padding: 2em;
-    }
-
-    
     a{
         color: black;
         text-decoration: none;
     }
-
 </style>
 <body>
     <!-- Parte do header e nav -->

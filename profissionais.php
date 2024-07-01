@@ -124,10 +124,10 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
     <thead class="thead-light">
         <tr>
             <th class="text-left">CPF</th>
-            <th class="text-left">NOME</th>
-            <th class="text-left">EMAIL</th>
-            <th class="text-left">TELEFONE</th>
-            <th class="text-center">EDITAR</th>
+            <th class="text-left">Nome do profissional</th>
+            <th class="text-left">Email</th>
+            <th class="text-left">Telefone </th>
+            <th class="text-center">Editar</th>
         </tr>
     </thead>
     <tbody id="tableBody">

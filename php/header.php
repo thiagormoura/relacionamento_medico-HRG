@@ -20,6 +20,11 @@
                         <a class="nav-link" href="historico.php">Histórico</a>
                           
                     </button>
+                    <button class="btn">
+                  
+                  <a class="nav-link" href="profissionais.php">Registro Profissionais</a>
+                    
+              </button>
                 <div class="collapse navbar-collapse" id="navBarCentral">
                 </div>
             </div>
