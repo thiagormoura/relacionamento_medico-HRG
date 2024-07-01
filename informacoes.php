@@ -5,60 +5,58 @@ if(isset($_GET['id'])) {
     $id_procedimento = $_GET['id'];
     $id_procedimento = filter_var($id_procedimento, FILTER_SANITIZE_NUMBER_INT);
 
-$sql = "SELECT DATE(a.data) as data,
-a.situacao as situacao,
-a.id as id,
-im.cpf as cpf,
-im.nome as nome_profissional,
-im.data_nascimento as nascimento,
-im.telefone as tel1,
-im.telefone2 as tel2,
-im.email as email,
-im.endereco as endereco,
-im.registro as crm,
-im.orgao as orgao,
-im.especialidades as especialidade,
-a.veiculo_atendimento as veiculo,
-assuntos.assunto as assuntos_tratados,
-a.assunto as assunto,
-a.descricao as descricao,
-a.acoes as acoes
+$sql = "SELECT 
+            im.id,
+            im.nome as nome_profissional,
+            im.telefone as tel1,
+            im.telefone2 as tel2,
+            -- im.tipo_atendimento,
+            im.email as email,
+            im. endereco as endereco,
+            -- im.estado,
+            im.cpf as cpf,
+            im.registro as crm,
+            -- im.situacao_atendimento,
+            im.especialidades as especialidade,
+            im.orgao as orgao,
+            im.data_nascimento as nascimento
 
-
-FROM relacionamentomedico.atendimento AS a
-JOIN relacionamentomedico.profissionais AS im ON a.profissional = im.id
-JOIN relacionamentomedico.atendimento_has_assunto AS has ON a.id = has.id
-JOIN relacionamentomedico.assunto AS assuntos ON has.id = assuntos.id
-where a.id = $id_procedimento";
+        FROM relacionamentomedico.profissionais as im
+        WHERE im.id = $id_procedimento";
 $result = $conn->query($sql);
 
     if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
-        $data= "Data: " . $row["data"] . "<br>";
-        $status= "Status: " . $row["situacao"] . "<br>";
-        $cpf="CPF: " . $row["cpf"] . "<br>";
         $nome="Nome: " . $row["nome_profissional"] . "<br>";
-        $nascimento="Nascimento: " . $row["nascimento"] . "<br>";
         $telefone1="Telefone 1: " . $row["tel1"] . "<br>";
         $telefone2="Telefone 2: " . $row["tel2"] . "<br>";
+
         $email="E-mail: " . $row["email"] . "<br>";
         $endereco="Endereco: " . $row["endereco"] . "<br>";
-        $crm="CRM: " . $row["crm"] . "<br>";
-        $orgao="Orgão: " . $row["orgao"] . "<br>";
-        $especialidade="Especialidade: " . $row["especialidade"] . "<br>";
-        $assuntotratado="Assunto tratado: " . $row["assuntos_tratados"] . "<br>";
-        $veiculo="Veiculo: " . $row["veiculo"] . "<br>";
-        $assunto="Assunto: " . $row["assunto"] . "<br>";
-        $descricao="Descrição: " . $row["descricao"] . "<br>";
-        $acoes="Ações: " . $row["acoes"] . "<br>";
 
-       
-       
+        $cpf="CPF: " . $row["cpf"] . "<br>";
+        $crm="CRM: " . $row["crm"] . "<br>";
+        
+        $especialidade="Especialidade: " . $row["especialidade"] . "<br>";
+        $orgao="Orgão: " . $row["orgao"] . "<br>";
+        $nascimento="Nascimento: " . $row["nascimento"] . "<br>";
+        
+        // VALORES QUE AINDA VÃO SER ADICIONADOS, SÓ ESPERANDO THIAGO DEIXAR OS ENVIOS PARA AS TABELAS EM 100%
+        // NÃO ALTERAR!!!
+
+            // $descricao="Descrição: " . $row["descricao"] . "<br>";
+            // $data= "Data: " . $row["data"] . "<br>";
+            // $status= "Status: " . $row["situacao"] . "<br>";
+            // $assuntotratado="Assunto tratado: " . $row["assuntos_tratados"] . "<br>";
+            // $veiculo="Veiculo: " . $row["veiculo"] . "<br>";
+            // $assunto="Assunto: " . $row["assunto"] . "<br>";
+            // $acoes="Ações: " . $row["acoes"] . "<br>";
+
+
+
     } else {
         echo "Nenhum resultado encontrado para este ID de procedimento.";
     }
-
-    // Feche a conexão com o banco de dados
     $conn->close();
 } else {
     echo "ID de procedimento não fornecido na URL.";
@@ -154,7 +152,7 @@ h4{
         <label for="cpf">CPF</label>
         <input type="text" class="form-control" id="cpf" name="cpf" required disabled placeholder=""  value="<?php echo $row["cpf"];?>" >
     </div>
-                
+
                 <div class="col-xl-6  col-md-6 mt-2">
                     <label for="nome">Nome</label>
                     <input type="text" class="form-control" id="nome" name="nome" maxlength="80" disabled  required value="<?php echo $row["nome_profissional"];?>">
@@ -165,13 +163,13 @@ h4{
                         <input type="date" class="form-control" id="nascimento" name="nascimento" disabled required value="<?php echo $row["nascimento"];?>">
                     </div>
                 </div>
-                
-               
+
+
                 <div class="col-xl-2 col-md-6 mt-2">
                     <label for="celular">Celular 1</label>
                     <input type="tel" class="form-control" id="celular" name="celular" required disabled  placeholder="(99) 9 9999-9999" value="<?php echo $row["tel1"];?>">
                 </div>
-               
+
                 <div class="col-xl-2 col-md-6 mt-2">
                     <label for="celulardois">Celular 2</label>
                     <input type="tel" class="form-control" id="celulardois" name="celulardois" required disabled  placeholder="(99) 9 9999-9999" value="<?php echo $row["tel2"];?>">
@@ -231,12 +229,12 @@ h4{
                     </div>
                 </div>
                 </label>
-            
+
                 <div class="col-xl-2 col-md-6 mt-2 mb-4">
                     <label for="especialidade">Especialidade(s)</label>
                     <input type="text" class="form-control" id="especialidade" disabled  name="especialidade" maxlength="12" required value="<?php echo $row["especialidade"];?>">
                 </div>
-               
+
                 </div>
                 </div>
                 </div>
@@ -329,7 +327,7 @@ h4{
     <input type="checkbox" id="assunto12" name="assunto12" disabled value="assunto12" onchange="mostrarCampoTexto()">
     <label for="assunto12" class="ml-3">Outros</label>
 </div>
-            
+
         </div>
     </div>
     <div class="form-control col-sm-12 mb-5" id="campoTexto" style="display: none;">
@@ -339,7 +337,7 @@ h4{
 </div>
 
 
-               
+
                 <div class="border p-3 mt-4">
                 <h4><b>DESCRIÇÃO DO ATENDIMENTO</b></h4>
                 <div class="col-xl-12 col-md-6 mt-3">
@@ -361,7 +359,7 @@ h4{
                     </div>
                 </div>
                 </div>
-   
+
 
 
 

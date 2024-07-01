@@ -65,14 +65,14 @@ document.addEventListener('DOMContentLoaded', function() {
         if (event.key === 'Enter') {
             event.preventDefault();
             var cpf = event.target.value.trim();
-            console.log("CPF digitado:", cpf);
+            //console.log("CPF digitado:", cpf);
 
             if (cpf !== '') {
                 verificarCPF(cpf);
             }
         }
     });
-    console.log("CPF a ser enviado:", cpf); // Adicione esta linha para depuração
+    //console.log("CPF a ser enviado:", cpf); // Adicione esta linha para depuração
 
     // Função para verificar o CPF
     function verificarCPF(cpf) {
@@ -82,13 +82,9 @@ document.addEventListener('DOMContentLoaded', function() {
             data: { cpf: cpf },
             dataType: 'json',
             success: function(response) {
-                console.log("Resposta da verificação do CPF:", response);
+                //console.log("Resposta da verificação do CPF:", response);
                 if (response.exists) {
-                    Swal.fire({
-                        title: "CPF já cadastrado",
-                        text: "O CPF informado já está registrado no sistema. As informações foram preenchidas.",
-                        icon: "info"
-                    });
+                  
 
                     preencherCampos(response.data); // Preencher os campos com os dados existentes
 
@@ -97,11 +93,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         document.getElementById('nascimento').value = formatarDataExibicao(response.data.data_nascimento);
                     }
                 } else {
-                    Swal.fire({
-                        title: "CPF disponível",
-                        text: "O CPF informado está disponível para cadastro.",
-                        icon: "success"
-                    });
+                    
 
                     limparCampos(); // Limpar os campos do formulário
                 }
@@ -131,7 +123,7 @@ document.addEventListener('DOMContentLoaded', function() {
         var cpf = document.getElementById("cpf").value || '';
         var nascimento = document.getElementById("nascimento").value || '';
         var celular = document.getElementById("celular").value || '';
-        var celulardois = document.getElementById("celulardois").value || '';
+        var celulardois = document.getElementById("celulardois").value ;
         var email = document.getElementById("email").value || '';
         var especialidade = document.getElementById("especialidade").value || '';
         var registro = document.getElementById("registro").value || '';
@@ -142,53 +134,45 @@ document.addEventListener('DOMContentLoaded', function() {
         var descricao = document.getElementById("descricao").value || '';
         var acoes = document.getElementById("acoes").value || '';
         var assuntosselecionados = document.getElementById("selectedIds").value || '';
-        console.log("Assuntos de TRATADO:", assuntosselecionados);
+
+        var assuntosselecionados_array = assuntosselecionados.split(",");
+        console.log(typeof assuntosselecionados_array);
+       
 
 
         var assuntoatendimento = document.getElementById("assuntoatendimento").value || '';
+        
         let veiculoselecionado = document.querySelector('input[name="veiculo"]:checked').value;
         // Obter o valor do campo de texto "Outros" se estiver visível e concatenar
         if (veiculoselecionado === 'Outros') {
             veiculoselecionado += ': ' + document.getElementById('outro').value;
         }
         // Exemplo de uso:
-        console.log(veiculoselecionado);
+        //console.log(veiculoselecionado);
 
 
         
-        console.log("Assuntos de atendimento:", assuntoatendimento);
+        //console.log("Assuntos de atendimento:", assuntoatendimento);
         
 
 
-        // Obter o valor do elemento selecionado em situacao_atendimento
-        var situacao_atendimento = '';
-        var situacao_atendimento_elements = document.getElementsByName("situacao_atendimento");
         
-        for (var i = 0; i < situacao_atendimento_elements.length; i++) {
-            if (situacao_atendimento_elements[i].checked) {
-                situacao_atendimento = situacao_atendimento_elements[i].value;
-                break;
-            }
-        }
-
-        console.log("Situação Atendimento selecionada:", situacao_atendimento);
-
-        console.log({
-            assunto: assunto,
-            date: date,
-            nome: nome,
-            crm: registro,
-            orgao: orgao,
-            celular: celular,
-            celulardois: celulardois,
-            nascimento: nascimento,
-            email: email,
-            especialidade: especialidade,
-            descricao: descricao,
-            acoes: acoes,
-            cpf: cpf,
-            assuntoatendimento:assuntoatendimento
-        });
+        // console.log({
+        //     assunto: assunto,
+        //     date: date,
+        //     nome: nome,
+        //     crm: registro,
+        //     orgao: orgao,
+        //     celular: celular,
+        //     celulardois: celulardois,
+        //     nascimento: nascimento,
+        //     email: email,
+        //     especialidade: especialidade,
+        //     descricao: descricao,
+        //     acoes: acoes,
+        //     cpf: cpf,
+        //     assuntoatendimento:assuntoatendimento
+        // });
 
         var camposObrigatorios = [
             { campo: nome, nome: "Nome" },
@@ -196,7 +180,6 @@ document.addEventListener('DOMContentLoaded', function() {
             { campo: registro, nome: "Registro" },
             { campo: orgao, nome: "Órgão" },
             { campo: celular, nome: "Celular" },
-            { campo: celulardois, nome: "Segundo Celular" },
             { campo: nascimento, nome: "Data de Nascimento" },
             { campo: especialidade, nome: "Descrição da Especialidade" },
             { campo: descricao, nome: "Descrição" },
@@ -244,14 +227,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 acoes: acoes,
                 veiculoselecionado: veiculoselecionado, // Enviar a string JSON
                 date :date ,
-                assuntosselecionados:assuntosselecionados
+                assuntosselecionados_array:assuntosselecionados_array
             },
             success: function(response) {
                 Swal.fire({
                     title: "Cadastro realizado com sucesso!",
                     text: response,
                     icon: "success"
+                }).then(function() {
+                    window.location.reload(); 
                 });
+    
             },
             error: function(error) {
                 Swal.fire({
@@ -270,32 +256,3 @@ document.getElementById('enviarbutton').addEventListener('click', function(event
         event.preventDefault();
     }
 });
-
-function validateNumbers() {
-    const celular = document.getElementById('celular');
-    const celulardois = document.getElementById('celulardois');
-    const celularFeedback = document.getElementById('celularFeedback');
-    const celulardoisFeedback = document.getElementById('celulardoisFeedback');
-
-    let isValid = true;
-
-    if (celular.value.length !== 11) {
-        celular.classList.add('is-invalid');
-        celularFeedback.style.display = 'block';
-        isValid = false;
-    } else {
-        celular.classList.remove('is-invalid');
-        celularFeedback.style.display = 'none';
-    }
-
-    if (celulardois.value.length !== 11) {
-        celulardois.classList.add('is-invalid');
-        celulardoisFeedback.style.display = 'block';
-        isValid = false;
-    } else {
-        celulardois.classList.remove('is-invalid');
-        celulardoisFeedback.style.display = 'none';
-    }
-
-    return isValid;
-}
