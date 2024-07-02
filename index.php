@@ -482,7 +482,7 @@ include("conexao.php")
 
 
                     <div class=" container_fluid d-flex justify-content-center align-items-center mt-4">
-                        <button type="submit" id="enviarbutton" class="btn col-2 btn-primary">Registrar Atendimento</button>
+                        <button type="submit" id="enviarbutton" class="btn col-3 btn-primary">Registrar Atendimento</button>
                     </div>
                     <div class=" container_fluid d-flex justify-content-center align-items-center mt-4">
                       
