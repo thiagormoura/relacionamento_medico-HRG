@@ -201,21 +201,63 @@ include("conexao.php")
                             <div class="col-xl-3 col-md-6 mt-2">
                                 <div class="form-group">
                                     <label for="nascimento">Data de Nascimento</label>
-                                    <input type="date" class=" form-control " id="nascimento" name="nascimento" onkeydown="return false; ">
+                                    <input type="date" class="form-control" id="nascimento" name="nascimento">
+                                    <small id="nascimento-error" class="text-danger"></small>
                                 </div>
-                                <script> document.addEventListener('DOMContentLoaded', function() {
-        var dataInput = document.getElementById('nascimento');
-        var hoje = new Date();
-        var anoMax = hoje.getFullYear() - 18;
-        var mes = ('0' + (hoje.getMonth() + 1)).slice(-2);
-        var dia = ('0' + hoje.getDate()).slice(-2);
-        var dataMax = anoMax + '-' + mes + '-' + dia;
-        dataInput.setAttribute('max', dataMax);
-    });
-</script>
-
                             </div>
+                            <script>
+                                document.addEventListener('DOMContentLoaded', function() {
+                                    const nascimentoInput = document.getElementById('nascimento');
+                                    const errorElement = document.getElementById('nascimento-error');
+                                    const enviarButton = document.getElementById('enviarbutton');
 
+                                    function setMinMaxDate() {
+                                        const today = new Date();
+                                        const currentYear = today.getFullYear();
+                                        const currentMonth = (today.getMonth() + 1).toString().padStart(2, '0');
+                                        const currentDay = today.getDate().toString().padStart(2, '0');
+
+                                        const maxYear = currentYear - 18;
+                                        const minYear = 1874;
+
+                                        const maxDate = `${maxYear}-${currentMonth}-${currentDay}`;
+                                        const minDate = `${minYear}-01-01`;
+
+                                        nascimentoInput.setAttribute('min', minDate);
+                                        nascimentoInput.setAttribute('max', maxDate);
+                                    }
+
+                                    function validateDate() {
+                                        const inputDate = nascimentoInput.value;
+                                        const minDate = new Date(nascimentoInput.getAttribute('min'));
+                                        const maxDate = new Date(nascimentoInput.getAttribute('max'));
+                                        const selectedDate = new Date(inputDate);
+
+                                        if (selectedDate < minDate || selectedDate > maxDate) {
+                                            errorElement.textContent = 'Por favor, selecione uma data entre 01/01/1874 e a data de hoje menos 18 anos.';
+                                            nascimentoInput.classList.add('is-invalid');
+                                            enviarButton.setAttribute('disabled', 'disabled');
+                                            return false;
+                                        } else {
+                                            errorElement.textContent = '';
+                                            nascimentoInput.classList.remove('is-invalid');
+                                            enviarButton.removeAttribute('disabled'); 
+                                            return true;
+                                        }
+                                    }
+                                    function handleFormSubmit(event) {
+                                        if (!validateDate()) {
+                                            event.preventDefault(); 
+                                        }
+                                    }
+
+                                    nascimentoInput.addEventListener('input', validateDate); // Valida a data quando o usuário digitar
+
+                                    enviarButton.addEventListener('click', handleFormSubmit); // Envia o formulário se a data for válida
+
+                                    setMinMaxDate();
+                                });
+                            </script>        
 
                             <div class="col-xl-2 col-md-6 mt-2">
                                 <label for="celular">Celular 1</label>
