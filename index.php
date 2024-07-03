@@ -31,6 +31,10 @@ include("conexao.php")
     <script src="js/indexenviar.js"></script>
 </head>
 <style>
+    /* Estilo para borda vermelha quando o campo for inválido */
+    #nascimento input:invalid {
+        border: 1px solid red;
+    }
     .form-control {
         font-size: 0.8rem;
     }
@@ -198,23 +202,102 @@ include("conexao.php")
                                 <label for="nome">Nome</label>
                                 <input type="text" class="form-control" id="nome" name="nome" maxlength="80" required>
                             </div>
-                            <div class="col-xl-3 col-md-6 mt-2">
-                                <div class="form-group">
-                                    <label for="nascimento">Data de Nascimento</label>
-                                    <input type="date" class=" form-control " id="nascimento" name="nascimento" onkeydown="return false; ">
-                                </div>
-                                <script> document.addEventListener('DOMContentLoaded', function() {
-        var dataInput = document.getElementById('nascimento');
-        var hoje = new Date();
-        var anoMax = hoje.getFullYear() - 18;
-        var mes = ('0' + (hoje.getMonth() + 1)).slice(-2);
-        var dia = ('0' + hoje.getDate()).slice(-2);
-        var dataMax = anoMax + '-' + mes + '-' + dia;
-        dataInput.setAttribute('max', dataMax);
+
+                            <div class="col-xl-3  col-md-6 mt-2">
+                            <div class="form-group">
+    <label for="dataNascimento">Data de Nascimento</label>
+    <input id="nascimento" type="date" name="nascimento" class="form-control bg-white">
+    <div id="dataNascimentoError" class="text-danger"></div>
+</div>
+
+<script>
+    const campo = document.querySelector('#nascimento');
+    const errorDiv = document.querySelector('#dataNascimentoError');
+
+    window.addEventListener('DOMContentLoaded', function() {
+        var dataMin = new Date();
+        var dataMax = new Date();
+
+        // Definir data mínima (150 anos atrás a partir de 2006)
+        dataMin.setFullYear(2006 - 150);
+        campo.min = formata(dataMin);
+
+        // Definir data máxima (18 anos atrás a partir de 2006)
+        dataMax.setFullYear(2006 - 18);
+        campo.max = formata(dataMax);
     });
+
+    campo.addEventListener('input', function() {
+        var dataSelecionada = new Date(campo.value);
+
+        // Validar se a data está dentro do intervalo permitido
+        if (isNaN(dataSelecionada.getTime())) {
+            campo.setCustomValidity('Data inválida');
+            errorDiv.textContent = 'Data inválida';
+        } else {
+            var dataMin = new Date();
+            var dataMax = new Date();
+
+            // Definir data mínima (150 anos atrás a partir de 2006)
+            dataMin.setFullYear(2006 - 150);
+
+            // Definir data máxima (18 anos atrás a partir de 2006)
+            dataMax.setFullYear(2006 - 18);
+
+            if (dataSelecionada > dataMax || dataSelecionada < dataMin) {
+                campo.setCustomValidity('A data de nascimento deve estar entre 150 anos atrás e 18 anos atrás a partir de 2006');
+                errorDiv.textContent = 'A data de nascimento deve estar entre 150 anos atrás e 18 anos atrás a partir de 2006';
+            } else {
+                campo.setCustomValidity('');
+                errorDiv.textContent = '';
+            }
+        }
+    });
+
+    campo.addEventListener('invalid', function() {
+        campo.setCustomValidity('Data inválida');
+        errorDiv.textContent = 'Data inválida';
+    });
+
+    // Função para formatar a data
+    function formata(data) {
+        var dia = data.getDate();
+        var mes = data.getMonth() + 1;
+        var ano = data.getFullYear();
+        return `${ano}-${pad(mes)}-${pad(dia)}`;
+    }
+
+    // Função para completar com zeros à esquerda
+    function pad(valor) {
+        return valor.toString().padStart(2, '0');
+    }
 </script>
 
-                            </div>
+
+ </div>
+
+                                <!-- <script> document.addEventListener('DOMContentLoaded', function() {
+    const nascimentoInput = document.getElementById('nascimento');
+
+    function setMinMaxDate() {
+        const today = new Date();
+        const currentYear = today.getFullYear();
+        const currentMonth = (today.getMonth() + 1).toString().padStart(2, '0'); // Meses são indexados de zero, então adicionamos 1
+        const currentDay = today.getDate().toString().padStart(2, '0');
+
+        const maxYear = currentYear - 18; // Subtrai 18 anos do ano atual
+        const minYear = 1874;
+
+        const maxDate = `${maxYear}-${currentMonth}-${currentDay}`;
+        const minDate = `${minYear}-01-01`;
+
+        nascimentoInput.setAttribute('min', minDate);
+        nascimentoInput.setAttribute('max', maxDate);
+    }
+
+    setMinMaxDate();
+});
+</script> -->
 
 
                             <div class="col-xl-2 col-md-6 mt-2">
@@ -332,7 +415,7 @@ include("conexao.php")
 
                     
 
-                    <div class="col-xl-7 col-md-6 mt-4 mb-3">
+                    <div class="col-xl-7 col-md-6 mt-4 mb-3" id="veiculos">
                         <label for="orgao">Veículo de manifestação</label>
                         <div class="row custom-checkboxes">
                             <div class="form-check col-xl-2 col-lg-3 col-md-4 col-sm-3 mt-2">
