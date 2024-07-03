@@ -198,7 +198,7 @@ include("conexao.php")
                 const minAllowedDate = new Date('1874-01-01'); 
 
                 if (selectedDate < minAllowedDate) {
-                    errorElement.textContent = 'Por favor, selecione uma data válida a partir de 01/01/1874.';
+                    errorElement.textContent = 'Selecione uma data válida';
                     nascimentoInput.classList.add('is-invalid');
                     enviarButton.setAttribute('disabled', 'disabled');
                     return false;
