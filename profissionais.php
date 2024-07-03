@@ -1,15 +1,8 @@
 <?php
 include("conexao.php");
-
-
 $registrosPorPagina = 10;
-
-
 $paginaAtual = isset($_GET['pagina']) ? $_GET['pagina'] : 1;
-
-
 $offset = ($paginaAtual - 1) * $registrosPorPagina;
-
 $sql = "SELECT DATE(a.data) as data,
         im.nome as nome_profissional,
         assuntos.assunto,
@@ -20,26 +13,18 @@ $sql = "SELECT DATE(a.data) as data,
         JOIN relacionamentomedico.atendimento_has_assunto AS has ON a.id = has.id
         JOIN relacionamentomedico.assunto AS assuntos ON has.id = assuntos.id
         LIMIT $offset, $registrosPorPagina";
-
 $result = $conn->query($sql);
-
 $sqlTotal = "SELECT COUNT(*) AS total
             FROM relacionamentomedico.atendimento AS a
             JOIN relacionamentomedico.profissionais AS im ON a.profissional = im.id
             JOIN relacionamentomedico.atendimento_has_assunto AS has ON a.id = has.id
             JOIN relacionamentomedico.assunto AS assuntos ON has.id = assuntos.id";
-
 $resultCount = $conn->query($sqlTotal);
 $totalRegistros = $resultCount->fetch_assoc()['total'];
-
-
 $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
 ?>
-
-
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -61,17 +46,12 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
         color: black;
         text-decoration: none;
     }
-
 </style>
 <body>
-    <!-- Parte do header e nav -->
     <?php
     $pageTitle = "Listagem de Profissionais";
     include 'php/header.php';
     ?>
-
-
-
 <main class="container-fluid d-flex justify-content-center align-items-center">
 <div class="form-group col-10 mt-5">
     <div class="accordion" id="accordionPanelsStayOpenExample">
@@ -133,10 +113,8 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
             SELECT p.id, p.nome, p.cpf, p.telefone, p.telefone2, p.email, a.id AS id_atendimento, a.data, a.assunto, a.situacao
             FROM profissionais p
             LEFT JOIN atendimento a ON p.id = a.profissional
-            ORDER BY p.nome ASC"; // Ordena por nome em ordem alfabética
-
+            ORDER BY p.nome ASC";
         $result_profissionais = $conn->query($sql_profissionais);
-
         if ($result_profissionais && $result_profissionais->num_rows > 0) {
             while ($row = $result_profissionais->fetch_assoc()) {
                 $data_atendimento = new DateTime($row['data']);
@@ -168,7 +146,9 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
 </table>
 <script>
     function redirectToDetails(id) {
-        window.location.href = 'editar_profissional.php?id=' + id;
+        var url = 'editar_profissional.php?id=' + id;
+        window.location.href = url;
+        history.replaceState(null, '', url);
     }
 </script>
 
@@ -179,17 +159,14 @@ $(document).ready(function() {
         var nome = $(this).find('td:eq(1)').text();
         var assunto = $(this).find('td:eq(2)').text();
         var status = $(this).find('td:eq(3)').find('span').text();
-
         console.log("Data de Nascimento:", dataNascimento);
         console.log("Nome:", nome);
         console.log("Assunto Tratado:", assunto);
         console.log("Status:", status);
-
         $('#modalDataNascimento').text(dataNascimento);
         $('#modalNome').text(nome);
         $('#modalAssunto').text(assunto);
         $('#modalStatus').text(status);
-
         $('#detalhesModal').modal('show');
     });
 });
@@ -202,24 +179,20 @@ $(document).ready(function() {
         var filterTelefone = document.getElementById('filterTelefone').value.trim().toLowerCase();
         var table = document.getElementById('tableBody');
         var tr = table.getElementsByTagName('tr');
-
         for (var i = 0; i < tr.length; i++) {
             var tdCPF = tr[i].getElementsByTagName('td')[0];
             var tdNome = tr[i].getElementsByTagName('td')[1];
             var tdEmail = tr[i].getElementsByTagName('td')[2];
             var tdTelefone = tr[i].getElementsByTagName('td')[3];
-
             if (tdCPF && tdNome && tdEmail && tdTelefone) {
                 var txtValueCPF = tdCPF.textContent || tdCPF.innerText;
                 var txtValueNome = tdNome.textContent || tdNome.innerText;
                 var txtValueEmail = tdEmail.textContent || tdEmail.innerText;
                 var txtValueTelefone = tdTelefone.textContent || tdTelefone.innerText;
-
                 var cpfMatches = txtValueCPF.toLowerCase().indexOf(filterCPF) > -1;
                 var nomeMatches = txtValueNome.toLowerCase().indexOf(filterNome) > -1;
                 var emailMatches = txtValueEmail.toLowerCase().indexOf(filterEmail) > -1;
                 var telefoneMatches = txtValueTelefone.toLowerCase().indexOf(filterTelefone) > -1;
-
                 if (cpfMatches && nomeMatches && emailMatches && telefoneMatches) {
                     tr[i].style.display = "";
                 } else {
@@ -228,21 +201,13 @@ $(document).ready(function() {
             }
         }
     }
-
     document.getElementById('applyFilters').addEventListener('click', applyFilters);
 </script>
-
-
-
-
 </div>   
 </div>  
     </main>
-
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
-
-
 </body>
 </html>
 

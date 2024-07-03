@@ -139,6 +139,21 @@ h4{
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navBarCentral" aria-controls="navBarCentral" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+                <button class="btn">
+               
+                        <a class="nav-link" href="index.php">Registrar Atendimento</a>
+                    
+                    </button>
+                    <button class="btn">
+                  
+                        <a class="nav-link" href="historico.php">Histórico</a>
+                          
+                    </button>
+                    <button class="btn">
+                  
+                  <a class="nav-link" href="profissionais.php">Registro Profissionais</a>
+                    
+              </button>
                 <div class="collapse navbar-collapse" id="navBarCentral">
                 </div>
             </div>
@@ -147,7 +162,20 @@ h4{
             <div class="container-fluid">
                 <div class="row py-1">
                     <div class="titulo">
-                        <p class="h1  text-light shadow" style="font-size: 25px;" > <?php echo isset($pageTitle) ? $pageTitle : "<b><p class='rm'> Relacionamento Médico </p></b>  <p class='ra'> Atualização de cadastro <p/>"; ?></p>
+                        <p class="fw-bold text-light shadow fs-2"> 
+                            <?php echo isset($pageTitle) 
+                            ? 
+                            $pageTitle : ""; 
+                        ?>
+                        </p>
+                </div>
+                <div class="row">
+                        <p class="text-light shadow fs-4"> 
+                            <?php echo isset($subTitle) 
+                            ? 
+                            $subTitle : ""; 
+                        ?>
+                        </p>
 
                     </div>
                 </div>
@@ -267,15 +295,11 @@ h4{
 <script>
 $(document).ready(function() {
     function formatarCelularVisual(celular) {
-        // Remove todos os caracteres não numéricos, exceto os últimos -, ( e )
-        const formatedPhone = celular.replace(/[^\d()-]/g, '');
-
-        // Se o último caractere for '-', não o remove
-        if (formatedPhone.slice(-1) === '-') {
-            formatedPhone = formatedPhone.slice(0, -1);
+        celular = celular.replace(/\D/g, ''); // Remove todos os caracteres não numéricos
+        if (celular.length > 11) {
+            celular = celular.slice(0, 11);
         }
-
-        return formatedPhone;
+        return celular;
     }
 
     function formatarCamposCelular() {
@@ -283,34 +307,40 @@ $(document).ready(function() {
         $('#celular2').val(formatarCelularVisual($('#celular2').val()));
     }
 
-    formatarCamposCelular();
-
-    $('#celular').on('input', function() {
-        const formattedCelular = formatarCelularVisual($(this).val());
-        $(this).val(formattedCelular); 
-        checkCelularesIguais();
-    });
-
-    $('#celular2').on('input', function() {
-        const formattedCelular = formatarCelularVisual($(this).val());
-        $(this).val(formattedCelular); 
-        checkCelularesIguais();
-    });
-
     function checkCelularesIguais() {
-        const celular1 = $('#celular').val().replace(/[^\d]/g, ''); // Remove não dígitos
-        const celular2 = $('#celular2').val().replace(/[^\d]/g, ''); // Remove não dígitos
+        const celular1 = $('#celular').val();
+        const celular2 = $('#celular2').val();
         
-        // Verifica se ambos os celulares têm exatamente 11 dígitos
+        // Verifica se ambos os celulares têm exatamente 11 dígitos e não são iguais
         if (celular1.length !== 11 || celular2.length !== 11) {
-            $('#celular2Error').css('display', 'block');
-        } else if (celular1 === celular2) {
+            $('#celularError').css('display', 'block');
+        } else {
+            $('#celularError').css('display', 'none');
+        }
+
+        if (celular1 === celular2) {
             $('#celular2Error').css('display', 'block');
         } else {
             $('#celular2Error').css('display', 'none');
         }
     }
+
+    formatarCamposCelular();
+
+    $('#celular').on('input', function() {
+        $(this).val(formatarCelularVisual($(this).val()));
+        checkCelularesIguais();
+    });
+
+    $('#celular2').on('input', function() {
+        $(this).val(formatarCelularVisual($(this).val()));
+        checkCelularesIguais();
+    });
+
+    // Verificação inicial
+    checkCelularesIguais();
 });
+
 </script>
 
 <script>
@@ -343,26 +373,34 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-    document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function() {
     const nascimentoInput = document.getElementById('nascimento');
 
-    function setMaxDate() {
+    function setMinMaxDate() {
         const today = new Date();
-        const year = today.getFullYear() - 18; // Subtract 18 years from the current year
-        const month = (today.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-indexed, so we add 1
-        const day = today.getDate().toString().padStart(2, '0');
+        const currentYear = today.getFullYear();
+        const currentMonth = (today.getMonth() + 1).toString().padStart(2, '0'); // Meses são indexados de zero, então adicionamos 1
+        const currentDay = today.getDate().toString().padStart(2, '0');
 
-        const maxDate = `${year}-${month}-${day}`;
+        const maxYear = currentYear - 18; // Subtrai 18 anos do ano atual
+        const minYear = 1874;
+
+        const maxDate = `${maxYear}-${currentMonth}-${currentDay}`;
+        const minDate = `${minYear}-01-01`;
+
+        nascimentoInput.setAttribute('min', minDate);
         nascimentoInput.setAttribute('max', maxDate);
     }
 
-    setMaxDate();
+    setMinMaxDate();
 });
 
-    document.addEventListener('DOMContentLoaded', function() {
-    const cpfInput = document.getElementById('cpf');
-    const cpfError = document.getElementById('cpfError');
-    const atualizarBtn = document.getElementById('atualizarBtn');
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    var cpfInput = document.getElementById('cpf');
+    var cpfError = document.getElementById('cpfError');
+    var atualizarBtn = document.getElementById('atualizarBtn');
 
     function formatCPF(cpf) {
         cpf = cpf.replace(/\D/g, ""); // Remove tudo o que não é dígito
@@ -399,6 +437,12 @@ document.addEventListener('DOMContentLoaded', function() {
         cpfInput.value = formatCPF(cpfInput.value);
     });
 
+    cpfInput.addEventListener('keypress', function(event) {
+        if (cpfInput.value.replace(/\D/g, '').length >= 11) {
+            event.preventDefault();
+        }
+    });
+
     atualizarBtn.addEventListener('click', function(event) {
         if (!isValidCPF(cpfInput.value)) {
             event.preventDefault();
@@ -408,8 +452,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
-
 </script>
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 $(document).ready(function() {
@@ -418,6 +462,7 @@ $(document).ready(function() {
         $('#orgao').val(selectedOption);
     });
 });
+
 </script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
@@ -453,6 +498,9 @@ $(document).ready(function() {
     });
 });
 </script>
+
+
+
 
     </div>
 </main>
