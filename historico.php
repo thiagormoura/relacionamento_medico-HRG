@@ -133,13 +133,13 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
 
 
 
-    <table class="table table-bordered table-striped">
-    <thead class="thead-light">
+    <table class="table table-bordered table-striped mt-4">
+    <thead class="thead-light align-middle">
     <tr>
-        <th class="text-left">
+        <th class="text-left s-3">
             Data
             <a href="javascript:void(0);" id="toggleOrder" class="btn btn-link btn-sm" style="text-decoration: none;">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="35" height="35">
                     <path fill="#001f3f" d="M7 14l5-5 5 5H7z"/>
                 </svg>
             </a>
