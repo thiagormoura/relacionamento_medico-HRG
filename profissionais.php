@@ -43,7 +43,9 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Historico-Registro de Atendimento</title>
+    <title>Registro de profissionais - Relacionamento Médico</title>
+    <link rel="icon" href="img\Logobordab.png" type="image/x-icon">
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/bootstrap.min.css">
@@ -54,10 +56,6 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
     <link rel="stylesheet" href="css/multi-select-tag.css">
 </head>
 <style>
-    main{
-       padding: 2em;
-    }
-
     
     a{
         color: black;
@@ -68,8 +66,7 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
 <body>
     <!-- Parte do header e nav -->
     <?php
-
-    $pageTitle = "Histórico - Registro de Atendimento";
+    $pageTitle = "Listagem de Profissionais";
     include 'php/header.php';
     ?>
 
@@ -82,7 +79,7 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
             <h2 class="accordion-header">
                 <button class="accordion-button shadow-sm text-white text-center" type="button" data-toggle="collapse" data-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne" style="background-color: #001f3f">
                     <i id="filter" class="fa-solid fa-filter mb-1"></i>
-                    <h5>Filtro - Atendimentos</h5>
+                    <h5>Filtro de listagem</h5>
                 </button>
             </h2>
             <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-collapseOne" data-bs-parent="#accordionPanelsStayOpenExample">
