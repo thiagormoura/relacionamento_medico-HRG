@@ -135,14 +135,23 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
 
     <table class="table table-bordered table-striped">
     <thead class="thead-light">
-        <tr>
-            <th class="text-left">Data</th>
-            <th class="text-left">Nome do Profissional</th>
-            <th class="text-left">Assunto Tratado</th>
-            <th class="text-left">Status</th>
-            <th class="text-center">Dados</th>
-        </tr>
-    </thead>
+    <tr>
+        <th class="text-left">
+            Data
+            <a href="javascript:void(0);" id="toggleOrder" class="btn btn-link btn-sm" style="text-decoration: none;">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18">
+                    <path fill="#001f3f" d="M7 14l5-5 5 5H7z"/>
+                </svg>
+            </a>
+        </th>
+        <th class="text-left">Nome do Profissional</th>
+        <th class="text-left">Assunto Tratado</th>
+        <th class="text-left">Status</th>
+        <th class="text-center">Dados</th>
+    </tr>
+</thead>
+
+
     <tbody id="tableBody">
     <?php
     function getBadgeClass($situacao) {
@@ -158,13 +167,17 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
         }
     }
 
+    $orderBy = isset($_GET['order']) ? $_GET['order'] : 'ASC';
+    $_SESSION['order'] = $orderBy;
+
     $sql_profissionais = "
         SELECT p.id, p.nome, p.cpf, p.telefone, p.telefone2, p.email, a.id AS id_atendimento, a.data, a.assunto, a.situacao
         FROM profissionais p
         LEFT JOIN atendimento a ON p.id = a.profissional
-        ORDER BY p.id ASC";
-
+        ORDER BY a.data $orderBy, p.id DESC"; 
+    
     $result_profissionais = $conn->query($sql_profissionais);
+        
 
     if ($result_profissionais && $result_profissionais->num_rows > 0) {
         while ($row = $result_profissionais->fetch_assoc()) {
@@ -197,6 +210,29 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
     ?>
     </tbody>
 </table>
+<script>
+    function toggleOrder() {
+        var currentOrder = '<?php echo $orderBy; ?>';
+        var newOrder = currentOrder === 'ASC' ? 'DESC' : 'ASC';
+        var currentUrl = window.location.href;
+        var newUrl;
+
+        // Verifica se já há um parâmetro 'order' na URL atual
+        if (currentUrl.indexOf('order=') !== -1) {
+            // Atualiza o valor do parâmetro 'order' na URL
+            newUrl = currentUrl.replace(/order=(ASC|DESC)/, 'order=' + newOrder);
+        } else {
+            // Adiciona o parâmetro 'order' à URL
+            newUrl = currentUrl + (currentUrl.indexOf('?') !== -1 ? '&' : '?') + 'order=' + newOrder;
+        }
+
+        window.location.href = newUrl;
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('toggleOrder').addEventListener('click', toggleOrder);
+    });
+</script>
 
 
 <script>
