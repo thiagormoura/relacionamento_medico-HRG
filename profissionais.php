@@ -117,7 +117,7 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
 
 
 
-    <table class="table table-bordered table-striped">
+    <table class="table table-bordered table-striped mt-4">
     <thead class="thead-light">
         <tr>
             <th class="text-left">CPF</th>
