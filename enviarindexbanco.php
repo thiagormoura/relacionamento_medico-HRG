@@ -18,7 +18,7 @@ function enviarParaBanco($conn, $date, $status, $nome, $registro, $orgao, $celul
         $sucesso = false;
     } else {
 
-        print_r($assuntosselecionados_array);
+        // print_r($assuntosselecionados_array);
         $id_profissional = $stmt_profissionais->insert_id;
 
         $stmt_atendimento = $conn->prepare("INSERT INTO atendimento (profissional, assunto, acoes, descricao, situacao, veiculo_atendimento, data) VALUES (?, ?, ?, ?, ?, ?, ?)");
