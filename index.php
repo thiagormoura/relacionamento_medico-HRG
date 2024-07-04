@@ -26,10 +26,6 @@ include("conexao.php")
     <script src="js/indexenviar.js"></script>
 </head>
 <style>
-    /* Estilo para borda vermelha quando o campo for inválido */
-    #nascimento input:invalid {
-        border: 1px solid red;
-    }
     .form-control {
         font-size: 0.8rem;
     }
@@ -106,119 +102,6 @@ include("conexao.php")
         document.getElementById("status").value = "Aberto";
     });
 </script>
-                            </div>
-
-                            <div class="col-xl-6  col-md-6 mt-2">
-                                <label for="nome">Nome</label>
-                                <input type="text" class="form-control" id="nome" name="nome" maxlength="80" required>
-                            </div>
-
-                            <div class="col-xl-3  col-md-6 mt-2">
-                            <div class="form-group">
-    <label for="dataNascimento">Data de Nascimento</label>
-    <input id="nascimento" type="date" name="nascimento" class="form-control bg-white">
-    <div id="dataNascimentoError" class="text-danger"></div>
-</div>
-
-<script>
-    const campo = document.querySelector('#nascimento');
-    const errorDiv = document.querySelector('#dataNascimentoError');
-
-    window.addEventListener('DOMContentLoaded', function() {
-        var dataMin = new Date();
-        var dataMax = new Date();
-
-        // Definir data mínima (150 anos atrás a partir de 2006)
-        dataMin.setFullYear(2006 - 150);
-        campo.min = formata(dataMin);
-
-        // Definir data máxima (18 anos atrás a partir de 2006)
-        dataMax.setFullYear(2006 - 18);
-        campo.max = formata(dataMax);
-    });
-
-    campo.addEventListener('input', function() {
-        var dataSelecionada = new Date(campo.value);
-
-        // Validar se a data está dentro do intervalo permitido
-        if (isNaN(dataSelecionada.getTime())) {
-            campo.setCustomValidity('Data inválida');
-            errorDiv.textContent = 'Data inválida';
-        } else {
-            var dataMin = new Date();
-            var dataMax = new Date();
-
-            // Definir data mínima (150 anos atrás a partir de 2006)
-            dataMin.setFullYear(2006 - 150);
-
-            // Definir data máxima (18 anos atrás a partir de 2006)
-            dataMax.setFullYear(2006 - 18);
-
-            if (dataSelecionada > dataMax || dataSelecionada < dataMin) {
-                campo.setCustomValidity('A data de nascimento deve estar entre 150 anos atrás e 18 anos atrás a partir de 2006');
-                errorDiv.textContent = 'A data de nascimento deve estar entre 150 anos atrás e 18 anos atrás a partir de 2006';
-            } else {
-                campo.setCustomValidity('');
-                errorDiv.textContent = '';
-            }
-        }
-    });
-
-    campo.addEventListener('invalid', function() {
-        campo.setCustomValidity('Data inválida');
-        errorDiv.textContent = 'Data inválida';
-    });
-
-    // Função para formatar a data
-    function formata(data) {
-        var dia = data.getDate();
-        var mes = data.getMonth() + 1;
-        var ano = data.getFullYear();
-        return `${ano}-${pad(mes)}-${pad(dia)}`;
-    }
-
-    // Função para completar com zeros à esquerda
-    function pad(valor) {
-        return valor.toString().padStart(2, '0');
-    }
-</script>
-
-
- </div>
-
-                                <!-- <script> document.addEventListener('DOMContentLoaded', function() {
-    const nascimentoInput = document.getElementById('nascimento');
-
-    function setMinMaxDate() {
-        const today = new Date();
-        const currentYear = today.getFullYear();
-        const currentMonth = (today.getMonth() + 1).toString().padStart(2, '0'); // Meses são indexados de zero, então adicionamos 1
-        const currentDay = today.getDate().toString().padStart(2, '0');
-
-        const maxYear = currentYear - 18; // Subtrai 18 anos do ano atual
-        const minYear = 1874;
-
-        const maxDate = `${maxYear}-${currentMonth}-${currentDay}`;
-        const minDate = `${minYear}-01-01`;
-
-        nascimentoInput.setAttribute('min', minDate);
-        nascimentoInput.setAttribute('max', maxDate);
-    }
-
-    setMinMaxDate();
-});
-</script> -->
-
-
-                            <div class="col-xl-2 col-md-6 mt-2">
-                                <label for="celular">Celular 1</label>
-                                <input type="tel" class="form-control" id="celular" maxlength="11" name="celular"  pattern="[0-9]*"   placeholder="">
-                        
-                            </div>
-
-                            <div class="col-xl-2 col-md-6 mt-2">
-    <label for="celular2">Celular 2</label>
-    <input type="tel" class="form-control" id="celulardois" maxlength="11" name="celulardois" placeholder="" pattern="[0-9]*">
 </div>
 <div class="border p-3">
 <div class="row ">
@@ -378,249 +261,29 @@ include("conexao.php")
                     $('#emailValidationMessage').text('Por favor, insira um e-mail válido.').css('color', 'red');
                     return;
                 }
-
-                // Aqui você pode realizar uma verificação no servidor para validar se o e-mail já existe
-                // Vamos simular isso verificando o domínio do e-mail
-                var existeEmail = email.endsWith('@example.com'); // Substitua pela lógica real
-
-                if (existeEmail) {
-                    $('#emailValidationMessage').text('O e-mail inserido já existe. Insira outro e-mail.').css('color', 'orange');
-                } else {
-                    $('#emailValidationMessage').text('E-mail válido').css('color', 'green');
-                }
-            }
-
-            function isValidEmail(email) {
-                // Expressão regular para validar o formato do e-mail
-                var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                return emailRegex.test(email);
-            }
-        });
-
-
-</script>
-                            </div>
-                            <div class="col-xl-4 col-md-6 mt-2">
-                                <label for="endereco">Endereço</label>
-                                <input type="text" class="form-control" id="endereco" name="endereco" placeholder="Digite o endereço completo"  required>
-                            </div>
-
-
-
-                            <div class="row">
-                            <div class="col-xl-2 col-md-6 mt-2">
-    <label for="crm">CRM</label>
-    <input type="text" class="form-control" id="registro" maxlength="10" name="registro" placeholder="" pattern="[0-9]*">
-</div>
-
-                                <div class="col-xl-3 col-md-6 mt-2">
-                                    <div class="form-group">
-                                        <label for="orgao">Órgão</label>
-                                        <select class="form-control" id="orgao" name="orgao" required>
-                                            <option value="">Selecione...</option>
-                                            <option value="CRM-AC">CRM-AC</option>
-                                            <option value="CRM-AL">CRM-AL</option>
-                                            <option value="CRM-AP">CRM-AP</option>
-                                            <option value="CRM-AM">CRM-AM</option>
-                                            <option value="CRM-BA">CRM-BA</option>
-                                            <option value="CRM-CE">CRM-CE</option>
-                                            <option value="CRM-DF">CRM-DF</option>
-                                            <option value="CRM-ES">CRM-ES</option>
-                                            <option value="CRM-GO">CRM-GO</option>
-                                            <option value="CRM-MA">CRM-MA</option>
-                                            <option value="CRM-MT">CRM-MT</option>
-                                            <option value="CRM-MS">CRM-MS</option>
-                                            <option value="CRM-MG">CRM-MG</option>
-                                            <option value="CRM-PA">CRM-PA</option>
-                                            <option value="CRM-PB">CRM-PB</option>
-                                            <option value="CRM-PR">CRM-PR</option>
-                                            <option value="CRM-PE">CRM-PE</option>
-                                            <option value="CRM-PI">CRM-PI</option>
-                                            <option value="CRM-RJ">CRM-RJ</option>
-                                            <option value="CRM-RN">CRM-RN</option>
-                                            <option value="CRM-RS">CRM-RS</option>
-                                            <option value="CRM-RO">CRM-RO</option>
-                                            <option value="CRM-RR">CRM-RR</option>
-                                            <option value="CRM-SC">CRM-SC</option>
-                                            <option value="CRM-SP">CRM-SP</option>
-                                            <option value="CRM-SE">CRM-SE</option>
-                                            <option value="CRM-TO">CRM-TO</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                </label>
-
-                                <div class="col-xl-6 col-md-6 mt-2 mb-4">
-                                    <label for="especialidade">Especialidade(s)</label>
-                                    <input type="text" class="form-control" id="especialidade" name="especialidade" required>
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
-                    <br>
-
-                    
-
-                    <div class="col-xl-7 col-md-6 mt-4 mb-3" id="veiculos">
-                        <label for="orgao">Veículo de manifestação</label>
-                        <div class="row custom-checkboxes">
-                            <div class="form-check col-xl-2 col-lg-3 col-md-4 col-sm-3 mt-2">
-                                <input type="radio" class="form-check-input" id="presencial" name="veiculo" value="Presencial" onclick="toggleOutroCampo(this)">
-                                <label class="form-check-label" for="veiculo1">Presencial</label>
-                            </div>
-                            <div class="form-check col-xl-2 col-lg-3 col-md-4 col-sm-3 mt-2">
-                                <input type="radio" class="form-check-input" id="email" name="veiculo" value="E-mail" onclick="toggleOutroCampo(this)">
-                                <label class="form-check-label" for="veiculo2">E-mail</label>
-                            </div>
-                            <div class="form-check col-xl-2 col-lg-3 col-md-3 col-sm-3 mt-2">
-                                <input type="radio" class="form-check-input" id="WhatsApp" name="veiculo" value="WhatsApp" onclick="toggleOutroCampo(this)">
-                                <label class="form-check-label" for="veiculo3">WhatsApp</label>
-                            </div>
-                            <div class="form-check col-xl-2 col-lg-3 col-md-3 col-sm-3 mt-2">
-                                <input type="radio" class="form-check-input" id="outros" name="veiculo" value="Outros" onclick="toggleOutroCampo(this)">
-                                <label class="form-check-label" for="veiculo4">Outros</label>
-                            </div>
-
-                            <div class="row"></div>
-                            <div class="col-xl-8 col-lg-12 col-sm-12 mt-4" id="campoOutros" style="display: none;">
-                                <textarea class="form-control custom-textarea" id="outro" name="outro" rows="1" maxlength="1000"></textarea>
-                            </div>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <script>
-                        function toggleOutroCampo(radio) {
-                            // Seleciona o campo de texto
-                            let campoOutros = document.getElementById('campoOutros');
-
-                            // Verifica se a opção "Outros" foi selecionada
-                            if (radio.value === 'Outros') {
-                                campoOutros.style.display = 'block'; // Mostra o campo de texto
-                                document.getElementById('outro').focus(); // Coloca o foco no campo de texto
-                            } else {
-                                campoOutros.style.display = 'none'; // Esconde o campo de texto se outra opção for selecionada
-                            }
-                        }
-                    </script>
-
-
-
-                    <?php
-                    $dbhost = "localhost";
-                    $dbname = "relacionamentomedico";
-                    $dbuser = "root";
-                    $dbpass = "";
-
-                    // Cria conexão
-                    $conn = new mysqli($dbhost, $dbuser, $dbpass, $dbname);
-
-                    // Verifica conexão
-                    if ($conn->connect_error) {
-                        die("Conexão falhou: " . $conn->connect_error);
+                var existeEmail = email.endsWith('@example.com'); 
+                    if (existeEmail) {
+                        $('#emailValidationMessage').text('O e-mail inserido já existe. Insira outro e-mail.').css('color', 'orange');
+                    } else {
+                        $('#emailValidationMessage').text('E-mail válido').css('color', 'green');
                     }
-
-                    // Consulta SQL com ordenação decrescente pelo ID
-                    $sql = "SELECT id, assunto FROM assunto ORDER BY id ASC";
-                    $result = $conn->query($sql);
-                    ?>
-
-
-
-                    <!-- Inclua o CSS do Choices.js -->
-                    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
-                    <!-- Inclua o CSS do Bootstrap -->
-                    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
-
-
-                    <div class="row">
-                        <title>Assuntos Tratados</title>
-
-                        <div class="col">
-                            <label for="assuntotratado">Assuntos Tratados</label>
-                            <select class="form-controlcol" id="assuntotratado" name="assunto[]" multiple>
-                                <optgroup label="Selecione Assunto">
-                                    <?php
-                                    if ($result->num_rows > 0) {
-                                        // Output data de cada linha
-                                        while ($row = $result->fetch_assoc()) {
-                                            echo "<option id='valoresoption' value='" . $row["id"] . "'>" . $row["assunto"] . "</option>";
-                                        }
-                                    } else {
-                                        echo "<option value=''>Nenhum assunto encontrado</option>";
-                                    }
-                                    $conn->close();
-                                    ?>
-                                </optgroup>
-                            </select>
-
-
-                            <div class="row mt-3" style="display: none;">
-                                <div class="col">
-                                    <label for="selectedIds">IDs Selecionados:</label>
-                                    <input type="text" id="selectedIds" class="form-control" readonly>
-                                </div>
-                            </div>
-
-                            <!-- Inclua o JS do Choices.js -->
-                            <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
-                            <script>
-                                document.addEventListener('DOMContentLoaded', function() {
-                                    const element = document.getElementById('assuntotratado');
-                                    const choices = new Choices(element, {
-                                        removeItemButton: true,
-                                        placeholderValue: 'Selecione assuntos',
-                                        searchPlaceholderValue: 'Procurar'
-                                    });
-
-                                    element.addEventListener('change', function() {
-                                        const selectedValues = Array.from(element.selectedOptions).map(option => option.value);
-                                        // document.getElementById('valoresoption').value = selectedValues.join(',');
-                                        document.getElementById('selectedIds').value = selectedValues.join(',');
-
-
-                                        console.log(selectedIds)
-
-                                    });
-                                });
-                            </script>
-
-
-
-                    <div class="border p-3 mt-2">
-                        <h4><b>DESCRIÇÃO DO ATENDIMENTO</b></h4>
-                        <div class="row ">
-                                <div class="col-xl-12 col-md-6 mt-3">
-                            <label for="assunto">Assunto</label>
-                            <textarea class="form-control custom-textarea2" id="assuntoatendimento" name="assunto atendimento" rows="1" maxlength="1000"></textarea>
-                        </div>
-                            <div class="col-xl-12 col-md-6 mt-3">
-                                <label for="descricao">Descrição</label>
-                                <textarea class="form-control" id="descricao" name="descricao" rows="3" maxlength="1000" required></textarea>
-                            </div>
-
-                            <div class="col-xl-12 col-md-6 mt-3 mb-3">
-                                <label for="acoes">Ações</label>
-                                <textarea class="form-control" id="acoes" name="acoes" rows="3" maxlength="1000" required></textarea>
-                            </div>
-                        </div>
-                    </div>
-
-
-
-
-                    <div class=" container_fluid d-flex justify-content-center align-items-center mt-4">
-                        <button type="submit" id="enviarbutton" class="btn col-3 btn-primary"> Registrar Atendimento</button>
-                    </div>
-                    <div class=" container_fluid d-flex justify-content-center align-items-center mt-4">
-                      
-                    </div>
-
-
-            </form>
-            <br>
+                }
+                function isValidEmail(email) {
+                    // Expressão regular para validar o formato do e-mail
+                    var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    return emailRegex.test(email);
+                }
+            });
+        </script>
+    </div>
+    <div class="col-xl-4 col-md-6 mt-2">
+        <label for="endereco">Endereço</label>
+        <input type="text" class="form-control" id="endereco" name="endereco" placeholder="Digite o endereço completo"  required>
+    </div>
+    <div class="row">
+        <div class="col-xl-2 col-md-6 mt-2">
+            <label for="crm">CRM</label>
+            <input type="text" class="form-control" id="registro" maxlength="10" name="registro" placeholder="" pattern="[0-9]*">
         </div>
     <div class="col-xl-3 col-md-6 mt-2">
         <div class="form-group">
