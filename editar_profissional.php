@@ -211,15 +211,17 @@ h4{
                     </div>
                 </div>
                 <div class="col-xl-2 col-md-6 mt-2">
-                    <label for="celular">Celular 1</label>
-                    <input type="tel" class="form-control bg-white" id="celular" name="celular" value="<?= isset($dados['telefone_profissional']) ? htmlspecialchars($dados['telefone_profissional']) : "" ?>">
-                    <small id="celularError" class="form-text text-danger" style="display: none;">Número de celular inválido.</small>
-                </div>
-                <div class="col-xl-2 col-md-6 mt-2">
-                    <label for="celular2">Celular 2</label>
-                    <input type="tel" class="form-control bg-white" id="celular2" name="celular2" value="<?= isset($dados['telefone2_profissional']) ? htmlspecialchars($dados['telefone2_profissional']) : "" ?>">
-                    <small id="celular2Error" class="form-text text-danger" style="display: none;">Os celulares não podem ser iguais.</small>
-                </div>
+    <label for="celular">Celular 1</label>
+    <input type="tel" class="form-control bg-white" id="celular" name="celular" value="<?= isset($dados['telefone_profissional']) ? htmlspecialchars($dados['telefone_profissional']) : "" ?>">
+    <small id="celularError" class="form-text text-danger" style="display: none;">Número de celular inválido ou não possui 11 dígitos.</small>
+</div>
+<div class="col-xl-2 col-md-6 mt-2">
+    <label for="celular2">Celular 2</label>
+    <input type="tel" class="form-control bg-white" id="celular2" name="celular2" value="<?= isset($dados['telefone2_profissional']) ? htmlspecialchars($dados['telefone2_profissional']) : "" ?>">
+    <small id="celular2Error" class="form-text text-danger" style="display: none;">Os celulares não podem ser iguais ou não possuem 11 dígitos.</small>
+</div>
+
+
                 <div class="col-xl-4 col-md-6 mt-2">
                     <label for="email">E-mail</label>
                     <input type="email" class="form-control bg-white" id="email" name="email" required value="<?= isset($dados['email_profissional']) ? htmlspecialchars($dados['email_profissional']) : "" ?>">
@@ -242,7 +244,7 @@ h4{
                     const crmHelpText = document.getElementById('crmHelpText');
 
                     registroInput.addEventListener('input', function() {
-                        const value = this.value.replace(/\D/g, ''); // Remove todos os não dígitos
+                        const value = this.value.replace(/\D/g, ''); 
                         if (value.length < 5) {
                             crmHelpText.style.display = 'block';
                         } else {
@@ -256,18 +258,13 @@ h4{
                         <label for="orgao">Órgão</label>
                         <select class="form-control" id="orgao" name="orgao" required>
                             <?php
-                            // Lista de opções dos órgãos
                             $orgaos = [
                                 "CRM-AC", "CRM-AL", "CRM-AP", "CRM-AM", "CRM-BA", "CRM-CE", "CRM-DF", "CRM-ES",
                                 "CRM-GO", "CRM-MA", "CRM-MT", "CRM-MS", "CRM-MG", "CRM-PA", "CRM-PB", "CRM-PR",
                                 "CRM-PE", "CRM-PI", "CRM-RJ", "CRM-RN", "CRM-RS", "CRM-RO", "CRM-RR", "CRM-SC",
                                 "CRM-SP", "CRM-SE", "CRM-TO"
                             ];
-
-                            // Valor atual do órgão
                             $orgao_atual = isset($dados['orgao_profissional']) ? $dados['orgao_profissional'] : "";
-
-                            // Loop para criar as opções
                             foreach ($orgaos as $orgao) {
                                 $selected = ($orgao == $orgao_atual) ? 'selected' : '';
                                 echo "<option value=\"$orgao\" $selected>$orgao</option>";
@@ -293,25 +290,10 @@ h4{
 </form>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-$(document).ready(function() {
-    function formatarCelularVisual(celular) {
-        celular = celular.replace(/\D/g, ''); // Remove todos os caracteres não numéricos
-        if (celular.length > 11) {
-            celular = celular.slice(0, 11);
-        }
-        return celular;
-    }
-
-    function formatarCamposCelular() {
-        $('#celular').val(formatarCelularVisual($('#celular').val()));
-        $('#celular2').val(formatarCelularVisual($('#celular2').val()));
-    }
-
     function checkCelularesIguais() {
         const celular1 = $('#celular').val();
         const celular2 = $('#celular2').val();
         
-        // Verifica se ambos os celulares têm exatamente 11 dígitos e não são iguais
         if (celular1.length !== 11 || celular2.length !== 11) {
             $('#celularError').css('display', 'block');
         } else {
@@ -324,23 +306,26 @@ $(document).ready(function() {
             $('#celular2Error').css('display', 'none');
         }
     }
-
-    formatarCamposCelular();
-
     $('#celular').on('input', function() {
         $(this).val(formatarCelularVisual($(this).val()));
+        if ($(this).val().length !== 11) {
+            $('#celularError').css('display', 'block');
+        } else {
+            $('#celularError').css('display', 'none');
+        }
         checkCelularesIguais();
     });
 
     $('#celular2').on('input', function() {
         $(this).val(formatarCelularVisual($(this).val()));
+        if ($(this).val().length !== 11) {
+            $('#celularError').css('display', 'block');
+        } else {
+            $('#celularError').css('display', 'none');
+        }
         checkCelularesIguais();
     });
-
-    // Verificação inicial
     checkCelularesIguais();
-});
-
 </script>
 
 <script>
@@ -469,11 +454,24 @@ $(document).ready(function() {
 $(document).ready(function() {
     $('#formulario_index').submit(function(event) {
         event.preventDefault();
-        
-        // Verificar se os números de celular são iguais
+        if ($('#celular').val().length !== 11) {
+            $('#celularError').css('display', 'block').text('O número de celular deve ter exatamente 11 dígitos.');
+            return; 
+        } else {
+            $('#celularError').css('display', 'none');
+        }
+
+        if ($('#celular2').val().length !== 11) {
+            $('#celular2Error').css('display', 'block').text('O número de celular deve ter exatamente 11 dígitos.');
+            return; 
+        } else {
+            $('#celular2Error').css('display', 'none');
+        }
         if ($('#celular').val() === $('#celular2').val()) {
-            alert('Os números de celular não podem ser iguais.');
-            return; // Aborta a submissão se os números forem iguais
+            $('#celular2Error').css('display', 'block').text('Os números de celular não podem ser iguais.');
+            return; 
+        } else {
+            $('#celular2Error').css('display', 'none');
         }
         
         var formData = $(this).serialize();
@@ -496,15 +494,23 @@ $(document).ready(function() {
             }
         });
     });
+    $('#celular').on('input', function() {
+        if ($(this).val().length > 11) {
+            $(this).val($(this).val().slice(0, 11));
+        }
+        $('#celularError').css('display', 'none');
+    });
+
+    $('#celular2').on('input', function() {
+        if ($(this).val().length > 11) {
+            $(this).val($(this).val().slice(0, 11));
+        }
+        $('#celular2Error').css('display', 'none');
+    });
 });
 </script>
-
-
-
-
     </div>
 </main>
-
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
 
