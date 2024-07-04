@@ -14,7 +14,6 @@ document.addEventListener('DOMContentLoaded', function() {
         assunto11: '',
         assunto12: ''
     };
-
     function formatarDataExibicao(data) {
         if (!data) return '';
         var dataObj = new Date(data + 'T00:00:00');
@@ -23,7 +22,6 @@ document.addEventListener('DOMContentLoaded', function() {
         var ano = dataObj.getFullYear();
         return ano + '-' + mes + '-' + dia;
     }
-
     function preencherCampos(data) {
         document.getElementById('nome').value = data.nome || '';
         document.getElementById('nascimento').value = formatarDataExibicao(data.data_nascimento) || '';
@@ -33,7 +31,6 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('registro').value = data.registro || '';
         document.getElementById('endereco').value = data.endereco || '';
         document.getElementById('especialidade').value = data.especialidades || '';
-
         var orgaoSelect = document.getElementById('orgao');
         for (var i = 0; i < orgaoSelect.options.length; i++) {
             if (orgaoSelect.options[i].value === data.orgao) {
@@ -42,7 +39,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     }
-
     function limparCampos() {
         document.getElementById('nome').value = '';
         document.getElementById('nascimento').value = '';
@@ -57,18 +53,15 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('acoes').value = '';
         document.getElementById('endereco').value = '';
     }
-
     document.getElementById('cpf').addEventListener('keydown', function(event) {
         if (event.key === 'Enter') {
             event.preventDefault();
             var cpf = event.target.value.trim();
-
             if (cpf !== '') {
                 verificarCPF(cpf);
             }
         }
     });
-
     function verificarCPF(cpf) {
         $.ajax({
             url: 'verificarcpf.php',
@@ -95,15 +88,12 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
-
     var enviarButton = document.getElementById("enviarbutton");
     enviarButton.addEventListener("click", function(event) {
         enviarFormulario(event);
     });
-
     function enviarFormulario(event) {
         event.preventDefault();
-
         var nome = document.getElementById("nome").value ;
         var cpf = document.getElementById("cpf").value ;
         var nascimento = document.getElementById("nascimento").value ;
@@ -125,11 +115,9 @@ document.addEventListener('DOMContentLoaded', function() {
         let veiculoselecionado = document.querySelector('input[name="veiculo"]:checked');
         if (veiculoselecionado) {
             veiculoselecionado = veiculoselecionado.value;
-
             // Se o valor selecionado for "Outros", concatenar com o valor do campo "outro"
             if (veiculoselecionado === 'Outros') {
                 veiculoselecionado = document.getElementById('outro').value;
-
                 // Verificar se o campo "outro" está preenchido
                 if (!document.getElementById('outro').value.trim()) {
                     Swal.fire({
@@ -144,7 +132,6 @@ document.addEventListener('DOMContentLoaded', function() {
             // Se nenhum veículo estiver selecionado
             veiculoselecionado = null;
         }
-
         var camposObrigatorios = [
             { campo: cpf, nome: "CPF" },
             { campo: nome, nome: "Nome" },
@@ -161,16 +148,13 @@ document.addEventListener('DOMContentLoaded', function() {
             { campo: descricao, nome: "Descrição" },
             { campo: acoes, nome: "Ações" },
         ];
-
         var camposVazios = camposObrigatorios.filter(function(campo) {
             return !campo.campo || (typeof campo.campo !== 'string') || campo.campo.trim() === "";
         });
-
         if (camposVazios.length > 0) {
             var camposNomes = camposVazios.map(function(campo) {
                 return campo.nome;
             }).join(", ");
-
             Swal.fire({
                 title: "Erro no Cadastro",
                 text: "Por favor, preencha todos os campos obrigatórios: " + camposNomes,
@@ -178,7 +162,6 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             return; // Retorna aqui para impedir o envio do AJAX
         }
-
         $.ajax({
             url: 'enviarindexbanco.php',
             method: 'POST',
@@ -207,7 +190,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     text: response,
                     icon: "success"
                 }).then(function() {
-                    window.location.reload();
+                    // Limpar todos os campos e recarregar a página
+                limparCampos();
+                    window.location.href = "historico.php";
                 });
             },
             error: function(error) {
@@ -219,5 +204,26 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.error('Erro na requisição AJAX:', error);
             }
         });
+    }
+    function limparCampos() {
+        document.getElementById('presencial').value = '';
+        document.getElementById('nome').value = '';
+        document.getElementById('cpf').value = '';
+        document.getElementById('nascimento').value = '';
+        document.getElementById('celular').value = '';
+        document.getElementById('celulardois').value = '';
+        document.getElementById('email').value = '';
+        document.getElementById('especialidade').value = '';
+        document.getElementById('registro').value = '';
+        document.getElementById('orgao').value = '';
+        document.getElementById('date').value = '';
+        document.getElementById('status').value = '';
+        document.getElementById('endereco').value = '';
+        document.getElementById('descricao').value = '';
+        document.getElementById('acoes').value = '';
+        document.getElementById('selectedIds').value = '';
+        document.getElementById('assuntoatendimento').value = '';
+
+        // Limpar campos adicionais conforme necessário
     }
 });
