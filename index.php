@@ -198,7 +198,7 @@ include("conexao.php")
                 const minAllowedDate = new Date('1874-01-01'); 
 
                 if (selectedDate < minAllowedDate) {
-                    errorElement.textContent = 'Por favor, selecione uma data válida a partir de 01/01/1874.';
+                    errorElement.textContent = 'Selecione uma data válida';
                     nascimentoInput.classList.add('is-invalid');
                     enviarButton.setAttribute('disabled', 'disabled');
                     return false;
@@ -438,7 +438,7 @@ include("conexao.php")
         </div>
     </div>
     <div class=" container_fluid d-flex justify-content-center align-items-center mt-4">
-        <button type="submit" id="enviarbutton" class="btn col-2 btn-primary">Registrar Atendimento</button>
+        <button type="submit" id="enviarbutton" class="btn col-4 btn-primary">Registrar Atendimento</button>
     </div>
     <div class=" container_fluid d-flex justify-content-center align-items-center mt-4"></div>
         </form>

@@ -207,9 +207,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     text: response,
                     icon: "success"
                 }).then(function() {
-                    // Limpar todos os campos e recarregar a página
-                limparCampos();
-                    window.location.href = "historico.php";
+                    window.location.reload();
                 });
             },
             error: function(error) {
@@ -221,26 +219,5 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.error('Erro na requisição AJAX:', error);
             }
         });
-    }
-    function limparCampos() {
-        document.getElementById('presencial').value = '';
-        document.getElementById('nome').value = '';
-        document.getElementById('cpf').value = '';
-        document.getElementById('nascimento').value = '';
-        document.getElementById('celular').value = '';
-        document.getElementById('celulardois').value = '';
-        document.getElementById('email').value = '';
-        document.getElementById('especialidade').value = '';
-        document.getElementById('registro').value = '';
-        document.getElementById('orgao').value = '';
-        document.getElementById('date').value = '';
-        document.getElementById('status').value = '';
-        document.getElementById('endereco').value = '';
-        document.getElementById('descricao').value = '';
-        document.getElementById('acoes').value = '';
-        document.getElementById('selectedIds').value = '';
-        document.getElementById('assuntoatendimento').value = '';
-    
-        // Limpar campos adicionais conforme necessário
     }
 });
