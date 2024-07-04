@@ -41,7 +41,33 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
     <link rel="stylesheet" href="css/multi-select-tag.css">
 </head>
 <style>
-    
+     .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .pagination button {
+            padding: 8px 12px;
+            margin: 0 5px;
+            border: 1px solid #001f3f;
+            background-color: white;
+            color: #001f3f;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .pagination button.active {
+            background-color: #001f3f;
+            color: white;
+        }
+
+        .pagination button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
     a{
         color: black;
         text-decoration: none;
@@ -98,52 +124,123 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
 
 
     <table class="table table-bordered table-striped mt-4">
-    <thead class="thead-light">
-        <tr>
-            <th class="text-left">CPF</th>
-            <th class="text-left">Nome do profissional</th>
-            <th class="text-left">Email</th>
-            <th class="text-left">Telefone </th>
-            <th class="text-center">Editar</th>
-        </tr>
-    </thead>
-    <tbody id="tableBody">
-    <?php
-        $sql_profissionais = "
-            SELECT p.id, p.nome, p.cpf, p.telefone, p.telefone2, p.email, a.id AS id_atendimento, a.data, a.assunto, a.situacao
-            FROM profissionais p
-            LEFT JOIN atendimento a ON p.id = a.profissional
-            ORDER BY p.nome ASC";
-        $result_profissionais = $conn->query($sql_profissionais);
-        if ($result_profissionais && $result_profissionais->num_rows > 0) {
-            while ($row = $result_profissionais->fetch_assoc()) {
-                $data_atendimento = new DateTime($row['data']);
-                $data_atendimento_formatada = $data_atendimento->format('d/m/Y');
-                $cpf = htmlspecialchars($row['cpf']);
-                $telefone = htmlspecialchars($row['telefone']);
-                $telefone2 = htmlspecialchars($row['telefone2']);
-                $email = htmlspecialchars($row['email']);
-                echo "<tr>";
-                echo "<td class='text-left'>" . htmlspecialchars($cpf) . "</td>";
-                echo "<td class='text-left'>" . htmlspecialchars($row['nome']) . "</td>";
-                echo "<td class='text-left'>" . $email . "</td>";
-                echo "<td class='text-left'>" . $telefone . "</td>";
-                echo "<td class='text-center'>";
-                echo "<button class='btn btn-primary' onclick='redirectToDetails({$row['id_atendimento']})' style='background-color: transparent; border: none;'>";
-                echo "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' width='20' height='20' style='cursor: pointer;' onclick='editAtendimento({$row['id']})'>";
-                echo "<path fill='#001f3f' d='M471.6 21.7c-21.9-21.9-57.3-21.9-79.2 0L362.3 51.7l97.9 97.9 30.1-30.1c21.9-21.9 21.9-57.3 0-79.2L471.6 21.7zm-299.2 220c-6.1 6.1-10.8 13.6-13.5 21.9l-29.6 88.8c-2.9 8.6-.6 18.1 5.8 24.6s15.9 8.7 24.6 5.8l88.8-29.6c8.2-2.7 15.7-7.4 21.9-13.5L437.7 172.3 339.7 74.3 172.4 241.7zM96 64C43 64 0 107 0 160V416c0 53 43 96 96 96H352c53 0 96-43 96-96V320c0-17.7-14.3-32-32-32s-32 14.3-32 32v96c0 17.7-14.3 32-32 32H96c-17.7 0-32-14.3-32-32V160c0-17.7 14.3-32 32-32h96c17.7 0 32-14.3 32-32s-14.3-32-32-32H96z'/>";
-                echo "</svg>";
-                echo "</button>";
-                echo "</td>";
-                echo "</tr>";
+        <thead class="thead-light">
+            <tr>
+                <th class="text-left">CPF</th>
+                <th class="text-left">Nome do profissional</th>
+                <th class="text-left">Email</th>
+                <th class="text-left">Telefone</th>
+                <th class="text-center">Editar</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody">
+        <?php
+            $sql_profissionais = "
+                SELECT p.id, p.nome, p.cpf, p.telefone, p.telefone2, p.email, a.id AS id_atendimento, a.data, a.assunto, a.situacao
+                FROM profissionais p
+                LEFT JOIN atendimento a ON p.id = a.profissional
+                ORDER BY p.nome ASC";
+            $result_profissionais = $conn->query($sql_profissionais);
+            $rows = [];
+            if ($result_profissionais && $result_profissionais->num_rows > 0) {
+                while ($row = $result_profissionais->fetch_assoc()) {
+                    $rows[] = $row;
+                }
             }
-        } else {
-            echo "<tr><td colspan='5' class='text-center'>Nenhum profissional encontrado</td></tr>";
-        }
-        $conn->close();
+            $conn->close();
         ?>
-    </tbody>
-</table>
+        </tbody>
+    </table>
+
+    <div class="pagination" id="pagination"></div>
+
+    <script>
+        const rows = <?php echo json_encode($rows); ?>;
+        const rowsPerPage = 10;
+        const tableBody = document.getElementById('tableBody');
+        const pagination = document.getElementById('pagination');
+        let currentPage = 1;
+
+        function displayRows(startIndex, endIndex) {
+            tableBody.innerHTML = '';
+            for (let i = startIndex; i < endIndex; i++) {
+                if (i >= rows.length) break;
+                const row = rows[i];
+                const dataAtendimento = new Date(row.data);
+                const dataAtendimentoFormatada = dataAtendimento.toLocaleDateString('pt-BR');
+                const cpf = row.cpf;
+                const telefone = row.telefone;
+                const telefone2 = row.telefone2;
+                const email = row.email;
+                tableBody.innerHTML += `
+                    <tr>
+                        <td class='text-left'>${cpf}</td>
+                        <td class='text-left'>${row.nome}</td>
+                        <td class='text-left'>${email}</td>
+                        <td class='text-left'>${telefone}</td>
+                        <td class='text-center'>
+                            <button class='btn btn-primary' onclick='redirectToDetails(${row.id_atendimento})' style='background-color: transparent; border: none;'>
+                                <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' width='20' height='20' style='cursor: pointer;' onclick='editAtendimento(${row.id})'>
+                                    <path fill='#001f3f' d='M471.6 21.7c-21.9-21.9-57.3-21.9-79.2 0L362.3 51.7l97.9 97.9 30.1-30.1c21.9-21.9 21.9-57.3 0-79.2L471.6 21.7zm-299.2 220c-6.1 6.1-10.8 13.6-13.5 21.9l-29.6 88.8c-2.9 8.6-.6 18.1 5.8 24.6s15.9 8.7 24.6 5.8l88.8-29.6c8.2-2.7 15.7-7.4 21.9-13.5L437.7 172.3 339.7 74.3 172.4 241.7zM96 64C43 64 0 107 0 160V416c0 53 43 96 96 96H352c53 0 96-43 96-96V320c0-17.7-14.3-32-32-32s-32 14.3-32 32v96c0 17.7-14.3 32-32 32H96c-17.7 0-32-14.3-32-32V160c0-17.7 14.3-32 32-32h96c17.7 0 32-14.3 32-32s-14.3-32-32-32H96z'/>
+                                </svg>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+
+        function setupPagination() {
+            pagination.innerHTML = '';
+
+            const prevButton = document.createElement('button');
+            prevButton.innerHTML = '&larr;';
+            prevButton.disabled = currentPage === 1;
+            prevButton.addEventListener('click', () => {
+                currentPage--;
+                updatePagination();
+            });
+            pagination.appendChild(prevButton);
+
+            const pageCount = Math.ceil(rows.length / rowsPerPage);
+            for (let i = 1; i <= pageCount; i++) {
+                const button = document.createElement('button');
+                button.textContent = i;
+                button.classList.add('page');
+                if (i === currentPage) {
+                    button.classList.add('active');
+                }
+                button.addEventListener('click', () => {
+                    currentPage = i;
+                    updatePagination();
+                });
+                pagination.appendChild(button);
+            }
+
+            const nextButton = document.createElement('button');
+            nextButton.innerHTML = '&rarr;';
+            nextButton.disabled = currentPage === pageCount;
+            nextButton.addEventListener('click', () => {
+                currentPage++;
+                updatePagination();
+            });
+            pagination.appendChild(nextButton);
+        }
+
+        function updatePagination() {
+            const start = (currentPage - 1) * rowsPerPage;
+            const end = start + rowsPerPage;
+            displayRows(start, end);
+            setupPagination();
+        }
+
+        function redirectToDetails(idAtendimento) {
+            window.location.href = `detalhes.php?id=${idAtendimento}`;
+        }
+
+        updatePagination();
+    </script>
+    <br>
 <script>
     function redirectToDetails(id) {
         var url = 'editar_profissional.php?id=' + id;
