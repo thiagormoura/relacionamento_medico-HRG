@@ -306,13 +306,14 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
                     return 'badge badge-custom bg-secondary';
             }
         }
-
+        
         function redirectToDetails(idAtendimento) {
             window.location.href = `detalhes.php?id=${idAtendimento}`;
         }
 
         updatePagination();
     </script>
+    <br>
 <script>
     function toggleOrder() {
         var currentOrder = '<?php echo $orderBy; ?>';
