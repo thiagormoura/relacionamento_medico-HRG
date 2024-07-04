@@ -18,7 +18,7 @@ function enviarParaBanco($conn, $date, $status, $nome, $registro, $orgao, $celul
         $sucesso = false;
     } else {
 
-        print_r($assuntosselecionados_array);
+       
         $id_profissional = $stmt_profissionais->insert_id;
 
         $stmt_atendimento = $conn->prepare("INSERT INTO atendimento (profissional, assunto, acoes, descricao, situacao, veiculo_atendimento, data) VALUES (?, ?, ?, ?, ?, ?, ?)");
@@ -88,7 +88,7 @@ if (!is_array($assuntosselecionados_array)) {
 
 // Enviar dados para o banco de dados
 if (enviarParaBanco($conn, $date, $status, $nome, $registro, $orgao, $celular, $celulardois, $nascimento, $email, $endereco, $especialidade, $assunto, $descricao, $acoes, $cpf, $tipo_atendimento, $veiculoselecionado, $assuntoatendimento, $assuntosselecionados_array)) {
-    echo "Dados enviados com sucesso para o banco de dados.";
+    
 } else {
     echo "Erro ao enviar dados para o banco de dados.";
 }
