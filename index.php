@@ -92,7 +92,7 @@ include("conexao.php")
                         <div class="form-group">
                             <label for="status">Status</label>
                             <select class="form-control" id="status" name="status" required>
-                                <option value="Analize">Analize</option>
+                                <option value="Analize">Análise</option>
                                 <option value="Aberto">Aberto</option>
                                 <option value="Concluido">Concluido</option>
                             </select>
