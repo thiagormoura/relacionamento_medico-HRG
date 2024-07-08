@@ -176,19 +176,6 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
     </thead>
         <tbody id="tableBody">
         <?php
-        function getBadgeClass($situacao) {
-            switch ($situacao) {
-                case 'Aberto':
-                    return 'badge badge-custom bg-success';
-                case 'Concluido':
-                    return 'badge badge-custom bg-primary';
-                case 'Análise':
-                    return 'badge badge-custom bg-warning';
-                default:
-                    return 'badge badge-custom bg-secondary';
-            }
-        }
-
         $orderBy = isset($_GET['order']) ? $_GET['order'] : 'ASC';
         $_SESSION['order'] = $orderBy;
 
@@ -209,11 +196,10 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
         ?>
         </tbody>
     </table>
-
     <div class="pagination" id="pagination"></div>
-
-    <script>
-        const rows = <?php echo json_encode($rows); ?>;
+    <br>
+<script>
+    const rows = <?php echo json_encode($rows); ?>;
         const rowsPerPage = 10;
         const tableBody = document.getElementById('tableBody');
         const pagination = document.getElementById('pagination');
@@ -292,9 +278,45 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
             const end = start + rowsPerPage;
             displayRows(start, end);
             setupPagination();
-        }
+        }      
+    function applyFilters() {
+    var filterData = document.getElementById('filterData').value;
+    var filterNome = document.getElementById('filterNome').value.trim().toLowerCase();
+    var filterAssunto = document.getElementById('filterAssunto').value.toLowerCase();
+    var filterStatus = document.getElementById('filterStatus').value;
+    var tr = tableBody.getElementsByTagName('tr');
 
-        function getBadgeClass(situacao) {
+    for (var i = 0; i < tr.length; i++) {
+        var tdData = tr[i].getElementsByTagName('td')[0];
+        var tdNome = tr[i].getElementsByTagName('td')[1];
+        var tdAssunto = tr[i].getElementsByTagName('td')[2];
+        var tdStatus = tr[i].getElementsByTagName('td')[3];
+
+        if (tdData && tdNome && tdAssunto && tdStatus) {
+            var txtValueData = tdData.textContent || tdData.innerText;
+            var txtValueNome = tdNome.textContent || tdNome.innerText;
+            var txtValueAssunto = tdAssunto.textContent || tdAssunto.innerText;
+            var txtValueStatus = tdStatus.textContent || tdStatus.innerText;
+            var tableDateFormatted = txtValueData.split('/').reverse().join('-');
+            var cleanTxtValueNome = txtValueNome.trim().toLowerCase();
+            var dataMatches = filterData === "" || tableDateFormatted === filterData;
+            var nomeMatches = cleanTxtValueNome.indexOf(filterNome) > -1;
+            var assuntoMatches = txtValueAssunto.toLowerCase().indexOf(filterAssunto) > -1;
+            var statusMatches = filterStatus === "" || txtValueStatus.toLowerCase() === filterStatus.toLowerCase();
+            
+            if (dataMatches && nomeMatches && assuntoMatches && statusMatches) {
+                tr[i].style.display = "";
+            } else {
+                tr[i].style.display = "none";
+            }
+        }
+    }
+}
+    document.getElementById('applyFilters').addEventListener('click', applyFilters);
+</script>
+
+<script>
+    function getBadgeClass(situacao) {
             switch (situacao) {
                 case 'Aberto':
                     return 'badge badge-custom bg-success';
@@ -306,107 +328,30 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
                     return 'badge badge-custom bg-secondary';
             }
         }
-        
-        function redirectToDetails(idAtendimento) {
+    function redirectToDetails(idAtendimento) {
             window.location.href = `detalhes.php?id=${idAtendimento}`;
         }
-
-        updatePagination();
-    </script>
-    <br>
-<script>
-    function toggleOrder() {
-        var currentOrder = '<?php echo $orderBy; ?>';
-        var newOrder = currentOrder === 'ASC' ? 'DESC' : 'ASC';
-        var currentUrl = window.location.href;
-        var newUrl;
-
-        // Verifica se já há um parâmetro 'order' na URL atual
-        if (currentUrl.indexOf('order=') !== -1) {
-            // Atualiza o valor do parâmetro 'order' na URL
-            newUrl = currentUrl.replace(/order=(ASC|DESC)/, 'order=' + newOrder);
-        } else {
-            // Adiciona o parâmetro 'order' à URL
-            newUrl = currentUrl + (currentUrl.indexOf('?') !== -1 ? '&' : '?') + 'order=' + newOrder;
-        }
-
-        window.location.href = newUrl;
-    }
-
-    document.addEventListener('DOMContentLoaded', function () {
-        document.getElementById('toggleOrder').addEventListener('click', toggleOrder);
-    });
-</script>
-
-
-<script>
     function redirectToDetails(id) {
         window.location.href = 'dados.php?id=' + id;
     }
-</script>
-
-
-
-
-
-<script>
-$(document).ready(function() {
-    $('#tableBody').on('click', 'tr', function() {
-        var dataNascimento = $(this).find('td:eq(0)').text();
-        var nome = $(this).find('td:eq(1)').text();
-        var assunto = $(this).find('td:eq(2)').text();
-        var status = $(this).find('td:eq(3)').find('span').text();
-
-        console.log("Data de Nascimento:", dataNascimento);
-        console.log("Nome:", nome);
-        console.log("Assunto Tratado:", assunto);
-        console.log("Status:", status);
-
-        $('#modalDataNascimento').text(dataNascimento);
-        $('#modalNome').text(nome);
-        $('#modalAssunto').text(assunto);
-        $('#modalStatus').text(status);
-
-        $('#detalhesModal').modal('show');
-    });
-});
-</script>
-<script>
-    function applyFilters() {
-        var filterData = document.getElementById('filterData').value;
-        var filterNome = document.getElementById('filterNome').value.trim().toLowerCase();
-        var filterAssunto = document.getElementById('filterAssunto').value.toLowerCase();
-        var filterStatus = document.getElementById('filterStatus').value;
-        var table = document.getElementById('tableBody');
-        var tr = table.getElementsByTagName('tr');
-        for (var i = 0; i < tr.length; i++) {
-            var tdData = tr[i].getElementsByTagName('td')[0];
-            var tdNome = tr[i].getElementsByTagName('td')[1];
-            var tdAssunto = tr[i].getElementsByTagName('td')[2];
-            var tdStatus = tr[i].getElementsByTagName('td')[3];
-            if (tdData && tdNome && tdAssunto && tdStatus) {
-                var txtValueData = tdData.textContent || tdData.innerText;
-                var txtValueNome = tdNome.textContent || tdNome.innerText;
-                var txtValueAssunto = tdAssunto.textContent || tdAssunto.innerText;
-                var txtValueStatus = tdStatus.textContent || tdStatus.innerText;
-                var tableDateFormatted = txtValueData.split('/').reverse().join('-');
-                var cleanTxtValueNome = txtValueNome.trim().toLowerCase();
-                var dataMatches = filterData === "" || tableDateFormatted === filterData;
-                var nomeMatches = cleanTxtValueNome.indexOf(filterNome) > -1;
-                var assuntoMatches = txtValueAssunto.toLowerCase().indexOf(filterAssunto) > -1;
-                var statusMatches = filterStatus === "" || txtValueStatus.toLowerCase() === filterStatus.toLowerCase();
-                if (dataMatches && nomeMatches && assuntoMatches && statusMatches) {
-                    tr[i].style.display = "";
+    updatePagination();
+        function toggleOrder() {
+                var currentOrder = '<?php echo $orderBy; ?>';
+                var newOrder = currentOrder === 'ASC' ? 'DESC' : 'ASC';
+                var currentUrl = window.location.href;
+                var newUrl;
+                if (currentUrl.indexOf('order=') !== -1) {
+                    newUrl = currentUrl.replace(/order=(ASC|DESC)/, 'order=' + newOrder);
                 } else {
-                    tr[i].style.display = "none";
+                    newUrl = currentUrl + (currentUrl.indexOf('?') !== -1 ? '&' : '?') + 'order=' + newOrder;
                 }
+
+                window.location.href = newUrl;
             }
-        }
-    }
-    document.getElementById('applyFilters').addEventListener('click', applyFilters);
+            document.addEventListener('DOMContentLoaded', function () {
+                document.getElementById('toggleOrder').addEventListener('click', toggleOrder);
+        });
 </script>
-
-
 
 </div>   
 </div>  
