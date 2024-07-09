@@ -196,163 +196,126 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
         ?>
         </tbody>
     </table>
-    <div class="pagination" id="pagination"></div>
     <br>
+    <div class="pagination" id="pagination"></div>
 <script>
     const rows = <?php echo json_encode($rows); ?>;
-        const rowsPerPage = 10;
-        const tableBody = document.getElementById('tableBody');
-        const pagination = document.getElementById('pagination');
-        let currentPage = 1;
+    const rowsPerPage = 10;
+    const tableBody = document.getElementById('tableBody');
+    const pagination = document.getElementById('pagination');
+    let currentPage = 1;
 
-        function displayRows(startIndex, endIndex) {
-            tableBody.innerHTML = '';
-            for (let i = startIndex; i < endIndex; i++) {
-                if (i >= rows.length) break;
-                const row = rows[i];
-                const dataAtendimento = new Date(row.data);
-                const dataAtendimentoFormatada = dataAtendimento.toLocaleDateString('pt-BR');
-                const cpf = row.cpf;
-                const telefone = row.telefone;
-                const telefone2 = row.telefone2;
-                const email = row.email;
-                const assunto = row.assunto ? row.assunto : "Nenhum assunto encontrado";
-                const situacao = row.situacao;
-                tableBody.innerHTML += `
-                    <tr>
-                        <td class='text-left'>${dataAtendimentoFormatada}</td>
-                        <td class='text-left'>${row.nome}</td>
-                        <td class='text-left'>${assunto}</td>
-                        <td class='text-left'><span class='${getBadgeClass(situacao)}'>${situacao}</span></td>
-                        <td class='text-center'>
-                            <button class='btn btn-primary' onclick='redirectToDetails(${row.id_atendimento})' style='background-color: transparent; border: none;'>
-                                <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 576 512' width='20' height='20'>
-                                    <path fill='#001f3f' d='M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM144 256a144 144 0 1 1 288 0 144 144 0 1 1 -288 0zm144-64c0 35.3-28.7 64-64 64c-7.1 0-13.9-1.2-20.3-3.3c-5.5-1.8-11.9 1.6-11.7 7.4c.3 6.9 1.3 13.8 3.2 20.7c13.7 51.2 66.4 81.6 117.6 67.9s81.6-66.4 67.9-117.6c-11.1-41.5-47.8-69.4-88.6-71.1c-5.8-.2-9.2 6.1-7.4 11.7c2.1 6.4 3.3 13.2 3.3 20.3z'/>
-                                </svg>
-                            </button>
-                        </td>
-                    </tr>
-                `;
-            }
-        }
-
-        function setupPagination() {
-            pagination.innerHTML = '';
-
-            const prevButton = document.createElement('button');
-            prevButton.innerHTML = '&larr;';
-            prevButton.disabled = currentPage === 1;
-            prevButton.addEventListener('click', () => {
-                currentPage--;
-                updatePagination();
-            });
-            pagination.appendChild(prevButton);
-
-            const pageCount = Math.ceil(rows.length / rowsPerPage);
-            for (let i = 1; i <= pageCount; i++) {
-                const button = document.createElement('button');
-                button.textContent = i;
-                button.classList.add('page');
-                if (i === currentPage) {
-                    button.classList.add('active');
-                }
-                button.addEventListener('click', () => {
-                    currentPage = i;
-                    updatePagination();
-                });
-                pagination.appendChild(button);
-            }
-
-            const nextButton = document.createElement('button');
-            nextButton.innerHTML = '&rarr;';
-            nextButton.disabled = currentPage === pageCount;
-            nextButton.addEventListener('click', () => {
-                currentPage++;
-                updatePagination();
-            });
-            pagination.appendChild(nextButton);
-        }
-
-        function updatePagination() {
-            const start = (currentPage - 1) * rowsPerPage;
-            const end = start + rowsPerPage;
-            displayRows(start, end);
-            setupPagination();
-        }      
-    function applyFilters() {
-    var filterData = document.getElementById('filterData').value;
-    var filterNome = document.getElementById('filterNome').value.trim().toLowerCase();
-    var filterAssunto = document.getElementById('filterAssunto').value.toLowerCase();
-    var filterStatus = document.getElementById('filterStatus').value;
-    var tr = tableBody.getElementsByTagName('tr');
-
-    for (var i = 0; i < tr.length; i++) {
-        var tdData = tr[i].getElementsByTagName('td')[0];
-        var tdNome = tr[i].getElementsByTagName('td')[1];
-        var tdAssunto = tr[i].getElementsByTagName('td')[2];
-        var tdStatus = tr[i].getElementsByTagName('td')[3];
-
-        if (tdData && tdNome && tdAssunto && tdStatus) {
-            var txtValueData = tdData.textContent || tdData.innerText;
-            var txtValueNome = tdNome.textContent || tdNome.innerText;
-            var txtValueAssunto = tdAssunto.textContent || tdAssunto.innerText;
-            var txtValueStatus = tdStatus.textContent || tdStatus.innerText;
-            var tableDateFormatted = txtValueData.split('/').reverse().join('-');
-            var cleanTxtValueNome = txtValueNome.trim().toLowerCase();
-            var dataMatches = filterData === "" || tableDateFormatted === filterData;
-            var nomeMatches = cleanTxtValueNome.indexOf(filterNome) > -1;
-            var assuntoMatches = txtValueAssunto.toLowerCase().indexOf(filterAssunto) > -1;
-            var statusMatches = filterStatus === "" || txtValueStatus.toLowerCase() === filterStatus.toLowerCase();
-            
-            if (dataMatches && nomeMatches && assuntoMatches && statusMatches) {
-                tr[i].style.display = "";
-            } else {
-                tr[i].style.display = "none";
-            }
+    function displayRows(data, startIndex, endIndex) {
+        tableBody.innerHTML = '';
+        for (let i = startIndex; i < endIndex; i++) {
+            if (i >= data.length) break;
+            const row = data[i];
+            const dataAtendimento = new Date(row.data);
+            const dataAtendimentoFormatada = dataAtendimento.toLocaleDateString('pt-BR');
+            const cpf = row.cpf;
+            const telefone = row.telefone;
+            const telefone2 = row.telefone2;
+            const email = row.email;
+            const assunto = row.assunto ? row.assunto : "Nenhum assunto encontrado";
+            const situacao = row.situacao;
+            tableBody.innerHTML += `
+                <tr>
+                    <td class='text-left'>${dataAtendimentoFormatada}</td>
+                    <td class='text-left'>${row.nome}</td>
+                    <td class='text-left'>${assunto}</td>
+                    <td class='text-left'><span class='${getBadgeClass(situacao)}'>${situacao}</span></td>
+                    <td class='text-center'>
+                        <button class='btn btn-primary' onclick='redirectToDetails(${row.id_atendimento})' style='background-color: transparent; border: none;'>
+                            <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 576 512' width='20' height='20'>
+                                <path fill='#001f3f' d='M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM144 256a144 144 0 1 1 288 0 144 144 0 1 1 -288 0zm144-64c0 35.3-28.7 64-64 64c-7.1 0-13.9-1.2-20.3-3.3c-5.5-1.8-11.9 1.6-11.7 7.4c.3 6.9 1.3 13.8 3.2 20.7c13.7 51.2 66.4 81.6 117.6 67.9s81.6-66.4 67.9-117.6c-11.1-41.5-47.8-69.4-88.6-71.1c-5.8-.2-9.2 6.1-7.4 11.7c2.1 6.4 3.3 13.2 3.3 20.3z'/>
+                            </svg>
+                        </button>
+                    </td>
+                </tr>
+            `;
         }
     }
-}
-    document.getElementById('applyFilters').addEventListener('click', applyFilters);
-</script>
-
-<script>
-    function getBadgeClass(situacao) {
-            switch (situacao) {
-                case 'Aberto':
-                    return 'badge badge-custom bg-success';
-                case 'Concluido':
-                    return 'badge badge-custom bg-primary';
-                case 'Análise':
-                    return 'badge badge-custom bg-warning';
-                default:
-                    return 'badge badge-custom bg-secondary';
-            }
-        }
-    function redirectToDetails(idAtendimento) {
-            window.location.href = `detalhes.php?id=${idAtendimento}`;
-        }
-    function redirectToDetails(id) {
-        window.location.href = 'dados.php?id=' + id;
-    }
-    updatePagination();
-        function toggleOrder() {
-                var currentOrder = '<?php echo $orderBy; ?>';
-                var newOrder = currentOrder === 'ASC' ? 'DESC' : 'ASC';
-                var currentUrl = window.location.href;
-                var newUrl;
-                if (currentUrl.indexOf('order=') !== -1) {
-                    newUrl = currentUrl.replace(/order=(ASC|DESC)/, 'order=' + newOrder);
-                } else {
-                    newUrl = currentUrl + (currentUrl.indexOf('?') !== -1 ? '&' : '?') + 'order=' + newOrder;
-                }
-
-                window.location.href = newUrl;
-            }
-            document.addEventListener('DOMContentLoaded', function () {
-                document.getElementById('toggleOrder').addEventListener('click', toggleOrder);
+    function setupPagination(data) {
+        pagination.innerHTML = '';
+        const prevButton = document.createElement('button');
+        prevButton.innerHTML = '&larr;';
+        prevButton.disabled = currentPage === 1;
+        prevButton.addEventListener('click', () => {
+            currentPage--;
+            updatePagination(data);
         });
-</script>
+        pagination.appendChild(prevButton);
+        const pageCount = Math.ceil(data.length / rowsPerPage);
+        for (let i = 1; i <= pageCount; i++) {
+            const button = document.createElement('button');
+            button.textContent = i;
+            button.classList.add('page');
+            if (i === currentPage) {
+                button.classList.add('active');
+            }
+            button.addEventListener('click', () => {
+                currentPage = i;
+                updatePagination(data);
+            });
+            pagination.appendChild(button);
+        }
+        const nextButton = document.createElement('button');
+        nextButton.innerHTML = '&rarr;';
+        nextButton.disabled = currentPage === pageCount;
+        nextButton.addEventListener('click', () => {
+            currentPage++;
+            updatePagination(data);
+        });
+        pagination.appendChild(nextButton);
+    }
+    function updatePagination(data) {
+        const start = (currentPage - 1) * rowsPerPage;
+        const end = start + rowsPerPage;
+        displayRows(data, start, end);
+        setupPagination(data);
+    }
+    function redirectToDetails(idAtendimento) {
+        window.location.href = `editar_atendimento.php?id=${idAtendimento}`;
+    }
+    function getBadgeClass(situacao) {
+        switch (situacao) {
+            case 'Aberto':
+                return 'badge badge-custom bg-success';
+            case 'Concluido':
+                return 'badge badge-custom bg-primary';
+            case 'Análise':
+                return 'badge badge-custom bg-warning';
+            default:
+                return 'badge badge-custom bg-secondary';
+        }
+    }
+    let filterData = '';
+    let filterNome = '';
+    let filterAssunto = '';
+    let filterStatus = '';
 
+    function applyFilters() {
+        filterData = document.getElementById('filterData').value.trim();
+        filterNome = document.getElementById('filterNome').value.trim().toLowerCase();
+        filterAssunto = document.getElementById('filterAssunto').value.trim().toLowerCase();
+        filterStatus = document.getElementById('filterStatus').value.trim().toLowerCase();
+
+        const filteredData = rows.filter(row => {
+            const dataMatches = filterData === '' || new Date(row.data).toLocaleDateString('pt-BR') === filterData;
+            const nomeMatches = row.nome.toLowerCase().includes(filterNome);
+            const assuntoMatches = row.assunto.toLowerCase().includes(filterAssunto);
+            const statusMatches = filterStatus === '' || row.situacao.toLowerCase() === filterStatus;
+
+            return dataMatches && nomeMatches && assuntoMatches && statusMatches;
+        });
+        currentPage = 1; 
+        displayRows(filteredData, 0, rowsPerPage); 
+        setupPagination(filteredData); 
+    }
+    document.getElementById('applyFilters').addEventListener('click', applyFilters);
+    updatePagination(rows);
+    
+</script>
 </div>   
 </div>  
     </main>
