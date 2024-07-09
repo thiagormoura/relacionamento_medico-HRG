@@ -191,41 +191,47 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
     }
 
     function setupPagination(data) {
-        pagination.innerHTML = '';
+    pagination.innerHTML = '';
 
-        const prevButton = document.createElement('button');
-        prevButton.innerHTML = '&larr;';
-        prevButton.disabled = currentPage === 1;
-        prevButton.addEventListener('click', () => {
-            currentPage--;
-            updatePagination(data);
-        });
-        pagination.appendChild(prevButton);
+    // Botão Anterior
+    const prevButton = document.createElement('button');
+    prevButton.innerHTML = '&larr;';
+    prevButton.disabled = currentPage === 1;
+    prevButton.title = 'Anterior'; // Tooltip para o botão Anterior
+    prevButton.addEventListener('click', () => {
+        currentPage--;
+        updatePagination(data);
+    });
+    pagination.appendChild(prevButton);
 
-        const pageCount = Math.ceil(data.length / rowsPerPage);
-        for (let i = 1; i <= pageCount; i++) {
-            const button = document.createElement('button');
-            button.textContent = i;
-            button.classList.add('page');
-            if (i === currentPage) {
-                button.classList.add('active');
-            }
-            button.addEventListener('click', () => {
-                currentPage = i;
-                updatePagination(data);
-            });
-            pagination.appendChild(button);
+    // Botões de Página
+    const pageCount = Math.ceil(data.length / rowsPerPage);
+    for (let i = 1; i <= pageCount; i++) {
+        const button = document.createElement('button');
+        button.textContent = i;
+        button.classList.add('page');
+        if (i === currentPage) {
+            button.classList.add('active');
         }
-
-        const nextButton = document.createElement('button');
-        nextButton.innerHTML = '&rarr;';
-        nextButton.disabled = currentPage === pageCount;
-        nextButton.addEventListener('click', () => {
-            currentPage++;
+        button.addEventListener('click', () => {
+            currentPage = i;
             updatePagination(data);
         });
-        pagination.appendChild(nextButton);
+        pagination.appendChild(button);
     }
+
+    // Botão Próximo
+    const nextButton = document.createElement('button');
+    nextButton.innerHTML = '&rarr;';
+    nextButton.disabled = currentPage === pageCount;
+    nextButton.title = 'Próximo'; // Tooltip para o botão Próximo
+    nextButton.addEventListener('click', () => {
+        currentPage++;
+        updatePagination(data);
+    });
+    pagination.appendChild(nextButton);
+}
+
 
     function updatePagination(data) {
         const start = (currentPage - 1) * rowsPerPage;
@@ -278,6 +284,7 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
 </div>   
 </div>  
     </main>
+    <br>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 </body>
