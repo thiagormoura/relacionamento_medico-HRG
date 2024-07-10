@@ -167,6 +167,7 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
                         <path fill="#001f3f" d="M7 14l5-5 5 5H7z"/>
                     </svg>
                 </a>
+               
             </th>
             <th class="text-left">Nome do Profissional</th>
             <th class="text-left">Assunto Tratado</th>
@@ -198,135 +199,150 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
     </table>
     <br>
     <div class="pagination" id="pagination"></div>
-<script>
-    const rows = <?php echo json_encode($rows); ?>;
-    const rowsPerPage = 10;
-    const tableBody = document.getElementById('tableBody');
-    const pagination = document.getElementById('pagination');
-    let currentPage = 1;
+    <script>
+        const rows = <?php echo json_encode($rows); ?>;
+        const rowsPerPage = 10;
+        const tableBody = document.getElementById('tableBody');
+        const pagination = document.getElementById('pagination');
+        const toggleOrderButton = document.getElementById('toggleOrder');
+        let currentPage = 1;
+        let ascending = true;
 
-    function displayRows(data, startIndex, endIndex) {
-        tableBody.innerHTML = '';
-        for (let i = startIndex; i < endIndex; i++) {
-            if (i >= data.length) break;
-            const row = data[i];
-            const dataAtendimento = new Date(row.data);
-            const dataAtendimentoFormatada = dataAtendimento.toLocaleDateString('pt-BR');
-            const cpf = row.cpf;
-            const telefone = row.telefone;
-            const telefone2 = row.telefone2;
-            const email = row.email;
-            const assunto = row.assunto ? row.assunto : "Nenhum assunto encontrado";
-            const situacao = row.situacao;
-            tableBody.innerHTML += `
-                <tr>
-                    <td class='text-left'>${dataAtendimentoFormatada}</td>
-                    <td class='text-left'>${row.nome}</td>
-                    <td class='text-left'>${assunto}</td>
-                    <td class='text-left'><span class='${getBadgeClass(situacao)}'>${situacao}</span></td>
-                    <td class='text-center'>
-                        <button class='btn btn-primary' onclick='redirectToDetails(${row.id_atendimento})' style='background-color: transparent; border: none;' title='Visualizar'>
-                            <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 576 512' width='20' height='20'>
-                                <path fill='#001f3f' d='M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM144 256a144 144 0 1 1 288 0 144 144 0 1 1 -288 0zm144-64c0 35.3-28.7 64-64 64c-7.1 0-13.9-1.2-20.3-3.3c-5.5-1.8-11.9 1.6-11.7 7.4c.3 6.9 1.3 13.8 3.2 20.7c13.7 51.2 66.4 81.6 117.6 67.9s81.6-66.4 67.9-117.6c-11.1-41.5-47.8-69.4-88.6-71.1c-5.8-.2-9.2 6.1-7.4 11.7c2.1 6.4 3.3 13.2 3.3 20.3z'/>
-                            </svg>
-                        </button>
-                    </td>
-                </tr>
-            `;
+        function displayRows(data, startIndex, endIndex) {
+            tableBody.innerHTML = '';
+            for (let i = startIndex; i < endIndex; i++) {
+                if (i >= data.length) break;
+                const row = data[i];
+                const dataAtendimento = new Date(row.data);
+                const dataAtendimentoFormatada = dataAtendimento.toLocaleDateString('pt-BR');
+                const assunto = row.assunto ? row.assunto : "Nenhum assunto encontrado";
+                const situacao = row.situacao;
+                tableBody.innerHTML += `
+                    <tr>
+                        <td class='text-left'>${dataAtendimentoFormatada}</td>
+                        <td class='text-left'>${row.nome}</td>
+                        <td class='text-left'>${assunto}</td>
+                        <td class='text-left'><span class='${getBadgeClass(situacao)}'>${situacao}</span></td>
+                        <td class='text-center'>
+                            <button class='btn btn-primary' onclick='redirectToDetails(${row.id_atendimento})' style='background-color: transparent; border: none;' title='Visualizar'>
+                                <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 576 512' width='20' height='20'>
+                                    <path fill='#001f3f' d='M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM144 256a144 144 0 1 1 288 0 144 144 0 1 1 -288 0zm144-64c0 35.3-28.7 64-64 64c-7.1 0-13.9-1.2-20.3-3.3c-5.5-1.8-11.9 1.6-11.7 7.4c.3 6.9 1.3 13.8 3.2 20.7c13.7 51.2 66.4 81.6 117.6 67.9s81.6-66.4 67.9-117.6c-11.1-41.5-47.8-69.4-88.6-71.1c-5.8-.2-9.2 6.1-7.4 11.7c2.1 6.4 3.3 13.2 3.3 20.3z'/>
+                                </svg>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }
         }
-    }
-    function setupPagination(data) {
-    pagination.innerHTML = '';
-    
-    // Botão Anterior
-    const prevButton = document.createElement('button');
-    prevButton.innerHTML = '&larr;';
-    prevButton.disabled = currentPage === 1;
-    prevButton.title = 'Anterior'; // Dica de ferramenta para o botão Anterior
-    prevButton.addEventListener('click', () => {
-        currentPage--;
-        updatePagination(data);
-    });
-    pagination.appendChild(prevButton);
-    
-    // Cálculo do número de páginas
-    const pageCount = Math.ceil(data.length / rowsPerPage);
-    
-    // Botões de Página
-    for (let i = 1; i <= pageCount; i++) {
-        const button = document.createElement('button');
-        button.textContent = i;
-        button.classList.add('page');
-        if (i === currentPage) {
-            button.classList.add('active');
+
+        function setupPagination(data) {
+            pagination.innerHTML = '';
+
+            const prevButton = document.createElement('button');
+            prevButton.innerHTML = '&larr;';
+            prevButton.disabled = currentPage === 1;
+            prevButton.title = 'Anterior';
+            prevButton.addEventListener('click', () => {
+                currentPage--;
+                updatePagination(data);
+            });
+            pagination.appendChild(prevButton);
+
+            const pageCount = Math.ceil(data.length / rowsPerPage);
+
+            for (let i = 1; i <= pageCount; i++) {
+                const button = document.createElement('button');
+                button.textContent = i;
+                button.classList.add('page');
+                if (i === currentPage) {
+                    button.classList.add('active');
+                }
+                button.addEventListener('click', () => {
+                    currentPage = i;
+                    updatePagination(data);
+                });
+                pagination.appendChild(button);
+            }
+
+            const nextButton = document.createElement('button');
+            nextButton.innerHTML = '&rarr;';
+            nextButton.disabled = currentPage === pageCount;
+            nextButton.title = 'Próximo';
+            nextButton.addEventListener('click', () => {
+                currentPage++;
+                updatePagination(data);
+            });
+            pagination.appendChild(nextButton);
         }
-        button.addEventListener('click', () => {
-            currentPage = i;
-            updatePagination(data);
+
+        function updatePagination(data) {
+            const start = (currentPage - 1) * rowsPerPage;
+            const end = start + rowsPerPage;
+            displayRows(data, start, end);
+            setupPagination(data);
+        }
+
+        function redirectToDetails(idAtendimento) {
+            window.location.href = `dados.php?id=${idAtendimento}`;
+        }
+
+        function getBadgeClass(situacao) {
+            switch (situacao) {
+                case 'Aberto':
+                    return 'badge badge-custom bg-success';
+                case 'Concluido':
+                    return 'badge badge-custom bg-primary';
+                case 'Análise':
+                    return 'badge badge-custom bg-warning';
+                default:
+                    return 'badge badge-custom bg-secondary';
+            }
+        }
+
+        function applyFilters() {
+            filterData = document.getElementById('filterData').value.trim();
+            filterNome = document.getElementById('filterNome').value.trim().toLowerCase();
+            filterAssunto = document.getElementById('filterAssunto').value.trim().toLowerCase();
+            filterStatus = document.getElementById('filterStatus').value.trim().toLowerCase();
+
+            const filteredData = rows.filter(row => {
+                const dataMatches = filterData === '' || new Date(row.data).toLocaleDateString('pt-BR') === filterData;
+                const nomeMatches = row.nome.toLowerCase().includes(filterNome);
+                const assuntoMatches = row.assunto.toLowerCase().includes(filterAssunto);
+                const statusMatches = filterStatus === '' || row.situacao.toLowerCase() === filterStatus;
+
+                return dataMatches && nomeMatches && assuntoMatches && statusMatches;
+            });
+
+            currentPage = 1;
+            updatePagination(filteredData);
+        }
+
+        document.getElementById('applyFilters').addEventListener('click', applyFilters);
+
+        toggleOrderButton.addEventListener('click', function() {
+            ascending = !ascending;
+            const sortedData = rows.sort((rowA, rowB) => {
+                const dateA = new Date(rowA.data);
+                const dateB = new Date(rowB.data);
+                return ascending ? dateA - dateB : dateB - dateA;
+            });
+            currentPage = 1;
+            updatePagination(sortedData);
+            toggleSortIcon(ascending);
         });
-        pagination.appendChild(button);
-    }
-    
-    // Botão Próximo
-    const nextButton = document.createElement('button');
-    nextButton.innerHTML = '&rarr;';
-    nextButton.disabled = currentPage === pageCount;
-    nextButton.title = 'Próximo'; // Dica de ferramenta para o botão Próximo
-    nextButton.addEventListener('click', () => {
-        currentPage++;
-        updatePagination(data);
-    });
-    pagination.appendChild(nextButton);
-}
 
-    function updatePagination(data) {
-        const start = (currentPage - 1) * rowsPerPage;
-        const end = start + rowsPerPage;
-        displayRows(data, start, end);
-        setupPagination(data);
-    }
-    function redirectToDetails(idAtendimento) {
-        window.location.href = `dados.php?id=${idAtendimento}`;
-    }
-    function getBadgeClass(situacao) {
-        switch (situacao) {
-            case 'Aberto':
-                return 'badge badge-custom bg-success';
-            case 'Concluido':
-                return 'badge badge-custom bg-primary';
-            case 'Análise':
-                return 'badge badge-custom bg-warning';
-            default:
-                return 'badge badge-custom bg-secondary';
+        function toggleSortIcon(ascending) {
+            const icon = toggleOrderButton.querySelector('svg path');
+            if (ascending) {
+                icon.setAttribute('d', 'M7 14l5-5 5 5H7z');
+            } else {
+                icon.setAttribute('d', 'M7 10l5 5 5-5H7z');
+            }
         }
-    }
-    let filterData = '';
-    let filterNome = '';
-    let filterAssunto = '';
-    let filterStatus = '';
 
-    function applyFilters() {
-        filterData = document.getElementById('filterData').value.trim();
-        filterNome = document.getElementById('filterNome').value.trim().toLowerCase();
-        filterAssunto = document.getElementById('filterAssunto').value.trim().toLowerCase();
-        filterStatus = document.getElementById('filterStatus').value.trim().toLowerCase();
-
-        const filteredData = rows.filter(row => {
-            const dataMatches = filterData === '' || new Date(row.data).toLocaleDateString('pt-BR') === filterData;
-            const nomeMatches = row.nome.toLowerCase().includes(filterNome);
-            const assuntoMatches = row.assunto.toLowerCase().includes(filterAssunto);
-            const statusMatches = filterStatus === '' || row.situacao.toLowerCase() === filterStatus;
-
-            return dataMatches && nomeMatches && assuntoMatches && statusMatches;
-        });
-        currentPage = 1; 
-        displayRows(filteredData, 0, rowsPerPage); 
-        setupPagination(filteredData); 
-    }
-    document.getElementById('applyFilters').addEventListener('click', applyFilters);
-    updatePagination(rows);
-    
-</script>
+        updatePagination(rows);
+    </script>
 </div>   
 </div>  
     </main>
