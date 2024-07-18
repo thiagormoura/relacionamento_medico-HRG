@@ -173,6 +173,7 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
             <th class="text-left">Assunto Tratado</th>
             <th class="text-left">Status</th>
             <th class="text-center">Dados</th>
+            <th class="text-center">Finalizar</th>
         </tr>
     </thead>
         <tbody id="tableBody">
@@ -209,31 +210,105 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
         let ascending = true;
 
         function displayRows(data, startIndex, endIndex) {
-            tableBody.innerHTML = '';
-            for (let i = startIndex; i < endIndex; i++) {
-                if (i >= data.length) break;
-                const row = data[i];
-                const dataAtendimento = new Date(row.data);
-                const dataAtendimentoFormatada = dataAtendimento.toLocaleDateString('pt-BR');
-                const assunto = row.assunto ? row.assunto : "Nenhum assunto encontrado";
-                const situacao = row.situacao;
-                tableBody.innerHTML += `
-                    <tr>
-                        <td class='text-left'>${dataAtendimentoFormatada}</td>
-                        <td class='text-left'>${row.nome}</td>
-                        <td class='text-left'>${assunto}</td>
-                        <td class='text-left'><span class='${getBadgeClass(situacao)}'>${situacao}</span></td>
-                        <td class='text-center'>
-                            <button class='btn btn-primary' onclick='redirectToDetails(${row.id_atendimento})' style='background-color: transparent; border: none;' title='Visualizar'>
-                                <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 576 512' width='20' height='20'>
-                                    <path fill='#001f3f' d='M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM144 256a144 144 0 1 1 288 0 144 144 0 1 1 -288 0zm144-64c0 35.3-28.7 64-64 64c-7.1 0-13.9-1.2-20.3-3.3c-5.5-1.8-11.9 1.6-11.7 7.4c.3 6.9 1.3 13.8 3.2 20.7c13.7 51.2 66.4 81.6 117.6 67.9s81.6-66.4 67.9-117.6c-11.1-41.5-47.8-69.4-88.6-71.1c-5.8-.2-9.2 6.1-7.4 11.7c2.1 6.4 3.3 13.2 3.3 20.3z'/>
-                                </svg>
-                            </button>
-                        </td>
-                    </tr>
-                `;
-            }
+    tableBody.innerHTML = '';
+    for (let i = startIndex; i < endIndex; i++) {
+        if (i >= data.length) break;
+        const row = data[i];
+        const dataAtendimento = new Date(row.data);
+        const dataAtendimentoFormatada = dataAtendimento.toLocaleDateString('pt-BR');
+        const assunto = row.assunto ? row.assunto : "Nenhum assunto encontrado";
+        const situacao = row.situacao;
+        
+        // Determina a classe da span com base na situação
+        const situacaoClass = situacao === 'Aberto' ? 'text-success' : 'text-danger';
+
+        // Determina qual botão exibir com base na situação do atendimento
+        let buttonHTML = '';
+        if (situacao === 'Aberto') {
+            buttonHTML = `
+                <button id='finalizar-${row.id_atendimento}' class='btn btn-success' onclick='finalizeTask(${row.id_atendimento})' style='background-color: transparent; border: none;' title='Finalizar'>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width='20' height='20'>
+                        <path fill='#1E3050' d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/>
+                    </svg>
+                </button>
+            `;
+        } else {
+            buttonHTML = `
+                <button id='finalizar-${row.id_atendimento}' class='btn btn-success' onclick='finalizeTask(${row.id_atendimento})' style='background-color: transparent; border: none;' title='Finalizar'>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width='20' height='20'>
+                        <path fill='#1E3050' d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/>
+                    </svg>
+                </button>
+
+            `;
         }
+
+        tableBody.innerHTML += `
+            <tr>
+                <td class='text-left'>${dataAtendimentoFormatada}</td>
+                <td class='text-left'>${row.nome}</td>
+                <td class='text-left'>${assunto}</td>
+                <td class='text-left'><span class='badge ${situacao === 'Aberto' ? 'bg-success' : 'bg-danger'}'>${situacao}</span></td>
+                <td class='text-center'>
+                    <button class='btn btn-primary' onclick='redirectToDetails(${row.id_atendimento})' style='background-color: transparent; border: none;' title='Visualizar'>
+                        <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 576 512' width='20' height='20'>
+                            <path fill='#001f3f' d='M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM144 256a144 144 0 1 1 288 0 144 144 0 1 1 -288 0zm144-64c0 35.3-28.7 64-64 64c-7.1 0-13.9-1.2-20.3-3.3c-5.5-1.8-11.9 1.6-11.7 7.4c.3 6.9 1.3 13.8 3.2 20.7c13.7 51.2 66.4 81.6 117.6 67.9s81.6-66.4 67.9-117.6c-11.1-41.5-47.8-69.4-88.6-71.1c-5.8-.2-9.2 6.1-7.4 11.7c2.1 6.4 3.3 13.2 3.3 20.3z'/>
+                        </svg>
+                    </button>
+                </td>
+                <td class='text-center'>
+                    ${buttonHTML}
+                </td>
+            </tr>
+        `;
+    }
+}
+
+
+
+
+function finalizeTask(id) {
+    // Seleciona o botão pelo ID do atendimento
+    const button = document.getElementById(`finalizar-${id}`);
+
+    Swal.fire({
+        title: 'Você realmente deseja finalizar este atendimento?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sim',
+        cancelButtonText: 'Não'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Desabilita o botão para evitar cliques repetidos
+            button.disabled = true;
+
+            // Se o usuário confirmar, faça a requisição para finalizar o atendimento
+            fetch('finalizar.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({
+                    'id_atendimento': id
+                })
+            })
+            .then(response => response.text())
+            .then(data => {
+                console.log(data);
+                // Recarregar a página após a atualização ser concluída
+                location.reload();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Em caso de erro, habilita novamente o botão
+                button.disabled = false;
+            });
+        }
+    });
+}
+
+
+
 
         function setupPagination(data) {
             pagination.innerHTML = '';
