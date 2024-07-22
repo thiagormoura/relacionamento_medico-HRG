@@ -218,11 +218,7 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
         const dataAtendimentoFormatada = dataAtendimento.toLocaleDateString('pt-BR');
         const assunto = row.assunto ? row.assunto : "Nenhum assunto encontrado";
         const situacao = row.situacao;
-        
-        // Determina a classe da span com base na situação
         const situacaoClass = situacao === 'Aberto' ? 'text-success' : 'text-danger';
-
-        // Determina qual botão exibir com base na situação do atendimento
         let buttonHTML = '';
         if (situacao === 'Aberto') {
             buttonHTML = `
@@ -234,12 +230,12 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
             `;
         } else {
             buttonHTML = `
-                <button id='finalizar-${row.id_atendimento}' class='btn btn-success' onclick='finalizeTask(${row.id_atendimento})' style='background-color: transparent; border: none;' title='Finalizar'>
+                <button id='finalizar-${row.id_atendimento}' class='btn btn-success' style='background-color: transparent; border: none;' title='Finalizado'>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width='20' height='20'>
-                        <path fill='#1E3050' d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/>
+                        <!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+                        <path fill='#1E3050' d="M342.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L160 178.7l-57.4-57.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l80 80c12.5 12.5 32.8 12.5 45.3 0l160-160zm96 128c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L160 402.7 54.6 297.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l128 128c12.5 12.5 32.8 12.5 45.3 0l256-256z"/>
                     </svg>
                 </button>
-
             `;
         }
 
@@ -268,7 +264,6 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
 
 
 function finalizeTask(id) {
-    // Seleciona o botão pelo ID do atendimento
     const button = document.getElementById(`finalizar-${id}`);
 
     Swal.fire({
@@ -279,10 +274,7 @@ function finalizeTask(id) {
         cancelButtonText: 'Não'
     }).then((result) => {
         if (result.isConfirmed) {
-            // Desabilita o botão para evitar cliques repetidos
             button.disabled = true;
-
-            // Se o usuário confirmar, faça a requisição para finalizar o atendimento
             fetch('finalizar.php', {
                 method: 'POST',
                 headers: {
@@ -295,21 +287,15 @@ function finalizeTask(id) {
             .then(response => response.text())
             .then(data => {
                 console.log(data);
-                // Recarregar a página após a atualização ser concluída
                 location.reload();
             })
             .catch(error => {
                 console.error('Error:', error);
-                // Em caso de erro, habilita novamente o botão
                 button.disabled = false;
             });
         }
     });
 }
-
-
-
-
         function setupPagination(data) {
             pagination.innerHTML = '';
 
