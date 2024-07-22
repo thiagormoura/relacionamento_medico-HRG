@@ -132,9 +132,7 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
                             <select class="form-control" id="filterStatus">
                                 <option value="">Todos os status</option>
                                 <option value="Aberto">Aberto</option>
-                                <option value="Andamento">Andamento</option>
-                                <option value="Desconhecido">Desconhecido</option>
-                                <option value="Fechado">Fechado</option>
+                                <option value="Finalizado">Finalizado</option>
                             </select>
                         </div>
 
