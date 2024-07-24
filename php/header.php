@@ -27,15 +27,15 @@
         <div class="container-fluid">
             <div class="row py-1">
                 <div class="titulo">
-                    <p class="fw-bold text-light shadow fs-2"> 
-                        <?php echo isset($pageTitle) ? $pageTitle : ""; ?>
-                    </p>
-                </div>
-                <div class="row">
-                    <p class="text-light shadow fs-4"> 
-                        <?php echo isset($subTitle) ? $subTitle : ""; ?>
-                    </p>
-                </div>
+                <p class="fw-bold text-light fs-2" style="box-shadow: none;"> 
+                    <?php echo isset($pageTitle) ? $pageTitle : ""; ?>
+                </p>
+            </div>
+            <div class="row">
+                <p class="text-light fs-4" style="box-shadow: none;"> 
+                    <?php echo isset($subTitle) ? $subTitle : ""; ?>
+                </p>
+            </div>
             </div>
         </div>
     </div>

@@ -55,7 +55,16 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
     <link rel="stylesheet" href="css/selectize.bootstrap5.min.css">
     <link rel="stylesheet" href="css/multi-select-tag.css">
 </head>
-<style>
+<style>   
+    .swal2-confirm.btn-confirm {
+        background-color: #0B700B; 
+        border-color: #0B700B;
+    }
+
+    .swal2-cancel.btn-cancel {
+        background-color: #6F0D0A; 
+        border-color: #6F0D0A;
+    }
     .pagination {
             display: flex;
             justify-content: center;
@@ -84,15 +93,52 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
         color: black;
         text-decoration: none;
     }
+    .loading svg polyline {
+  fill: none;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.loading svg polyline#back {
+  fill: none;
+  stroke: #ff4d5033;
+}
+
+.loading svg polyline#front {
+  fill: none;
+  stroke: #00ffff;
+  stroke-dasharray: 48, 144;
+  stroke-dashoffset: 192;
+  animation: dash_682 2s linear infinite;
+  animation-delay: 0s;
+}
+
+.loading svg polyline#front2 {
+  fill: none;
+  stroke: #00ffff;
+  stroke-dasharray: 48, 144;
+  stroke-dashoffset: 192;
+  animation: dash_682 2s linear infinite;
+  animation-delay: 1s;
+}
+
+@keyframes dash_682 {
+  72.5% {
+    opacity: 0;
+  }
+
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
 </style>
 <body>
-    <!-- Parte do header e nav -->
     <?php
-
-    $pageTitle = "Histórico - Registros de Atendimento";
-    include 'php/header.php';
+        $pageTitle = "Histórico - Registros de Atendimento";
+        include 'php/header.php';
     ?>
-
 <main class="container-fluid d-flex justify-content-center align-items-center">
 <div class="form-group col-10 mt-5">
     <div class="accordion" id="accordionPanelsStayOpenExample">
@@ -101,6 +147,13 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
                 <button class="accordion-button shadow-sm text-white text-center" type="button" data-toggle="collapse" data-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne" style="background-color: #001f3f">
                     <i id="filter" class="fa-solid fa-filter mb-1"></i>
                     <h5>Filtro - Atendimentos</h5>
+                    <div class="loading">
+                        <svg height="48px" width="64px">
+                            <polyline id="back" points="0.157 23.954, 14 23.954, 21.843 48, 43 0, 50 24, 64 24"></polyline>
+                            <polyline id="front" points="0.157 23.954, 14 23.954, 21.843 48, 43 0, 50 24, 64 24"></polyline>
+                            <polyline id="front2" points="0.157 23.954, 14 23.954, 21.843 48, 43 0, 50 24, 64 24"></polyline>
+                        </svg>
+                    </div>
                 </button>
             </h2>
             <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-collapseOne" data-bs-parent="#accordionPanelsStayOpenExample">
@@ -151,10 +204,6 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
             </div>
         </div>
     </div>
-
-
-
-
     <table class="table table-bordered table-striped mt-4">
         <thead class="thead-light align-middle">
         <tr>
@@ -164,8 +213,7 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="35" height="35">
                         <path fill="#001f3f" d="M7 14l5-5 5 5H7z"/>
                     </svg>
-                </a>
-               
+                </a>           
             </th>
             <th class="text-left">Nome do Profissional</th>
             <th class="text-left">Assunto Tratado</th>
@@ -206,7 +254,6 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
         const toggleOrderButton = document.getElementById('toggleOrder');
         let currentPage = 1;
         let ascending = true;
-
         function displayRows(data, startIndex, endIndex) {
     tableBody.innerHTML = '';
     for (let i = startIndex; i < endIndex; i++) {
@@ -217,6 +264,7 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
         const assunto = row.assunto ? row.assunto : "Nenhum assunto encontrado";
         const situacao = row.situacao;
         const situacaoClass = situacao === 'Aberto' ? 'text-success' : 'text-danger';
+
         let buttonHTML = '';
         if (situacao === 'Aberto') {
             buttonHTML = `
@@ -230,13 +278,11 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
             buttonHTML = `
                 <button id='finalizar-${row.id_atendimento}' class='btn btn-success' style='background-color: transparent; border: none;' title='Finalizado'>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width='20' height='20'>
-                        <!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
                         <path fill='#03870C' d="M342.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L160 178.7l-57.4-57.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l80 80c12.5 12.5 32.8 12.5 45.3 0l160-160zm96 128c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L160 402.7 54.6 297.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l128 128c12.5 12.5 32.8 12.5 45.3 0l256-256z"/>
                     </svg>
                 </button>
             `;
         }
-
         tableBody.innerHTML += `
             <tr>
                 <td class='text-left'>${dataAtendimentoFormatada}</td>
@@ -257,19 +303,18 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
         `;
     }
 }
-
-
-
-
 function finalizeTask(id) {
     const button = document.getElementById(`finalizar-${id}`);
-
     Swal.fire({
         title: 'Você realmente deseja finalizar este atendimento?',
         icon: 'warning',
         showCancelButton: true,
         confirmButtonText: 'Sim',
-        cancelButtonText: 'Não'
+        cancelButtonText: 'Não',
+        customClass: {
+            confirmButton: 'btn-confirm',
+            cancelButton: 'btn-cancel'
+        }
     }).then((result) => {
         if (result.isConfirmed) {
             button.disabled = true;
@@ -296,7 +341,6 @@ function finalizeTask(id) {
 }
         function setupPagination(data) {
             pagination.innerHTML = '';
-
             const prevButton = document.createElement('button');
             prevButton.innerHTML = '&larr;';
             prevButton.disabled = currentPage === 1;
@@ -306,9 +350,7 @@ function finalizeTask(id) {
                 updatePagination(data);
             });
             pagination.appendChild(prevButton);
-
             const pageCount = Math.ceil(data.length / rowsPerPage);
-
             for (let i = 1; i <= pageCount; i++) {
                 const button = document.createElement('button');
                 button.textContent = i;
@@ -322,7 +364,6 @@ function finalizeTask(id) {
                 });
                 pagination.appendChild(button);
             }
-
             const nextButton = document.createElement('button');
             nextButton.innerHTML = '&rarr;';
             nextButton.disabled = currentPage === pageCount;
@@ -333,18 +374,15 @@ function finalizeTask(id) {
             });
             pagination.appendChild(nextButton);
         }
-
         function updatePagination(data) {
             const start = (currentPage - 1) * rowsPerPage;
             const end = start + rowsPerPage;
             displayRows(data, start, end);
             setupPagination(data);
         }
-
         function redirectToDetails(idAtendimento) {
             window.location.href = `dados.php?id=${idAtendimento}`;
         }
-
         function getBadgeClass(situacao) {
             switch (situacao) {
                 case 'Aberto':
@@ -357,13 +395,11 @@ function finalizeTask(id) {
                     return 'badge badge-custom bg-secondary';
             }
         }
-
         function applyFilters() {
             filterData = document.getElementById('filterData').value.trim();
             filterNome = document.getElementById('filterNome').value.trim().toLowerCase();
             filterAssunto = document.getElementById('filterAssunto').value.trim().toLowerCase();
             filterStatus = document.getElementById('filterStatus').value.trim().toLowerCase();
-
             const filteredData = rows.filter(row => {
                 const dataMatches = filterData === '' || new Date(row.data).toLocaleDateString('pt-BR') === filterData;
                 const nomeMatches = row.nome.toLowerCase().includes(filterNome);
@@ -372,13 +408,10 @@ function finalizeTask(id) {
 
                 return dataMatches && nomeMatches && assuntoMatches && statusMatches;
             });
-
             currentPage = 1;
             updatePagination(filteredData);
         }
-
         document.getElementById('applyFilters').addEventListener('click', applyFilters);
-
         toggleOrderButton.addEventListener('click', function() {
             ascending = !ascending;
             const sortedData = rows.sort((rowA, rowB) => {
@@ -390,7 +423,6 @@ function finalizeTask(id) {
             updatePagination(sortedData);
             toggleSortIcon(ascending);
         });
-
         function toggleSortIcon(ascending) {
             const icon = toggleOrderButton.querySelector('svg path');
             if (ascending) {
@@ -399,7 +431,6 @@ function finalizeTask(id) {
                 icon.setAttribute('d', 'M7 10l5 5 5-5H7z');
             }
         }
-
         updatePagination(rows);
     </script>
 </div>   
@@ -408,7 +439,5 @@ function finalizeTask(id) {
 <br>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
-
-
 </body>
 </html>
