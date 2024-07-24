@@ -27,12 +27,12 @@
         <div class="container-fluid">
             <div class="row py-1">
                 <div class="titulo">
-                <p class="fw-bold text-light fs-2" style="box-shadow: none;"> 
+                <p class="fw-bold text-light fs-2" style="box-shadow: none; margin: 0 auto;"> 
                     <?php echo isset($pageTitle) ? $pageTitle : ""; ?>
                 </p>
             </div>
             <div class="row">
-                <p class="text-light fs-4" style="box-shadow: none;"> 
+                <p class="text-light fs-4" style="box-shadow: none; margin: 0 auto;"> 
                     <?php echo isset($subTitle) ? $subTitle : ""; ?>
                 </p>
             </div>
