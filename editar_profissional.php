@@ -128,60 +128,11 @@ h4{
 <body>
 
 
-
+<?php
+        $pageTitle = "Atualizar Profissionais";
+        include 'php/header.php';
+    ?>
 <body>
-<header>
-        <nav class="navbar navbar-expand-lg navbar-light bg-light navbar-border-hrg">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="http://10.1.1.31:80/centralservicos/">
-                    <img src="http://10.1.1.31:80/centralservicos/resources/img/central-servicos.png" alt="Central de Serviço" style="width: 160px">
-                </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navBarCentral" aria-controls="navBarCentral" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <button class="btn">
-               
-                        <a class="nav-link" href="index.php">Registrar Atendimento</a>
-                    
-                    </button>
-                    <button class="btn">
-                  
-                        <a class="nav-link" href="historico.php">Histórico</a>
-                          
-                    </button>
-                    <button class="btn">
-                  
-                  <a class="nav-link" href="profissionais.php">Registro Profissionais</a>
-                    
-              </button>
-                <div class="collapse navbar-collapse" id="navBarCentral">
-                </div>
-            </div>
-        </nav>
-        <div class="content-header shadow" style="border-bottom: solid 1px gray;">
-            <div class="container-fluid">
-                <div class="row py-1">
-                    <div class="titulo">
-                        <p class="fw-bold text-light shadow fs-2"> 
-                            <?php echo isset($pageTitle) 
-                            ? 
-                            $pageTitle : ""; 
-                        ?>
-                        </p>
-                </div>
-                <div class="row">
-                        <p class="text-light shadow fs-4"> 
-                            <?php echo isset($subTitle) 
-                            ? 
-                            $subTitle : ""; 
-                        ?>
-                        </p>
-
-                    </div>
-                </div>
-            </div>
-        </div>
-    </header>
     <main class="container_fluid d-flex justify-content-center align-items-center">
     <div class="form-group col-8 mt-5">
     <form id="formulario_index" method="post">
@@ -211,17 +162,15 @@ h4{
                     </div>
                 </div>
                 <div class="col-xl-2 col-md-6 mt-2">
-    <label for="celular">Celular 1</label>
-    <input type="tel" class="form-control bg-white" id="celular" name="celular" value="<?= isset($dados['telefone_profissional']) ? htmlspecialchars($dados['telefone_profissional']) : "" ?>">
-    <small id="celularError" class="form-text text-danger" style="display: none;">Número de celular inválido ou não possui 11 dígitos.</small>
-</div>
-<div class="col-xl-2 col-md-6 mt-2">
-    <label for="celular2">Celular 2</label>
-    <input type="tel" class="form-control bg-white" id="celular2" name="celular2" value="<?= isset($dados['telefone2_profissional']) ? htmlspecialchars($dados['telefone2_profissional']) : "" ?>">
-    <small id="celular2Error" class="form-text text-danger" style="display: none;">Os celulares não podem ser iguais ou não possuem 11 dígitos.</small>
-</div>
-
-
+                    <label for="celular">Celular 1</label>
+                    <input type="tel" class="form-control bg-white" id="celular" name="celular" value="<?= isset($dados['telefone_profissional']) ? htmlspecialchars($dados['telefone_profissional']) : "" ?>">
+                    <small id="celularError" class="form-text text-danger" style="display: none;">Número de celular inválido ou não possui 11 dígitos.</small>
+                </div>
+                <div class="col-xl-2 col-md-6 mt-2">
+                    <label for="celular2">Celular 2</label>
+                    <input type="tel" class="form-control bg-white" id="celular2" name="celular2" value="<?= isset($dados['telefone2_profissional']) ? htmlspecialchars($dados['telefone2_profissional']) : "" ?>">
+                    <small id="celular2Error" class="form-text text-danger" style="display: none;">Os celulares não podem ser iguais ou não possuem 11 dígitos.</small>
+                </div>
                 <div class="col-xl-4 col-md-6 mt-2">
                     <label for="email">E-mail</label>
                     <input type="email" class="form-control bg-white" id="email" name="email" required value="<?= isset($dados['email_profissional']) ? htmlspecialchars($dados['email_profissional']) : "" ?>">
