@@ -213,12 +213,12 @@ $conn->close();
                 datasets: [{
                     label: 'Status dos Atendimentos',
                     backgroundColor: [
-                        '#114F1C', // Cor para o primeiro segmento
-                        '#1E3050'  // Cor para o segundo segmento
+                        '#114F1C', 
+                        '#1E3050'  
                     ],
                     borderColor: [
-                        '#114F1C', // Cor da borda do primeiro segmento
-                        '#1E3050'  // Cor da borda do segundo segmento
+                        '#114F1C', 
+                        '#1E3050'  
                     ],
                     borderWidth: 1,
                     data: statusData,
