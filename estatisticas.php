@@ -123,7 +123,7 @@ $conn->close();
     include 'php/header.php';
 ?>
 <body>
-    <div class="container mt-5">
+    <div class="container mt-2">
         <div class="row mt-4 center-content">
             <div class="col-xl-12 col-md-12 col-lg-12 mb-4 mb-0">
                 <div class="card border-left-success shadow h-80 py-2">
@@ -138,6 +138,22 @@ $conn->close();
                                         <canvas id="barChart"></canvas>
                                     </div>
                                 </div>
+                            </div>
+                            <div class="col-auto">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container mt-5">
+        <div class="row mt-4 center-content">
+            <div class="col-xl-12 col-md-12 col-lg-12 mb-4 mb-0">
+                <div class="card border-left-success shadow h-80 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col-12">
                                 <div class="chart-header text-xs font-weight-bold text-success text-uppercase mt-4">
                                     Status dos Atendimentos
                                 </div>
