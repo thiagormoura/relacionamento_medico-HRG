@@ -87,6 +87,18 @@ $conn->close();
     <link rel="stylesheet" href="css/multi-select-tag.css">
 
     <style>
+        .chart-stats {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 20px;
+            font-size: 16px;
+            color: #333;
+        }
+
+        .chart-stats p {
+            margin: 0 15px;
+        }
         .chart-container {
             display: flex;
             flex-direction: column;
@@ -96,7 +108,7 @@ $conn->close();
         .chart-box {
             width: 80%; 
             max-width: 800px; 
-            height: 400px;
+            height: 350px;
             margin-bottom: 30px;
             display: flex; 
             justify-content: center; 
@@ -139,8 +151,6 @@ $conn->close();
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-auto">
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -161,9 +171,10 @@ $conn->close();
                                     <div class="chart-box">
                                         <canvas id="doughnutChart"></canvas>
                                     </div>
+                                    <div id="doughnutChartStats" class="chart-stats">
+                                        <!-- As quantidades serão inseridas aqui pelo JavaScript -->
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-auto">
                             </div>
                         </div>
                     </div>
@@ -176,6 +187,8 @@ $conn->close();
     document.addEventListener("DOMContentLoaded", function() {
         const labels = <?php echo $labelsJson; ?>;
         const data = <?php echo $dataJson; ?>;
+        const statusLabels = <?php echo $statusLabelsJson; ?>;
+        const statusData = <?php echo $statusDataJson; ?>;
 
         const barChartData = {
             labels: labels,
@@ -187,9 +200,6 @@ $conn->close();
                 data: data,
             }]
         };
-
-        const statusLabels = <?php echo $statusLabelsJson; ?>;
-        const statusData = <?php echo $statusDataJson; ?>;
 
         const barCtx = document.getElementById('barChart').getContext('2d');
         const doughnutCtx = document.getElementById('doughnutChart').getContext('2d');
@@ -247,6 +257,11 @@ $conn->close();
                 }
             }
         });
+        const doughnutChartStats = document.getElementById('doughnutChartStats');
+        doughnutChartStats.innerHTML = `
+            <p style="display: inline-block; margin-right: 20px;">Abertos: ${statusData[0]}</p>
+            <p style="display: inline-block;">Finalizados: ${statusData[1]}</p>
+        `;
     });
     </script>
 </body>
