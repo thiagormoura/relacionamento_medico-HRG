@@ -73,7 +73,7 @@ $conn->close();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Histórico - Relacionamento Médico</title>
-    <link rel="icon" href="img\Logobordab.png" type="image/x-icon">
+    <link rel="icon" href="img/Logobordab.png" type="image/x-icon">
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="css/styles.css">
@@ -105,6 +105,10 @@ $conn->close();
             margin-bottom: 30px;
         }
 
+        .chart-container-hidden {
+            display: none;
+        }
+
         .chart-box {
             width: 80%;
             max-width: 800px;
@@ -133,70 +137,88 @@ $conn->close();
         }
 
         .button-group {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 20px;
-}
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
 
-.button-group button {
-    background-color: #1E3050; 
-    color: white; 
-    border: 2px solid #1E3050; 
-    border-radius: 5px; 
-    padding: 10px 20px; 
-    margin: 0 10px;
-    cursor: pointer; 
-    font-size: 16px; 
-    transition: background-color 0.3s, border-color 0.3s; 
-}
+        .button-group button {
+            background-color: #1E3050;
+            color: white;
+            border: 2px solid #1E3050;
+            border-radius: 5px;
+            padding: 10px 20px;
+            margin: 0 10px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
 
-
-        .chart-container-hidden {
-            display: none;
+        .button-group button:hover {
+            background-color: white;
+            color: #1E3050;
+            border-color: #1E3050;
         }
     </style>
 </head>
-<?php
-    $pageTitle = "Estatísticas - Registros de Atendimento";
-    include 'php/header.php';
-?>
+
 <body>
-    <div class="container mt-2">
-        <div class="row mt-4 center-content">
-            <div class="col-xl-12 col-md-12 col-lg-12 mb-4 mb-0">
-                <div class="card border-left-success shadow h-80 py-2">
-                    <div class="card-body">
-                        <div class="button-group">
-                            <button onclick="showChart('barChartContainer')">Gráfico de Barras</button>
-                            <button onclick="showChart('doughnutChartContainer')">Gráfico de Rosca</button>
-                            <button onclick="showChart('lineChartContainer')">Gráfico de Linhas</button>
-                            <button onclick="showChart('radarChartContainer')">Gráfico de Radar</button>
-                        </div>
-                        <div class="row no-gutters align-items-center">
-                            <div class="col-12">
-                                <div class="chart-header text-xs font-weight-bold text-success text-uppercase">
-                                    Quantidade de Atendimentos
+<div class="container mt-2">
+    <div class="row mt-4 center-content">
+        <div class="col-xl-12 col-md-12 col-lg-12 mb-4 mb-0">
+            <div class="card border-left-success shadow h-80 py-2">
+                <div class="card-body">
+                    <div class="form-group">
+                        <label for="chartSelector">Selecionar Gráfico:</label>
+                        <select id="chartSelector" class="form-control" onchange="showChart(this.value)">
+                            <option value="barChartContainer">Gráfico de Barras</option>
+                            <option value="doughnutChartContainer">Gráfico de Rosca</option>
+                            <option value="lineChartContainer">Gráfico de Linhas</option>
+                            <option value="radarChartContainer">Gráfico de Radar</option>
+                            <option value="polarAreaChartContainer">Gráfico de Área Polar</option>
+                            <option value="bubbleChartContainer">Gráfico de Bolhas</option>
+                            <option value="waterfallChartContainer">Gráfico de Cascata</option>
+                        </select>
+                    </div>
+                    <div class="row no-gutters align-items-center">
+                        <div class="col-12">
+                            <div class="chart-header text-xs font-weight-bold text-success text-uppercase">
+                                Quantidade de Atendimentos
+                            </div>
+                            <div id="barChartContainer" class="chart-container">
+                                <div class="chart-box">
+                                    <canvas id="barChart"></canvas>
                                 </div>
-                                <div id="barChartContainer" class="chart-container">
-                                    <div class="chart-box">
-                                        <canvas id="barChart"></canvas>
-                                    </div>
+                            </div>
+                            <div id="doughnutChartContainer" class="chart-container chart-container-hidden">
+                                <div class="chart-box">
+                                    <canvas id="doughnutChart"></canvas>
                                 </div>
-                                <div id="doughnutChartContainer" class="chart-container chart-container-hidden">
-                                    <div class="chart-box">
-                                        <canvas id="doughnutChart"></canvas>
-                                    </div>
-                                    <div id="doughnutChartStats" class="chart-stats"></div>
+                                <div id="doughnutChartStats" class="chart-stats"></div>
+                            </div>
+                            <div id="lineChartContainer" class="chart-container chart-container-hidden">
+                                <div class="chart-box">
+                                    <canvas id="lineChart"></canvas>
                                 </div>
-                                <div id="lineChartContainer" class="chart-container chart-container-hidden">
-                                    <div class="chart-box">
-                                        <canvas id="lineChart"></canvas>
-                                    </div>
+                            </div>
+                            <div id="radarChartContainer" class="chart-container chart-container-hidden">
+                                <div class="chart-box">
+                                    <canvas id="radarChart"></canvas>
                                 </div>
-                                <div id="radarChartContainer" class="chart-container chart-container-hidden">
-                                    <div class="chart-box">
-                                        <canvas id="radarChart"></canvas>
-                                    </div>
+                            </div>
+                            <div id="polarAreaChartContainer" class="chart-container chart-container-hidden">
+                                <div class="chart-box">
+                                    <canvas id="polarAreaChart"></canvas>
+                                </div>
+                            </div>
+                            <div id="bubbleChartContainer" class="chart-container chart-container-hidden">
+                                <div class="chart-box">
+                                    <canvas id="bubbleChart"></canvas>
+                                </div>
+                            </div>
+                            <div id="waterfallChartContainer" class="chart-container chart-container-hidden">
+                                <div class="chart-box">
+                                    <canvas id="waterfallChart"></canvas>
                                 </div>
                             </div>
                         </div>
@@ -205,9 +227,26 @@ $conn->close();
             </div>
         </div>
     </div>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+    function showChart(chartId) {
+        const chartContainers = document.querySelectorAll('.chart-container');
+        chartContainers.forEach(container => {
+            if (container.id === chartId) {
+                container.classList.remove('chart-container-hidden');
+            } else {
+                container.classList.add('chart-container-hidden');
+            }
+        });
+    }
+    showChart('barChartContainer');
+});
+
+</script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
+        document.addEventListener("DOMContentLoaded", function () {
             const labels = <?php echo $labelsJson; ?>;
             const data = <?php echo $dataJson; ?>;
             const statusLabels = <?php echo $statusLabelsJson; ?>;
@@ -246,10 +285,59 @@ $conn->close();
                 }]
             };
 
+            const polarAreaChartData = {
+                labels: labels,
+                datasets: [{
+                    label: 'Quantidade de Atendimentos',
+                    backgroundColor: [
+                        'rgba(30, 48, 80, 0.2)',
+                        'rgba(30, 48, 80, 0.4)',
+                        'rgba(30, 48, 80, 0.6)',
+                        'rgba(30, 48, 80, 0.8)',
+                        'rgba(30, 48, 80, 1)'
+                    ],
+                    borderColor: '#1E3050',
+                    borderWidth: 2,
+                    data: data,
+                }]
+            };
+
+            const bubbleChartData = {
+                labels: labels,
+                datasets: [{
+                    label: 'Quantidade de Atendimentos',
+                    backgroundColor: 'rgba(30, 48, 80, 0.5)',
+                    borderColor: '#1E3050',
+                    borderWidth: 1,
+                    data: [
+                        { x: 10, y: 20, r: 15 },
+                        { x: 15, y: 10, r: 10 },
+                        { x: 20, y: 30, r: 20 }
+                    ],
+                }]
+            };
+
+            const waterfallChartData = {
+                labels: labels,
+                datasets: [{
+                    label: 'Quantidade de Atendimentos',
+                    backgroundColor: '#1E3050',
+                    borderColor: '#1E3050',
+                    borderWidth: 1,
+                    data: data.map((value, index) => ({
+                        x: labels[index],
+                        y: value
+                    })),
+                }]
+            };
+
             const barCtx = document.getElementById('barChart').getContext('2d');
             const doughnutCtx = document.getElementById('doughnutChart').getContext('2d');
             const lineCtx = document.getElementById('lineChart').getContext('2d');
             const radarCtx = document.getElementById('radarChart').getContext('2d');
+            const polarAreaCtx = document.getElementById('polarAreaChart').getContext('2d');
+            const bubbleCtx = document.getElementById('bubbleChart').getContext('2d');
+            const waterfallCtx = document.getElementById('waterfallChart').getContext('2d');
 
             new Chart(barCtx, {
                 type: 'bar',
@@ -270,12 +358,12 @@ $conn->close();
                     datasets: [{
                         label: 'Status dos Atendimentos',
                         backgroundColor: [
-                            '#114F1C', 
-                            '#1E3050'  
+                            '#114F1C',
+                            '#1E3050'
                         ],
                         borderColor: [
-                            '#114F1C', 
-                            '#1E3050'  
+                            '#114F1C',
+                            '#1E3050'
                         ],
                         borderWidth: 1,
                         data: statusData,
@@ -289,7 +377,7 @@ $conn->close();
                         },
                         tooltip: {
                             callbacks: {
-                                label: function(context) {
+                                label: function (context) {
                                     let label = context.label || '';
                                     if (label) {
                                         label += ': ';
@@ -329,6 +417,43 @@ $conn->close();
                     }
                 }
             });
+            
+            new Chart(polarAreaCtx, {
+                type: 'polarArea',
+                data: polarAreaChartData,
+                options: {
+                    responsive: true,
+                    scales: {
+                        r: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            new Chart(bubbleCtx, {
+                type: 'bubble',
+                data: bubbleChartData,
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: { beginAtZero: true },
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+
+            new Chart(waterfallCtx, {
+                type: 'bar',
+                data: waterfallChartData,
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: { beginAtZero: true },
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
 
             const doughnutChartStats = document.getElementById('doughnutChartStats');
             doughnutChartStats.innerHTML = `
@@ -350,5 +475,7 @@ $conn->close();
     </script>
 </body>
 
+
 </html>
+
 
