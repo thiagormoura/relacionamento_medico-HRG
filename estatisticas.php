@@ -1,29 +1,6 @@
 <?php
 include("conexao.php");
-$registrosPorPagina = 10;
-$paginaAtual = isset($_GET['pagina']) ? intval($_GET['pagina']) : 1;
-$offset = ($paginaAtual - 1) * $registrosPorPagina;
-$sql = "SELECT DATE_FORMAT(a.data, '%m/%Y') as data,
-        im.nome as nome_profissional,
-        assuntos.assunto,
-        a.situacao as situacao,
-        a.id as id
-        FROM relacionamentomedico.atendimento AS a
-        JOIN relacionamentomedico.profissionais AS im ON a.profissional = im.id
-        JOIN relacionamentomedico.atendimento_has_assunto AS has ON a.id = has.id
-        JOIN relacionamentomedico.assunto AS assuntos ON has.id = assuntos.id
-        LIMIT $offset, $registrosPorPagina";
 
-$result = $conn->query($sql);
-$sqlTotal = "SELECT COUNT(*) AS total
-            FROM relacionamentomedico.atendimento AS a
-            JOIN relacionamentomedico.profissionais AS im ON a.profissional = im.id
-            JOIN relacionamentomedico.atendimento_has_assunto AS has ON a.id = has.id
-            JOIN relacionamentomedico.assunto AS assuntos ON has.id = assuntos.id";
-
-$resultCount = $conn->query($sqlTotal);
-$totalRegistros = $resultCount->fetch_assoc()['total'];
-$totalPaginas = ceil($totalRegistros / $registrosPorPagina);
 $sql = "
     SELECT 
         DATE_FORMAT(a.data, '%m/%Y') AS mes_ano,
@@ -261,9 +238,12 @@ $conn->close();
     include 'php/header.php';
 ?>
 <body>
-<div class="container mt-2">
+<div class="container mt-5">
     <div class="row">
-        <div class="col-xl-6 col-md-6 mb-4">
+    <div class="btn-group d-flex justify-content-center flex-wrap mt-4" role="group" aria-label="Basic example" id="monthButtons">
+
+    </div> 
+        <div class="col-xl-6 col-md-6 mb-4 mt-4">
             <div class="chart-box">
                 <div class="chart-header">
                     Quantidade de Atendimentos no Mês
@@ -285,7 +265,7 @@ $conn->close();
             </div>
         </div>
 
-        <div class="col-xl-6 col-md-6 mb-4">
+        <div class="col-xl-6 col-md-6 mb-4 mt-4">
             <div class="chart-box">
                 <div class="chart-header">
                     Status dos Atendimentos
@@ -624,6 +604,50 @@ $conn->close();
     });
 </script>
 
+<script>
+function getMonthName(monthIndex) {
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    return months[monthIndex];
+}
+
+const monthButtonsContainer = document.getElementById("monthButtons");
+
+// Loop para obter os nomes dos meses de janeiro até dezembro
+for (let i = 0; i < 12; i++) {
+    const monthName = getMonthName(i);
+
+    const button = document.createElement("button");
+    button.type = "button";
+    button.classList.add("btn", "btn-primary");
+    button.textContent = monthName;
+    button.id = monthName;
+
+    // Adicione um evento de clique ao botão
+    button.addEventListener("click", function () {
+        const monthClicked = this.id;
+        const currentURL = window.location.href;
+
+        // Verifica se já existe um parâmetro 'mes' na URL
+        if (currentURL.indexOf("?mes=") !== -1) {
+            // Se já existe, substitui o valor do parâmetro 'mes'
+            const updatedURL = currentURL.replace(/(mes=)[^\&]+/, '$1' + monthClicked);
+            // Redireciona para a nova URL
+            window.location.href = updatedURL;
+        } else {
+            // Se não existe, adiciona o parâmetro 'mes' à URL
+            currentURL + (currentURL.includes('?') ? '&' : '?') + 'mes=' + monthClicked;
+            // Redireciona para a nova URL
+            window.location.href = updatedURL;
+        }
+    });
+
+    // Adicione o botão ao container
+    monthButtonsContainer.appendChild(button);
+}
+
+
+
+</script>
 
 </body>
 </html>
