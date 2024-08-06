@@ -168,7 +168,7 @@ $conn->close();
             width: 100%;
             max-width: 550px;
             margin: 0 auto;
-            height: 600px;
+            height: 800px;
             border: 1px solid #ccc;
             border-radius: 8px;
             padding: 15px;
