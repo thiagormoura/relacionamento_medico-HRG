@@ -2,7 +2,7 @@
 include("conexao.php");
 
 
-$registrosPorPagina = 10;
+$registrosPorPagina = 20;
 
 
 $paginaAtual = isset($_GET['pagina']) ? $_GET['pagina'] : 1;
@@ -248,7 +248,7 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
     <div class="pagination" id="pagination"></div>
     <script>
         const rows = <?php echo json_encode($rows); ?>;
-        const rowsPerPage = 10;
+        const rowsPerPage = 20;
         const tableBody = document.getElementById('tableBody');
         const pagination = document.getElementById('pagination');
         const toggleOrderButton = document.getElementById('toggleOrder');
