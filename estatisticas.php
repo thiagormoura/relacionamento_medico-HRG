@@ -253,6 +253,47 @@ $conn->close();
             height: 100px; 
             margin: 0 auto;
         }
+        .date-filters-container {
+            padding: 10px; 
+            border-radius: 10px; 
+            margin: 10px auto; 
+        }
+
+        .filter-label {
+            display: block;
+            color: black; 
+            font-size: 18px; 
+            margin-bottom: 10px; 
+        }
+
+        .date-filters {
+            display: flex; 
+            gap: 3px; 
+            align-items: center; 
+        }
+        .date-filters input[type="date"] {
+            background-color: #ffffff; 
+            border: 2px solid #AFAFAF; 
+            border-radius: 5px; 
+            padding: 7px; 
+            font-size: 16px; 
+            color: #1E3050; 
+            width: 170px;
+            box-sizing: border-box; 
+        }
+        #applyFilterBtn {
+            background-color: #1E3050;
+            color: #ffffff; 
+            border: none; 
+            padding: 8px 15px; 
+            font-size: 16px; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            transition: background-color 0.3s; 
+        }
+        #applyFilterBtn:hover {
+            background-color: #14324e; 
+        }
 </style>
 
 </head>
@@ -265,6 +306,14 @@ $conn->close();
     <div class="row">
         <div class="col-xl-6 col-md-6 mb-4">
             <div class="chart-box">
+                <div class="date-filters-container">
+                <span class="filter-label">Filtro de Data</span>
+                    <div class="date-filters">       
+                        <input type="date" id="startDate" placeholder="Data Inicial" title="data inicial">
+                        <input type="date" id="endDate" placeholder="Data Final" title="data final">
+                        <button id="applyFilterBtn">Aplicar Filtro</button>
+                    </div>
+                </div>
                 <div class="chart-header">
                     Quantidade de Atendimentos no Mês
                 </div>
@@ -280,7 +329,7 @@ $conn->close();
                         <tbody id="tableBody">
                             <!-- Dados serão preenchidos via JavaScript -->
                         </tbody>
-                    </table>
+                    </table>   
                 </div>
             </div>
         </div>
@@ -360,17 +409,24 @@ $conn->close();
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        const labels = <?php echo $labelsJson; ?>;
-        const data = <?php echo $dataJson; ?>;
+    function renderChartAndTable(labelsJson, dataJson) {
+        const labels = labelsJson;
+        const data = dataJson;
+
+        // Combina labels e data em um array de objetos, depois ordena por valor
         const combinedData = labels.map((label, index) => ({
             label: label,
             value: data[index]
         }));
         combinedData.sort((a, b) => b.value - a.value);
+
+        // Separa os dados ordenados de volta em labels e data
         const sortedLabels = combinedData.map(item => item.label);
         const sortedData = combinedData.map(item => item.value);
+
+        // Cria o gráfico de barras
         const ctx = document.getElementById('barChart').getContext('2d');
-        new Chart(ctx, {
+        const chart = new Chart(ctx, {
             type: 'bar',
             data: {
                 labels: sortedLabels,
@@ -390,12 +446,14 @@ $conn->close();
                 }
             }
         });
+
+        // Preenche a tabela com os dados
         const tableBody = document.getElementById('tableBody');
         for (let i = 0; i < sortedLabels.length; i++) {
             const row = document.createElement('tr');
             const cell1 = document.createElement('td');
             const cell2 = document.createElement('td');
-            
+
             cell1.textContent = sortedLabels[i];
             cell2.textContent = sortedData[i];
 
@@ -403,23 +461,62 @@ $conn->close();
             row.appendChild(cell2);
             tableBody.appendChild(row);
         }
-    });
-    document.addEventListener("DOMContentLoaded", function () {
-    const toggleButton = document.getElementById('toggleTableBtn');
-    const tableContainer = document.querySelector('.table-container');
-    const toggleIcon = document.getElementById('toggleIcon');
 
-    toggleButton.addEventListener('click', function () {
-        if (tableContainer.style.display === 'none' || tableContainer.style.display === '') {
-            tableContainer.style.display = 'block';
-            toggleIcon.classList.remove('fa-chevron-down');
-            toggleIcon.classList.add('fa-chevron-up');
-            toggleButton.textContent = ' Ocultar Tabela';
-        } else {
-            tableContainer.style.display = 'none';
-            toggleIcon.classList.remove('fa-chevron-up');
-            toggleIcon.classList.add('fa-chevron-down');
-            toggleButton.textContent = ' Mostrar Tabela';
+        return chart;
+    }
+
+    function filterData(labels, data, startDate, endDate) {
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        const filteredData = labels.map((label, index) => {
+            const [month, year] = label.split('/');
+            const date = new Date(year, month - 1);
+            if (date >= start && date <= end) {
+                return { label: label, value: data[index] };
+            }
+            return null;
+        }).filter(item => item !== null);
+
+        filteredData.sort((a, b) => b.value - a.value);
+
+        const filteredLabels = filteredData.map(item => item.label);
+        const filteredValues = filteredData.map(item => item.value);
+
+        return { filteredLabels, filteredValues };
+    }
+
+    const labels = <?php echo $labelsJson; ?>;
+    const data = <?php echo $dataJson; ?>;
+
+    let chart = renderChartAndTable(labels, data);
+
+    document.getElementById('applyFilterBtn').addEventListener('click', function () {
+        const startDate = document.getElementById('startDate').value;
+        const endDate = document.getElementById('endDate').value;
+
+        if (startDate && endDate) {
+            const { filteredLabels, filteredValues } = filterData(labels, data, startDate, endDate);
+
+            // Atualiza o gráfico com os dados filtrados
+            chart.data.labels = filteredLabels;
+            chart.data.datasets[0].data = filteredValues;
+            chart.update();
+
+            // Atualiza a tabela com os dados filtrados
+            const tableBody = document.getElementById('tableBody');
+            tableBody.innerHTML = '';
+            for (let i = 0; i < filteredLabels.length; i++) {
+                const row = document.createElement('tr');
+                const cell1 = document.createElement('td');
+                const cell2 = document.createElement('td');
+
+                cell1.textContent = filteredLabels[i];
+                cell2.textContent = filteredValues[i];
+
+                row.appendChild(cell1);
+                row.appendChild(cell2);
+                tableBody.appendChild(row);
+            }
         }
     });
 });
