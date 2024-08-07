@@ -180,12 +180,12 @@ $conn->close();
         .chart-box canvas {
             width: 100%;
             height: 300px;
+            padding: 15px;
         }
         .chart-container {
             max-height: 400px; 
             overflow-y: auto; 
             margin-top: 20px; 
-            border: 1px solid #ddd; 
             border-radius: 5px; 
             padding: 10px;
         }
@@ -233,7 +233,8 @@ $conn->close();
             border-bottom: 1px solid #ddd; 
         }
         .table thead th {
-            background-color: #f8f9fa; 
+            background-color: #1E3050; 
+            color: white;
         }
         .btn-sm {
             font-size: 0.8rem; 
@@ -275,7 +276,7 @@ $conn->close();
         }
         .date-filters input[type="date"] {
             background-color: #ffffff; 
-            border: 2px solid #AFAFAF; 
+            border: 1px solid #AFAFAF; 
             border-radius: 5px; 
             padding: 7px; 
             font-size: 16px; 
