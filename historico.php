@@ -2,7 +2,7 @@
 include("conexao.php");
 
 
-$registrosPorPagina = 10;
+$registrosPorPagina = 20;
 
 
 $paginaAtual = isset($_GET['pagina']) ? $_GET['pagina'] : 1;
@@ -147,6 +147,13 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
                 <button class="accordion-button shadow-sm text-white text-center" type="button" data-toggle="collapse" data-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne" style="background-color: #001f3f">
                     <i id="filter" class="fa-solid fa-filter mb-1"></i>
                     <h5>Filtro - Atendimentos</h5>
+                    <div class="loading">
+                        <svg height="48px" width="64px">
+                            <polyline id="back" points="0.157 23.954, 14 23.954, 21.843 48, 43 0, 50 24, 64 24"></polyline>
+                            <polyline id="front" points="0.157 23.954, 14 23.954, 21.843 48, 43 0, 50 24, 64 24"></polyline>
+                            <polyline id="front2" points="0.157 23.954, 14 23.954, 21.843 48, 43 0, 50 24, 64 24"></polyline>
+                        </svg>
+                    </div>
                 </button>
             </h2>
             <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-collapseOne" data-bs-parent="#accordionPanelsStayOpenExample">
@@ -240,192 +247,211 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
     <br>
     <div class="pagination" id="pagination"></div>
     <script>
-        const rows = <?php echo json_encode($rows); ?>;
-        const rowsPerPage = 10;
-        const tableBody = document.getElementById('tableBody');
-        const pagination = document.getElementById('pagination');
-        const toggleOrderButton = document.getElementById('toggleOrder');
-        let currentPage = 1;
-        let ascending = true;
-        function displayRows(data, startIndex, endIndex) {
-    tableBody.innerHTML = '';
-    for (let i = startIndex; i < endIndex; i++) {
-        if (i >= data.length) break;
-        const row = data[i];
-        const dataAtendimento = new Date(row.data);
-        const dataAtendimentoFormatada = dataAtendimento.toLocaleDateString('pt-BR');
-        const assunto = row.assunto ? row.assunto : "Nenhum assunto encontrado";
-        const situacao = row.situacao;
-        const situacaoClass = situacao === 'Aberto' ? 'text-success' : 'text-danger';
+    const rows = <?php echo json_encode($rows); ?>;
+    const rowsPerPage = 20;
+    const tableBody = document.getElementById('tableBody');
+    const pagination = document.getElementById('pagination');
+    const toggleOrderButton = document.getElementById('toggleOrder');
+    let currentPage = 1;
+    let ascending = true;
 
-        let buttonHTML = '';
-        if (situacao === 'Aberto') {
-            buttonHTML = `
-                <button id='finalizar-${row.id_atendimento}' class='btn btn-success' onclick='finalizeTask(${row.id_atendimento})' style='background-color: transparent; border: none;' title='Finalizar'>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width='20' height='20'>
-                        <path fill='#1E3050' d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/>
-                    </svg>
-                </button>
-            `;
-        } else {
-            buttonHTML = `
-                <button id='finalizar-${row.id_atendimento}' class='btn btn-success' style='background-color: transparent; border: none;' title='Finalizado'>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width='20' height='20'>
-                        <path fill='#03870C' d="M342.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L160 178.7l-57.4-57.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l80 80c12.5 12.5 32.8 12.5 45.3 0l160-160zm96 128c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L160 402.7 54.6 297.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l128 128c12.5 12.5 32.8 12.5 45.3 0l256-256z"/>
-                    </svg>
-                </button>
-            `;
-        }
-        tableBody.innerHTML += `
-            <tr>
-                <td class='text-left'>${dataAtendimentoFormatada}</td>
-                <td class='text-left'>${row.nome}</td>
-                <td class='text-left'>${assunto}</td>
-                <td class='text-left'><span class='badge ${situacao === 'Aberto' ? 'bg-success' : 'bg-danger'}'>${situacao}</span></td>
-                <td class='text-center'>
-                    <button class='btn btn-primary' onclick='redirectToDetails(${row.id_atendimento})' style='background-color: transparent; border: none;' title='Visualizar'>
-                        <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 576 512' width='20' height='20'>
-                            <path fill='#001f3f' d='M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM144 256a144 144 0 1 1 288 0 144 144 0 1 1 -288 0zm144-64c0 35.3-28.7 64-64 64c-7.1 0-13.9-1.2-20.3-3.3c-5.5-1.8-11.9 1.6-11.7 7.4c.3 6.9 1.3 13.8 3.2 20.7c13.7 51.2 66.4 81.6 117.6 67.9s81.6-66.4 67.9-117.6c-11.1-41.5-47.8-69.4-88.6-71.1c-5.8-.2-9.2 6.1-7.4 11.7c2.1 6.4 3.3 13.2 3.3 20.3z'/>
+    function displayRows(data, startIndex, endIndex) {
+        tableBody.innerHTML = '';
+        for (let i = startIndex; i < endIndex; i++) {
+            if (i >= data.length) break;
+            const row = data[i];
+            const dataAtendimento = new Date(row.data);
+            const dataAtendimentoFormatada = dataAtendimento.toLocaleDateString('pt-BR');
+            const assunto = row.assunto ? row.assunto : "Nenhum assunto encontrado";
+            const situacao = row.situacao;
+            const situacaoClass = situacao === 'Aberto' ? 'text-success' : 'text-danger';
+
+            let buttonHTML = '';
+            if (situacao === 'Aberto') {
+                buttonHTML = `
+                    <button id='finalizar-${row.id_atendimento}' class='btn btn-success' onclick='finalizeTask(${row.id_atendimento})' style='background-color: transparent; border: none;' title='Finalizar'>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width='20' height='20'>
+                            <path fill='#1E3050' d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/>
                         </svg>
                     </button>
-                </td>
-                <td class='text-center'>
-                    ${buttonHTML}
-                </td>
-            </tr>
-        `;
-    }
-}
-function finalizeTask(id) {
-    const button = document.getElementById(`finalizar-${id}`);
-    Swal.fire({
-        title: 'Você realmente deseja finalizar este atendimento?',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Sim',
-        cancelButtonText: 'Não',
-        customClass: {
-            confirmButton: 'btn-confirm',
-            cancelButton: 'btn-cancel'
-        }
-    }).then((result) => {
-        if (result.isConfirmed) {
-            button.disabled = true;
-            fetch('finalizar.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: new URLSearchParams({
-                    'id_atendimento': id
-                })
-            })
-            .then(response => response.text())
-            .then(data => {
-                console.log(data);
-                location.reload();
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                button.disabled = false;
-            });
-        }
-    });
-}
-        function setupPagination(data) {
-            pagination.innerHTML = '';
-            const prevButton = document.createElement('button');
-            prevButton.innerHTML = '&larr;';
-            prevButton.disabled = currentPage === 1;
-            prevButton.title = 'Anterior';
-            prevButton.addEventListener('click', () => {
-                currentPage--;
-                updatePagination(data);
-            });
-            pagination.appendChild(prevButton);
-            const pageCount = Math.ceil(data.length / rowsPerPage);
-            for (let i = 1; i <= pageCount; i++) {
-                const button = document.createElement('button');
-                button.textContent = i;
-                button.classList.add('page');
-                if (i === currentPage) {
-                    button.classList.add('active');
-                }
-                button.addEventListener('click', () => {
-                    currentPage = i;
-                    updatePagination(data);
-                });
-                pagination.appendChild(button);
-            }
-            const nextButton = document.createElement('button');
-            nextButton.innerHTML = '&rarr;';
-            nextButton.disabled = currentPage === pageCount;
-            nextButton.title = 'Próximo';
-            nextButton.addEventListener('click', () => {
-                currentPage++;
-                updatePagination(data);
-            });
-            pagination.appendChild(nextButton);
-        }
-        function updatePagination(data) {
-            const start = (currentPage - 1) * rowsPerPage;
-            const end = start + rowsPerPage;
-            displayRows(data, start, end);
-            setupPagination(data);
-        }
-        function redirectToDetails(idAtendimento) {
-            window.location.href = `dados.php?id=${idAtendimento}`;
-        }
-        function getBadgeClass(situacao) {
-            switch (situacao) {
-                case 'Aberto':
-                    return 'badge badge-custom bg-success';
-                case 'Concluido':
-                    return 'badge badge-custom bg-primary';
-                case 'Análise':
-                    return 'badge badge-custom bg-warning';
-                default:
-                    return 'badge badge-custom bg-secondary';
-            }
-        }
-        function applyFilters() {
-            filterData = document.getElementById('filterData').value.trim();
-            filterNome = document.getElementById('filterNome').value.trim().toLowerCase();
-            filterAssunto = document.getElementById('filterAssunto').value.trim().toLowerCase();
-            filterStatus = document.getElementById('filterStatus').value.trim().toLowerCase();
-            const filteredData = rows.filter(row => {
-                const dataMatches = filterData === '' || new Date(row.data).toLocaleDateString('pt-BR') === filterData;
-                const nomeMatches = row.nome.toLowerCase().includes(filterNome);
-                const assuntoMatches = row.assunto.toLowerCase().includes(filterAssunto);
-                const statusMatches = filterStatus === '' || row.situacao.toLowerCase() === filterStatus;
-
-                return dataMatches && nomeMatches && assuntoMatches && statusMatches;
-            });
-            currentPage = 1;
-            updatePagination(filteredData);
-        }
-        document.getElementById('applyFilters').addEventListener('click', applyFilters);
-        toggleOrderButton.addEventListener('click', function() {
-            ascending = !ascending;
-            const sortedData = rows.sort((rowA, rowB) => {
-                const dateA = new Date(rowA.data);
-                const dateB = new Date(rowB.data);
-                return ascending ? dateA - dateB : dateB - dateA;
-            });
-            currentPage = 1;
-            updatePagination(sortedData);
-            toggleSortIcon(ascending);
-        });
-        function toggleSortIcon(ascending) {
-            const icon = toggleOrderButton.querySelector('svg path');
-            if (ascending) {
-                icon.setAttribute('d', 'M7 14l5-5 5 5H7z');
+                `;
             } else {
-                icon.setAttribute('d', 'M7 10l5 5 5-5H7z');
+                buttonHTML = `
+                    <button id='finalizar-${row.id_atendimento}' class='btn btn-success' style='background-color: transparent; border: none;' title='Finalizado'>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width='20' height='20'>
+                            <path fill='#03870C' d="M342.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L160 178.7l-57.4-57.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l80 80c12.5 12.5 32.8 12.5 45.3 0l160-160zm96 128c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L160 402.7 54.6 297.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l128 128c12.5 12.5 32.8 12.5 45.3 0l256-256z"/>
+                        </svg>
+                    </button>
+                `;
             }
+            tableBody.innerHTML += `
+                <tr>
+                    <td class='text-left'>${dataAtendimentoFormatada}</td>
+                    <td class='text-left'>${row.nome}</td>
+                    <td class='text-left'>${assunto}</td>
+                    <td class='text-left'><span class='badge ${situacao === 'Aberto' ? 'bg-success' : 'bg-danger'}'>${situacao}</span></td>
+                    <td class='text-center'>
+                        <button class='btn btn-primary' onclick='redirectToDetails(${row.id_atendimento})' style='background-color: transparent; border: none;' title='Visualizar'>
+                            <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 576 512' width='20' height='20'>
+                                <path fill='#001f3f' d='M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM144 256a144 144 0 1 1 288 0 144 144 0 1 1 -288 0zm144-64c0 35.3-28.7 64-64 64c-7.1 0-13.9-1.2-20.3-3.3c-5.5-1.8-11.9 1.6-11.7 7.4c.3 6.9 1.3 13.8 3.2 20.7c13.7 51.2 66.4 81.6 117.6 67.9s81.6-66.4 67.9-117.6c-11.1-41.5-47.8-69.4-88.6-71.1c-5.8-.2-9.2 6.1-7.4 11.7c2.1 6.4 3.3 13.2 3.3 20.3z'/>
+                            </svg>
+                        </button>
+                    </td>
+                    <td class='text-center'>
+                        ${buttonHTML}
+                    </td>
+                </tr>
+            `;
+        }
+    }
+
+    function finalizeTask(id) {
+        const button = document.getElementById(`finalizar-${id}`);
+        Swal.fire({
+            title: 'Você realmente deseja finalizar este atendimento?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sim',
+            cancelButtonText: 'Não',
+            customClass: {
+                confirmButton: 'btn-confirm',
+                cancelButton: 'btn-cancel'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                button.disabled = true;
+                // Armazena a página atual no localStorage
+                localStorage.setItem('currentPage', currentPage);
+
+                fetch('finalizar.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams({
+                        'id_atendimento': id
+                    })
+                })
+                .then(response => response.text())
+                .then(data => {
+                    console.log(data);
+                    location.reload();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    button.disabled = false;
+                });
+            }
+        });
+    }
+
+    function setupPagination(data) {
+        pagination.innerHTML = '';
+        const prevButton = document.createElement('button');
+        prevButton.innerHTML = '&larr;';
+        prevButton.disabled = currentPage === 1;
+        prevButton.title = 'Anterior';
+        prevButton.addEventListener('click', () => {
+            currentPage--;
+            updatePagination(data);
+        });
+        pagination.appendChild(prevButton);
+
+        const pageCount = Math.ceil(data.length / rowsPerPage);
+        for (let i = 1; i <= pageCount; i++) {
+            const button = document.createElement('button');
+            button.textContent = i;
+            button.classList.add('page');
+            if (i === currentPage) {
+                button.classList.add('active');
+            }
+            button.addEventListener('click', () => {
+                currentPage = i;
+                updatePagination(data);
+            });
+            pagination.appendChild(button);
+        }
+
+        const nextButton = document.createElement('button');
+        nextButton.innerHTML = '&rarr;';
+        nextButton.disabled = currentPage === pageCount;
+        nextButton.title = 'Próximo';
+        nextButton.addEventListener('click', () => {
+            currentPage++;
+            updatePagination(data);
+        });
+        pagination.appendChild(nextButton);
+    }
+
+    function updatePagination(data) {
+        const startIndex = (currentPage - 1) * rowsPerPage;
+        const endIndex = startIndex + rowsPerPage;
+        displayRows(data, startIndex, endIndex);
+        setupPagination(data);
+    }
+
+    function toggleOrder() {
+        ascending = !ascending;
+        if (ascending) {
+            rows.sort((a, b) => new Date(a.data) - new Date(b.data));
+        } else {
+            rows.sort((a, b) => new Date(b.data) - new Date(a.data));
+        }
+        currentPage = 1;
+        updatePagination(rows);
+        toggleSortIcon();
+    }
+
+    function toggleSortIcon() {
+        const sortIcon = document.getElementById('sortIcon');
+        if (ascending) {
+            sortIcon.classList.remove('fa-arrow-down');
+            sortIcon.classList.add('fa-arrow-up');
+        } else {
+            sortIcon.classList.remove('fa-arrow-up');
+            sortIcon.classList.add('fa-arrow-down');
+        }
+    }
+
+    function applyFilters() {
+        const nomeFilter = document.getElementById('filterNome').value.trim().toLowerCase();
+        const assuntoFilter = document.getElementById('filterAssunto').value.trim().toLowerCase();
+        const situacaoFilter = document.getElementById('filterSituacao').value.trim().toLowerCase();
+        const dataFilter = document.getElementById('filterData').value;
+
+        const filteredData = rows.filter(row => {
+            const dataAtendimento = new Date(row.data);
+            const dataAtendimentoFormatada = dataAtendimento.toLocaleDateString('pt-BR');
+
+            const matchesNome = row.nome.toLowerCase().includes(nomeFilter);
+            const matchesAssunto = row.assunto ? row.assunto.toLowerCase().includes(assuntoFilter) : false;
+            const matchesSituacao = row.situacao.toLowerCase().includes(situacaoFilter);
+            const matchesData = !dataFilter || dataAtendimentoFormatada === dataFilter;
+
+            return matchesNome && matchesAssunto && matchesSituacao && matchesData;
+        });
+
+        currentPage = 1;
+        updatePagination(filteredData);
+    }
+
+    function redirectToDetails(id) {
+        window.location.href = `detalhes.php?id_atendimento=${id}`;
+    }
+
+    // Restaura a página atual do localStorage, se existir
+    document.addEventListener('DOMContentLoaded', () => {
+        const storedPage = localStorage.getItem('currentPage');
+        if (storedPage) {
+            currentPage = parseInt(storedPage);
+            localStorage.removeItem('currentPage');
         }
         updatePagination(rows);
-    </script>
+    });
+
+    updatePagination(rows);
+</script>
+
 </div>   
 </div>  
     </main>

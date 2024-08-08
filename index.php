@@ -29,7 +29,6 @@ include("conexao.php")
     .form-control {
         font-size: 0.8rem;
     }
-
     .form-check-label {
         font-size: 0.8rem;
     }
