@@ -1,30 +1,48 @@
 <?php
 include("conexao.php");
-$registrosPorPagina = 10;
-$paginaAtual = isset($_GET['pagina']) ? intval($_GET['pagina']) : 1;
-$offset = ($paginaAtual - 1) * $registrosPorPagina;
-$sql = "SELECT DATE_FORMAT(a.data, '%m/%Y') as data,
-        im.nome as nome_profissional,
-        assuntos.assunto,
-        a.situacao as situacao,
-        a.id as id
-        FROM relacionamentomedico.atendimento AS a
-        JOIN relacionamentomedico.profissionais AS im ON a.profissional = im.id
-        JOIN relacionamentomedico.atendimento_has_assunto AS has ON a.id = has.id
-        JOIN relacionamentomedico.assunto AS assuntos ON has.id = assuntos.id
-        LIMIT $offset, $registrosPorPagina";
 
-$result = $conn->query($sql);
-$sqlTotal = "SELECT COUNT(*) AS total
-            FROM relacionamentomedico.atendimento AS a
-            JOIN relacionamentomedico.profissionais AS im ON a.profissional = im.id
-            JOIN relacionamentomedico.atendimento_has_assunto AS has ON a.id = has.id
-            JOIN relacionamentomedico.assunto AS assuntos ON has.id = assuntos.id";
-
-$resultCount = $conn->query($sqlTotal);
-$totalRegistros = $resultCount->fetch_assoc()['total'];
-$totalPaginas = ceil($totalRegistros / $registrosPorPagina);
+// quant. atendimentos no mês
+if(isset($_GET['mes'])) {
+    $monthMap = array(
+        "Jan" => 1,
+        "Feb" => 2,
+        "Mar" => 3,
+        "Apr" => 4,
+        "May" => 5,
+        "Jun" => 6,
+        "Jul" => 7,
+        "Aug" => 8,
+        "Sep" => 9,
+        "Oct" => 10,
+        "Nov" => 11,
+        "Dec" => 12
+    );
+$mesClicadoAbbr = $_GET['mes'];
+$mesClicado = $monthMap[$mesClicadoAbbr];
 $sql = "
+    SELECT 
+        DATE_FORMAT(a.data, '%m/%Y') AS mes_ano,
+        COUNT(*) AS quantidade
+    FROM 
+        atendimento a
+    WHERE MONTH(a.data) = $mesClicado
+    GROUP BY 
+        DATE_FORMAT(a.data, '%m/%Y')
+    ORDER BY 
+        mes_ano;
+";
+$result = $conn->query($sql);
+$labels = [];
+$data = [];
+
+while ($row = $result->fetch_assoc()) {
+    $labels[] = $row['mes_ano'];
+    $data[] = $row['quantidade'];
+}
+$labelsJson = json_encode($labels);
+$dataJson = json_encode($data);
+}else{
+    $sql = "
     SELECT 
         DATE_FORMAT(a.data, '%m/%Y') AS mes_ano,
         COUNT(*) AS quantidade
@@ -45,12 +63,36 @@ while ($row = $result->fetch_assoc()) {
 }
 $labelsJson = json_encode($labels);
 $dataJson = json_encode($data);
+}
+// 
+
+
+// quant. status dos atendimentos
+if(isset($_GET['mes'])) {
+    $monthMap = array(
+        "Jan" => 1,
+        "Feb" => 2,
+        "Mar" => 3,
+        "Apr" => 4,
+        "May" => 5,
+        "Jun" => 6,
+        "Jul" => 7,
+        "Aug" => 8,
+        "Sep" => 9,
+        "Oct" => 10,
+        "Nov" => 11,
+        "Dec" => 12
+    );
+$mesClicadoAbbr = $_GET['mes'];
+$mesClicado = $monthMap[$mesClicadoAbbr];
 $sqlStatus = "
-    SELECT 
+    SELECT  
+		DATE_FORMAT(a.data, '%m/%Y') AS mes_ano,
         situacao,
         COUNT(*) AS quantidade
     FROM 
-        atendimento
+        atendimento as a
+    WHERE MONTH(a.data) = $mesClicado
     GROUP BY 
         situacao;
 ";
@@ -63,15 +105,58 @@ while ($row = $resultStatus->fetch_assoc()) {
 }
 $statusLabelsJson = json_encode($statusLabels);
 $statusDataJson = json_encode($statusData);
-
-$sqlVeiculoAtendimento = "
-    SELECT 
-        veiculo_atendimento,
+}else{
+    $sqlStatus = "
+    SELECT  
+		DATE_FORMAT(a.data, '%m/%Y') AS mes_ano,
+        situacao,
         COUNT(*) AS quantidade
     FROM 
-        atendimento
+        atendimento as a
     GROUP BY 
-        veiculo_atendimento;
+        situacao;
+";
+$resultStatus = $conn->query($sqlStatus);
+$statusLabels = [];
+$statusData = [];
+while ($row = $resultStatus->fetch_assoc()) {
+    $statusLabels[] = $row['situacao'];
+    $statusData[] = $row['quantidade'];
+}
+$statusLabelsJson = json_encode($statusLabels);
+$statusDataJson = json_encode($statusData);
+}
+// 
+
+
+// quant. por veiculo de atendimento
+if(isset($_GET['mes'])) {
+    $monthMap = array(
+        "Jan" => 1,
+        "Feb" => 2,
+        "Mar" => 3,
+        "Apr" => 4,
+        "May" => 5,
+        "Jun" => 6,
+        "Jul" => 7,
+        "Aug" => 8,
+        "Sep" => 9,
+        "Oct" => 10,
+        "Nov" => 11,
+        "Dec" => 12
+    );
+$mesClicadoAbbr = $_GET['mes'];
+$mesClicado = $monthMap[$mesClicadoAbbr];
+$sqlVeiculoAtendimento = "
+    SELECT  
+	DATE_FORMAT(a.data, '%m/%Y') AS mes_ano,
+	veiculo_atendimento,
+	COUNT(*) AS quantidade
+    FROM 
+        atendimento as a
+    WHERE MONTH(a.data) = $mesClicado
+    GROUP BY 
+        veiculo_atendimento
 ";
 $resultVeiculoAtendimento = $conn->query($sqlVeiculoAtendimento);
 $veiculoLabels = [];
@@ -82,15 +167,58 @@ while ($row = $resultVeiculoAtendimento->fetch_assoc()) {
 }
 $veiculoLabelsJson = json_encode($veiculoLabels);
 $veiculoDataJson = json_encode($veiculoData);
+}else{
+    $sqlVeiculoAtendimento = "
+    SELECT  
+	DATE_FORMAT(a.data, '%m/%Y') AS mes_ano,
+	veiculo_atendimento,
+	COUNT(*) AS quantidade
+    FROM 
+        atendimento as a
+    GROUP BY 
+        veiculo_atendimento
+";
+$resultVeiculoAtendimento = $conn->query($sqlVeiculoAtendimento);
+$veiculoLabels = [];
+$veiculoData = [];
+while ($row = $resultVeiculoAtendimento->fetch_assoc()) {
+    $veiculoLabels[] = $row['veiculo_atendimento'];
+    $veiculoData[] = $row['quantidade'];
+}
+$veiculoLabelsJson = json_encode($veiculoLabels);
+$veiculoDataJson = json_encode($veiculoData);
+}
+// 
 
+
+// quant. por orgão
+if(isset($_GET['mes'])) {
+    $monthMap = array(
+        "Jan" => 1,
+        "Feb" => 2,
+        "Mar" => 3,
+        "Apr" => 4,
+        "May" => 5,
+        "Jun" => 6,
+        "Jul" => 7,
+        "Aug" => 8,
+        "Sep" => 9,
+        "Oct" => 10,
+        "Nov" => 11,
+        "Dec" => 12
+    );
+$mesClicadoAbbr = $_GET['mes'];
+$mesClicado = $monthMap[$mesClicadoAbbr];
 $sqlOrg = "
     SELECT 
-        orgao,
-        COUNT(*) AS quantidade
-    FROM 
-        profissionais
+    DATE_FORMAT(a.data, '%m/%Y') AS mes_ano,
+    p.orgao,
+    COUNT(*) AS quantidade
+    FROM atendimento as a
+    INNER JOIN profissionais as p ON a.profissional = p.id
+    WHERE MONTH(a.data) = $mesClicado
     GROUP BY 
-        orgao;
+            orgao;
 ";
 $resultOrg = $conn->query($sqlOrg);
 $orgLabels = [];
@@ -101,11 +229,16 @@ while ($row = $resultOrg->fetch_assoc()) {
 }
 $orgLabelsJson = json_encode($orgLabels);
 $orgDataJson = json_encode($orgData);
-
+}else{
 $sqlOrg = "
-    SELECT orgao, COUNT(*) AS quantidade
-    FROM profissionais
-    GROUP BY orgao;
+   SELECT 
+DATE_FORMAT(a.data, '%m/%Y') AS mes_ano,
+p.orgao,
+COUNT(*) AS quantidade
+FROM atendimento as a
+INNER JOIN profissionais as p ON a.profissional = p.id
+GROUP BY 
+        orgao;
 ";
 
 $resultOrg = $conn->query($sqlOrg);
@@ -119,8 +252,11 @@ while ($row = $resultOrg->fetch_assoc()) {
 
 $orgaoLabelsJson = json_encode($orgaoLabels);
 $orgaoDataJson = json_encode($orgaoData);
+}
+// 
 
 $conn->close();
+
 ?>
 
 <!DOCTYPE html>
@@ -261,9 +397,14 @@ $conn->close();
     include 'php/header.php';
 ?>
 <body>
-<div class="container mt-2">
+    
+<div class="container mt-5">
+
     <div class="row">
-        <div class="col-xl-6 col-md-6 mb-4">
+    <div class="btn-group d-flex justify-content-center flex-wrap mt-4" role="group" aria-label="Basic example" id="monthButtons">
+
+    </div>
+        <div class="col-xl-6 col-md-6 mb-4 mt-5">
             <div class="chart-box">
                 <div class="chart-header">
                     Quantidade de Atendimentos no Mês
@@ -285,7 +426,7 @@ $conn->close();
             </div>
         </div>
 
-        <div class="col-xl-6 col-md-6 mb-4">
+        <div class="col-xl-6 col-md-6 mb-4 mt-5">
             <div class="chart-box">
                 <div class="chart-header">
                     Status dos Atendimentos
@@ -623,7 +764,48 @@ $conn->close();
         }
     });
 </script>
+<script>
+    // Função para obter o nome do mês
+function getMonthName(monthIndex) {
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    return months[monthIndex];
+}
 
+const monthButtonsContainer = document.getElementById("monthButtons");
+
+// Loop para obter os nomes dos meses de janeiro até dezembro
+for (let i = 0; i < 12; i++) {
+    const monthName = getMonthName(i);
+
+    const button = document.createElement("button");
+    button.type = "button";
+    button.classList.add("btn", "btn-primary");
+    button.textContent = monthName;
+    button.id = monthName;
+
+    // Adicione um evento de clique ao botão
+    button.addEventListener("click", function () {
+        const monthClicked = this.id;
+        const currentURL = window.location.href;
+
+        // Verifica se já existe um parâmetro 'mes' na URL
+        if (currentURL.indexOf("?mes=") !== -1) {
+            // Se já existe, substitui o valor do parâmetro 'mes'
+            const updatedURL = currentURL.replace(/(mes=)[^\&]+/, '$1' + monthClicked);
+            // Redireciona para a nova URL
+            window.location.href = updatedURL;
+        } else {
+            // Se não existe, adiciona o parâmetro 'mes' à URL
+            const updatedURL = `${currentURL}?mes=${monthClicked}`;
+            // Redireciona para a nova URL
+            window.location.href = updatedURL;
+        }
+    });
+
+    monthButtonsContainer.appendChild(button);
+}
+
+</script>
 
 </body>
 </html>
