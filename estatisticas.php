@@ -191,8 +191,46 @@ $veiculoDataJson = json_encode($veiculoData);
 // 
 
 
-// quant. por orgão
-if(isset($_GET['mes'])) {
+function getAtendimentos($conn, $mesClicado = null) {
+    $sql = "
+      SELECT 
+    DATE_FORMAT(a.data, '%m/%Y') AS mes_ano,
+    p.orgao as orgao,
+    COUNT(*) AS quantidade
+    FROM atendimento as a
+    INNER JOIN profissionais as p ON a.profissional = p.id
+  
+    ";
+    
+    if ($mesClicado !== null) {
+        $sql .= " WHERE MONTH(a.data) = ? ";
+    }
+    
+    $sql .= "
+        GROUP BY 
+            DATE_FORMAT(a.data, '%m/%Y')
+        ORDER BY 
+            mes_ano;
+    ";
+    
+    $stmt = $conn->prepare($sql);
+    
+    if ($mesClicado !== null) {
+        $stmt->bind_param("i", $mesClicado);
+    }
+    
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $data = [];
+    
+    while ($row = $result->fetch_assoc()) {
+        $data[] = $row;
+    }
+    
+    return $data;
+}
+
+function getMonthNumber($monthAbbr) {
     $monthMap = array(
         "Jan" => 1,
         "Feb" => 2,
@@ -207,53 +245,21 @@ if(isset($_GET['mes'])) {
         "Nov" => 11,
         "Dec" => 12
     );
-$mesClicadoAbbr = $_GET['mes'];
-$mesClicado = $monthMap[$mesClicadoAbbr];
-$sqlOrg = "
-    SELECT 
-    DATE_FORMAT(a.data, '%m/%Y') AS mes_ano,
-    p.orgao,
-    COUNT(*) AS quantidade
-    FROM atendimento as a
-    INNER JOIN profissionais as p ON a.profissional = p.id
-    WHERE MONTH(a.data) = $mesClicado
-    GROUP BY 
-            orgao;
-";
-$resultOrg = $conn->query($sqlOrg);
-$orgLabels = [];
-$orgData = [];
-while ($row = $resultOrg->fetch_assoc()) {
-    $orgLabels[] = $row['orgao'];
-    $orgData[] = $row['quantidade'];
+    return $monthMap[$monthAbbr] ?? null;
 }
-$orgLabelsJson = json_encode($orgLabels);
-$orgDataJson = json_encode($orgData);
-}else{
-$sqlOrg = "
-   SELECT 
-DATE_FORMAT(a.data, '%m/%Y') AS mes_ano,
-p.orgao,
-COUNT(*) AS quantidade
-FROM atendimento as a
-INNER JOIN profissionais as p ON a.profissional = p.id
-GROUP BY 
-        orgao;
-";
 
-$resultOrg = $conn->query($sqlOrg);
-$orgaoLabels = [];
-$orgaoData = [];
+$mesClicado = null;
 
-while ($row = $resultOrg->fetch_assoc()) {
-    $orgaoLabels[] = $row['orgao'];
-    $orgaoData[] = $row['quantidade'];
+if (isset($_GET['mes'])) {
+    $mesClicado = getMonthNumber($_GET['mes']);
 }
+
+$atendimentos = getAtendimentos($conn, $mesClicado);
+$orgaoLabels = array_column($atendimentos, 'orgao');
+$orgaoData = array_column($atendimentos, 'quantidade');
 
 $orgaoLabelsJson = json_encode($orgaoLabels);
 $orgaoDataJson = json_encode($orgaoData);
-}
-// 
 
 $conn->close();
 
