@@ -19,9 +19,7 @@
             <button class="btn">
                 <a class="nav-link" href="profissionais.php" title="Histórico de Profissionais">Registro Profissionais</a>
             </button>
-            <button class="btn">
-                <a class="nav-link" href="estatisticas.php" title="Estatísticas de  Registro">Estatísticas</a>
-            </button>
+            
             <div class="collapse navbar-collapse" id="navBarCentral">
             </div>
         </div>

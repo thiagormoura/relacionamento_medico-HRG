@@ -2,7 +2,14 @@
 include("conexao.php");
 
 // // quant. atendimentos no mês
-if(isset($_GET['mes'])) {
+// Verifica o período selecionado
+$period = isset($_GET['period']) ? intval($_GET['period']) : 30; // Default to 30 days if no period is selected
+
+$today = date('Y-m-d');
+$startDate = date('Y-m-d', strtotime("-$period days"));
+
+// Se o parâmetro 'mes' estiver definido, filtra por mês e período
+if (isset($_GET['mes'])) {
     $monthMap = array(
         "Jan" => 1,
         "Feb" => 2,
@@ -17,42 +24,41 @@ if(isset($_GET['mes'])) {
         "Nov" => 11,
         "Dec" => 12
     );
-$mesClicadoAbbr = $_GET['mes'];
-$mesClicado = $monthMap[$mesClicadoAbbr];
-$sql = "
-    SELECT 
-        DATE_FORMAT(a.data, '%m/%Y') AS mes_ano,
-        COUNT(*) AS quantidade
-    FROM 
-        atendimento a
-    WHERE MONTH(a.data) = $mesClicado
-    GROUP BY 
-        DATE_FORMAT(a.data, '%m/%Y')
-    ORDER BY 
-        mes_ano;
-";
-$result = $conn->query($sql);
-$labels = [];
-$data = [];
+    $mesClicadoAbbr = $_GET['mes'];
+    $mesClicado = $monthMap[$mesClicadoAbbr];
 
-while ($row = $result->fetch_assoc()) {
-    $labels[] = $row['mes_ano'];
-    $data[] = $row['quantidade'];
-}
-$labelsJson = json_encode($labels);
-$dataJson = json_encode($data);
-}else{
+    // Consulta SQL filtrando por mês e o intervalo de dias
     $sql = "
-    SELECT 
-        DATE_FORMAT(a.data, '%m/%Y') AS mes_ano,
-        COUNT(*) AS quantidade
-    FROM 
-        atendimento a
-    GROUP BY 
-        DATE_FORMAT(a.data, '%m/%Y')
-    ORDER BY 
-        mes_ano;
-";
+        SELECT 
+            DATE_FORMAT(a.data, '%m/%Y') AS mes_ano,
+            COUNT(*) AS quantidade
+        FROM 
+            atendimento a
+        WHERE 
+            MONTH(a.data) = $mesClicado
+            AND a.data BETWEEN '$startDate' AND '$today'
+        GROUP BY 
+            DATE_FORMAT(a.data, '%m/%Y')
+        ORDER BY 
+            mes_ano;
+    ";
+} else {
+    // Consulta SQL para todo o mês atual e o intervalo de dias
+    $sql = "
+        SELECT 
+            DATE_FORMAT(a.data, '%m/%Y') AS mes_ano,
+            COUNT(*) AS quantidade
+        FROM 
+            atendimento a
+        WHERE 
+            a.data BETWEEN '$startDate' AND '$today'
+        GROUP BY 
+            DATE_FORMAT(a.data, '%m/%Y')
+        ORDER BY 
+            mes_ano;
+    ";
+}
+
 $result = $conn->query($sql);
 $labels = [];
 $data = [];
@@ -63,7 +69,7 @@ while ($row = $result->fetch_assoc()) {
 }
 $labelsJson = json_encode($labels);
 $dataJson = json_encode($data);
-}
+
 // // 
 
 
@@ -444,14 +450,11 @@ $conn->close();
 
     <div class="row">
     <div class="mt-4">
-    <button type="button" class="btn btn-primary">últimos 7 dias</button>
-
-
-    <button type="button" class="btn btn-primary">últimos 15 dias</button>
-
-    <button type="button" class="btn btn-primary" id="btn-mes">últimos 30 dias</button>
-
+        <button type="button" class="btn btn-primary" id="btn-7-days">Últimos 7 dias</button>
+        <button type="button" class="btn btn-primary" id="btn-15-days">Últimos 15 dias</button>
+        <button type="button" class="btn btn-primary" id="btn-30-days">Últimos 30 dias</button>
     </div>
+</div>
 
 
         <div class="col-xl-6 col-md-6 mb-4 mt-5">
@@ -822,7 +825,7 @@ $conn->close();
     });
 </script>
 <script>
-    // Função para obter o nome do mês
+// Função para obter o nome do mês
 function getMonthName(monthIndex) {
     const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     return months[monthIndex];
@@ -843,24 +846,57 @@ for (let i = 0; i < 12; i++) {
     // Adicione um evento de clique ao botão
     button.addEventListener("click", function () {
         const monthClicked = this.id;
-        const currentURL = window.location.href;
+        const currentURL = new URL(window.location.href);
 
         // Verifica se já existe um parâmetro 'mes' na URL
-        if (currentURL.indexOf("?mes=") !== -1) {
-            // Se já existe, substitui o valor do parâmetro 'mes'
-            const updatedURL = currentURL.replace(/(mes=)[^\&]+/, '$1' + monthClicked);
-            // Redireciona para a nova URL
-            window.location.href = updatedURL;
-        } else {
-            // Se não existe, adiciona o parâmetro 'mes' à URL
-            const updatedURL = `${currentURL}?mes=${monthClicked}`;
-            // Redireciona para a nova URL
-            window.location.href = updatedURL;
-        }
+        currentURL.searchParams.set('mes', monthClicked);
+
+        // Atualiza a URL e redireciona
+        window.location.href = currentURL.href;
     });
 
     monthButtonsContainer.appendChild(button);
 }
+
+// Função para adicionar eventos aos botões de período
+function setupPeriodButtons() {
+    const periodButtons = document.querySelectorAll('.btn-period');
+
+    periodButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            const period = this.getAttribute('data-period');
+            const currentURL = new URL(window.location.href);
+
+            // Adiciona o parâmetro 'period' na URL
+            currentURL.searchParams.set('period', period);
+
+            // Atualiza a URL e redireciona
+            window.location.href = currentURL.href;
+        });
+    });
+}
+
+// Chama a função para configurar os botões de período após a página carregar
+window.addEventListener('load', setupPeriodButtons);
+
+// Adiciona eventos aos botões de período
+document.getElementById('btn-7-days').addEventListener('click', function() {
+    const url = new URL(window.location.href);
+    url.searchParams.set('period', '7');
+    window.location.href = url.href;
+});
+
+document.getElementById('btn-15-days').addEventListener('click', function() {
+    const url = new URL(window.location.href);
+    url.searchParams.set('period', '15');
+    window.location.href = url.href;
+});
+
+document.getElementById('btn-30-days').addEventListener('click', function() {
+    const url = new URL(window.location.href);
+    url.searchParams.set('period', '30');
+    window.location.href = url.href;
+});
 
 </script>
 
