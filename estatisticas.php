@@ -407,7 +407,7 @@ $conn->close();
 <div class="container mt-5">
 
     <div class="row">
-    <div class="btn-group d-flex justify-content-center flex-wrap mt-4" role="group" aria-label="Basic example" id="monthButtons">
+    <div class="btn-group d-flex justify-content-center flex-wrap" role="group" aria-label="Basic example" id="monthButtons">
 
     </div>
         <div class="col-xl-6 col-md-6 mb-4 mt-5">
@@ -785,7 +785,7 @@ for (let i = 0; i < 12; i++) {
 
     const button = document.createElement("button");
     button.type = "button";
-    button.classList.add("btn", "btn-primary");
+    button.classList.add("btn", "btn-success");
     button.textContent = monthName;
     button.id = monthName;
 
