@@ -442,11 +442,17 @@ $conn->close();
 
     </div>
 
-    <div class="row">
-   
+ 
+    <div class="date-filters-container mt-4">
+                    <b><span class="filter-label">Filtro de Data</span></b>
+                    <div class="date-filters">       
+                        <input type="date" id="startDate" placeholder="Data Inicial" title="data inicial">
+                        <input type="date" id="endDate" placeholder="Data Final" title="data final">
+                        <button id="applyFilterBtn">Aplicar Filtro</button>
+                    </div>
+                </div>
 
-    
-    </div>
+
 
 
         <div class="col-xl-6 col-md-6 mb-4 mt-5">
@@ -856,6 +862,7 @@ for (let i = 0; i < 12; i++) {
 
     monthButtonsContainer.appendChild(button);
 }
+
 
 </script>
 
