@@ -443,14 +443,9 @@ $conn->close();
     </div>
 
     <div class="row">
-    <div class="mt-4">
-    <button type="button" class="btn btn-primary">últimos 7 dias</button>
+   
 
-
-    <button type="button" class="btn btn-primary">últimos 15 dias</button>
-
-    <button type="button" class="btn btn-primary" id="btn-mes">últimos 30 dias</button>
-
+    
     </div>
 
 
