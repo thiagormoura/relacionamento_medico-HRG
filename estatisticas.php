@@ -1,8 +1,8 @@
 <?php
 include("conexao.php");
 
-// // quant. atendimentos no mês
-if(isset($_GET['mes'])) {
+// Verifique se o mês foi selecionado
+if (isset($_GET['mes'])) {
     $monthMap = array(
         "Jan" => 1,
         "Feb" => 2,
@@ -17,52 +17,66 @@ if(isset($_GET['mes'])) {
         "Nov" => 11,
         "Dec" => 12
     );
-$mesClicadoAbbr = $_GET['mes'];
-$mesClicado = $monthMap[$mesClicadoAbbr];
-$sql = "
-    SELECT 
-        DATE_FORMAT(a.data, '%m/%Y') AS mes_ano,
-        COUNT(*) AS quantidade
-    FROM 
-        atendimento a
-    WHERE MONTH(a.data) = $mesClicado
-    GROUP BY 
-        DATE_FORMAT(a.data, '%m/%Y')
-    ORDER BY 
-        mes_ano;
-";
-$result = $conn->query($sql);
-$labels = [];
-$data = [];
 
-while ($row = $result->fetch_assoc()) {
-    $labels[] = $row['mes_ano'];
-    $data[] = $row['quantidade'];
-}
-$labelsJson = json_encode($labels);
-$dataJson = json_encode($data);
-}else{
-    $sql = "
-    SELECT 
-        DATE_FORMAT(a.data, '%m/%Y') AS mes_ano,
-        COUNT(*) AS quantidade
-    FROM 
-        atendimento a
-    GROUP BY 
-        DATE_FORMAT(a.data, '%m/%Y')
-    ORDER BY 
-        mes_ano;
-";
-$result = $conn->query($sql);
-$labels = [];
-$data = [];
+    $mesClicadoAbbr = $_GET['mes'];
+    $mesClicado = $monthMap[$mesClicadoAbbr];
+    
+    // Verifique se os intervalos de data foram fornecidos
+    if (isset($_POST['startDate']) && isset($_POST['endDate'])) {
+        $startDate = $_POST['startDate'];
+        $endDate = $_POST['endDate'];
+        
+        // Modifique a consulta SQL para incluir o intervalo de datas
+        $sql = "
+            SELECT 
+                a.data AS mes_ano,
+                COUNT(*) AS quantidade
+            FROM 
+                atendimento a
+            WHERE 
+                MONTH(a.data) = $mesClicado
+                AND a.data BETWEEN '$startDate' AND '$endDate'
+            GROUP BY 
+                mes_ano
+            ORDER BY 
+                mes_ano;
+        ";
+    } else {
+        // Se não houver intervalo de datas, filtre apenas pelo mês clicado
+        $sql = "
+            SELECT 
+                a.data AS mes_ano,
+                COUNT(*) AS quantidade
+            FROM 
+                atendimento a
+            WHERE 
+                MONTH(a.data) = $mesClicado
+            GROUP BY 
+                mes_ano
+            ORDER BY 
+                mes_ano;
+        ";
+    }
 
-while ($row = $result->fetch_assoc()) {
-    $labels[] = $row['mes_ano'];
-    $data[] = $row['quantidade'];
-}
-$labelsJson = json_encode($labels);
-$dataJson = json_encode($data);
+    // Execute a consulta SQL e prepare os dados para a resposta
+    $result = $conn->query($sql);
+    $labels = [];
+    $data = [];
+
+    while ($row = $result->fetch_assoc()) {
+        $labels[] = $row['mes_ano'];
+        $data[] = $row['quantidade'];
+    }
+
+    $labelsJson = json_encode($labels);
+    $dataJson = json_encode($data);
+
+    echo($labelsJson); // Envie os dados em formato JSON para o JavaScript
+    // Caso precise enviar também os dados, pode adicionar:
+    // echo($dataJson);
+} else {
+    // Se o mês não for selecionado, você pode definir uma consulta padrão ou tratar o erro
+    echo json_encode(["error" => "Mês não selecionado"]);
 }
 // // 
 
@@ -554,69 +568,83 @@ $conn->close();
     document.addEventListener("DOMContentLoaded", function () {
         const labels = <?php echo $labelsJson; ?>;
         const data = <?php echo $dataJson; ?>;
-        const combinedData = labels.map((label, index) => ({
+        let combinedData = labels.map((label, index) => ({
             label: label,
             value: data[index]
         }));
-        combinedData.sort((a, b) => b.value - a.value);
-        const sortedLabels = combinedData.map(item => item.label);
-        const sortedData = combinedData.map(item => item.value);
-        const ctx = document.getElementById('barChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: sortedLabels,
-                datasets: [{
-                    label: 'Quantidade de Atendimentos no Mês',
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    borderWidth: 1,
-                    data: sortedData,
-                }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
+
+        let myChart; // Variable to store the chart instance
+
+        // Function to update the chart
+        function updateChart() {
+            const startDate = new Date(document.getElementById('startDate').value);
+            const endDate = new Date(document.getElementById('endDate').value);
+
+            // Filter data based on date range
+            const filteredData = combinedData.filter(item => {
+                const itemDate = new Date(item.label); // Assuming label is in a date-compatible format
+                return (!isNaN(itemDate.getTime()) && itemDate >= startDate && itemDate <= endDate);
+            });
+
+            filteredData.sort((a, b) => b.value - a.value);
+
+            const sortedLabels = filteredData.map(item => item.label);
+            const sortedData = filteredData.map(item => item.value);
+
+            const ctx = document.getElementById('barChart').getContext('2d');
+
+            // Destroy existing chart if it exists
+            if (myChart) {
+                myChart.destroy();
+            }
+
+            // Create new chart
+            myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: sortedLabels,
+                    datasets: [{
+                        label: 'Quantidade de Atendimentos no Mês',
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1,
+                        data: sortedData,
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
                     }
                 }
+            });
+
+            // Update table
+            const tableBody = document.getElementById('tableBody');
+            tableBody.innerHTML = ''; // Clear existing rows
+            for (let i = 0; i < sortedLabels.length; i++) {
+                const row = document.createElement('tr');
+                const cell1 = document.createElement('td');
+                const cell2 = document.createElement('td');
+                
+                cell1.textContent = sortedLabels[i];
+                cell2.textContent = sortedData[i];
+
+                row.appendChild(cell1);
+                row.appendChild(cell2);
+                tableBody.appendChild(row);
             }
-        });
-        const tableBody = document.getElementById('tableBody');
-        for (let i = 0; i < sortedLabels.length; i++) {
-            const row = document.createElement('tr');
-            const cell1 = document.createElement('td');
-            const cell2 = document.createElement('td');
-            
-            cell1.textContent = sortedLabels[i];
-            cell2.textContent = sortedData[i];
-
-            row.appendChild(cell1);
-            row.appendChild(cell2);
-            tableBody.appendChild(row);
         }
-    });
-    document.addEventListener("DOMContentLoaded", function () {
-    const toggleButton = document.getElementById('toggleTableBtn');
-    const tableContainer = document.querySelector('.table-container');
-    const toggleIcon = document.getElementById('toggleIcon');
 
-    toggleButton.addEventListener('click', function () {
-        if (tableContainer.style.display === 'none' || tableContainer.style.display === '') {
-            tableContainer.style.display = 'block';
-            toggleIcon.classList.remove('fa-chevron-down');
-            toggleIcon.classList.add('fa-chevron-up');
-            toggleButton.textContent = ' Ocultar Tabela';
-        } else {
-            tableContainer.style.display = 'none';
-            toggleIcon.classList.remove('fa-chevron-up');
-            toggleIcon.classList.add('fa-chevron-down');
-            toggleButton.textContent = ' Mostrar Tabela';
-        }
+        // Event listeners for date inputs and apply filter button
+  
+        document.getElementById('applyFilterBtn').addEventListener('click', updateChart);
     });
-});
-
 </script>
+
+
+
 
 <script>
   document.addEventListener("DOMContentLoaded", function () {
