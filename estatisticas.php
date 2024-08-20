@@ -1,7 +1,6 @@
 <?php
 include("conexao.php");
 
-// Verifique se o mês foi selecionado
 if (isset($_GET['mes'])) {
     $monthMap = array(
         "Jan" => 1,
@@ -71,15 +70,32 @@ if (isset($_GET['mes'])) {
     $labelsJson = json_encode($labels);
     $dataJson = json_encode($data);
 
-    echo($labelsJson); // Envie os dados em formato JSON para o JavaScript
-    // Caso precise enviar também os dados, pode adicionar:
-    // echo($dataJson);
 } else {
-    // Se o mês não for selecionado, você pode definir uma consulta padrão ou tratar o erro
-    echo json_encode(["error" => "Mês não selecionado"]);
-}
-// // 
+    $sql = "
+    SELECT 
+        a.data AS mes_ano,
+        COUNT(*) AS quantidade
+    FROM 
+        atendimento a
+    GROUP BY 
+        mes_ano
+    ORDER BY 
+        mes_ano;
+";
+// Execute a consulta SQL e prepare os dados para a resposta
+$result = $conn->query($sql);
+$labels = [];
+$data = [];
 
+while ($row = $result->fetch_assoc()) {
+    $labels[] = $row['mes_ano'];
+    $data[] = $row['quantidade'];
+}
+
+$labelsJson = json_encode($labels);
+$dataJson = json_encode($data);
+
+}
 
 // quant. status dos atendimentos
 if(isset($_GET['mes'])) {
@@ -313,133 +329,105 @@ $conn->close();
     <link rel="stylesheet" href="css/multi-select-tag.css">
 
     <style>
-        .table-responsive {
-    max-height: 300px; /* Define a altura máxima para a tabela */
-    overflow-y: auto;  /* Adiciona barra de rolagem vertical se necessário */
-}
+    .table-responsive {
+        max-height: 260px; /* Define a altura máxima para a tabela */
+        overflow-y: auto;  /* Adiciona barra de rolagem vertical se necessário */
+        border: 1px solid #dee2e6; /* Borda ao redor da div */
+        border-radius: 8px; /* Bordas arredondadas */
+        padding: 10px; /* Espaçamento interno */
+    }
 
-.table {
-    table-layout: fixed; /* Garante que a tabela ocupe o espaço disponível */
-    word-wrap: break-word; /* Quebra as palavras longas para evitar overflow */
-}
+    .table {
+        width: 100%;
+        table-layout: fixed; /* Garante que a tabela ocupe o espaço disponível */
+        border-collapse: collapse; /* Remove espaços entre bordas da tabela */
+    }
 
-.table th, .table td {
-    white-space: nowrap; /* Evita que o texto quebre em várias linhas */
-    overflow: hidden;
-    text-overflow: ellipsis; /* Adiciona "..." ao texto que não cabe na célula */
-}
+    .table th, .table td {
+        padding: 0.75rem;
+        border: 1px solid #dee2e6; /* Borda para as células da tabela */
+        text-align: left; /* Alinha o texto à esquerda */
+        white-space: nowrap; /* Evita quebra de linha */
+        overflow: hidden;
+        text-overflow: ellipsis; /* Adiciona "..." ao texto que não cabe na célula */
+    }
 
-        .container {
+    .table th {
+        background-color: #f8f9fa; /* Cor de fundo para cabeçalhos */
+        font-weight: bold;
+    }
+
+    .container {
         display: flex;
         flex-direction: column;
         align-items: center;
         width: 100%;
         padding: 0 15px;
-        }
+    }
 
-        .row {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            width: 100%;
-        }
+    .row {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        width: 100%;
+    }
 
-        .col-xl-6, .col-md-6 {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 30px;
-        }
+    .col-xl-6, .col-md-6 {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 30px;
+    }
 
-        .chart-box {
-            position: relative;
-            width: 100%;
-            max-width: 550px;
-            margin: 0 auto;
-            height: 600px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            padding: 15px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
+    .chart-box {
+        position: relative;
+        width: 100%;
+        max-width: 550px;
+        margin: 0 auto;
+        height: 600px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        padding: 15px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
 
-        .chart-header {
-            font-size: 1.25rem;
-            color: #1E3050;
-            text-align: center;
-            margin-bottom: 10px;
-        }
+    .chart-header {
+        font-size: 1.25rem;
+        color: #1E3050;
+        text-align: center;
+        margin-bottom: 10px;
+    }
 
-        .chart-box canvas {
-            width: 100%;
-            height: 300px;
-        }
+    .chart-box canvas {
+        width: 100%;
+        height: 300px;
+    }
 
-        .table-responsive {
-            margin-top: 20px;
-        }
+    .table-container {
+        display: block; /* Exibe a tabela quando necessário */
+        margin-top: 20px;
+    }
 
-        .table {
-            width: 100%;
-            max-width: 100%;
-            margin-bottom: 1rem;
-            background-color: transparent;
-        }
+    .btn-sm {
+        font-size: 0.8rem; /* Diminuir o tamanho do botão */
+    }
 
-        .table th, .table td {
-            padding: 0.75rem;
-            vertical-align: top;
-            border-top: 1px solid #dee2e6;
-        }
+    #toggleIcon {
+        margin-right: 5px;
+    }
 
-        .table thead th {
-            vertical-align: bottom;
-            border-bottom: 2px solid #dee2e6;
-        }
+    .chart-small {
+        width: 100%;
+        max-width: 200px; 
+        height: 100px; 
+        margin: 0 auto;
+    }
 
-        .table tbody + tbody {
-            border-top: 2px solid #dee2e6;
-        }
-
-        .table-bordered {
-            border: 1px solid #dee2e6;
-        }
-
-        .table-bordered th, .table-bordered td {
-            border: 1px solid #dee2e6;
-        }
-
-        .table-bordered thead th, .table-bordered thead td {
-            border-bottom-width: 2px;
-        }
-        .table-container {
-            display: none; /* Inicialmente oculta a tabela */
-            margin-top: 20px;
-        }
-
-        .table {
-            font-size: 0.9rem; /* Diminuir o tamanho da fonte da tabela */
-        }
-
-        .btn-sm {
-            font-size: 0.8rem; /* Diminuir o tamanho do botão */
-        }
-
-        #toggleIcon {
-            margin-right: 5px;
-        }
-
-        .chart-small {
-            width: 100%;
-            max-width: 200px; 
-            height: 100px; 
-            margin: 0 auto;
-        }
-        .status {
-            width: 100%;
-            max-width: 200px; 
-            height: 100px; 
-            margin: 0 auto;
-        }
+    .status {
+        width: 100%;
+        max-width: 200px; 
+        height: 100px; 
+        margin: 0 auto;
+    }
 </style>
 
 </head>
@@ -475,8 +463,8 @@ $conn->close();
                     Quantidade de Atendimentos no Mês
                 </div>
                 <canvas id="barChart"></canvas>
-                <div class="table-responsive">
-                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <div class="table-responsive mt-2">
+                    <table class="table table-bordered mt-2" id="dataTable" width="100%" cellspacing="0">
                         <thead>
                             <tr>
                                 <th>Mês/Ano</th>
@@ -493,11 +481,11 @@ $conn->close();
 
         <div class="col-xl-6 col-md-6 mb-4 mt-5">
             <div class="chart-box">
-                <div class="chart-header">
+                <div class="chart-header mt-2">
                     Status dos Atendimentos
                 </div>
                 <canvas id="doughnutChart" class="status"></canvas>
-                <div class="table-responsive">
+                <div class="table-responsive mt-5">
                     <table class="table table-bordered" id="dataTableStatus" width="100%" cellspacing="0">
                         <thead>
                             <tr>
@@ -517,11 +505,11 @@ $conn->close();
     <div class="row mt-4">
         <div class="col-xl-6 col-md-6 mb-4">
             <div class="chart-box">
-                <div class="chart-header">
+                <div class="chart-header mt-2">
                     Quantidade de Assuntos
                 </div>
                 <canvas id="orgaoChart" class="chart-small"></canvas>
-                <div class="table-responsive">
+                <div class="table-responsive mt-5">
                     <table class="table table-bordered" id="dataTableOrgao" width="100%" cellspacing="0">
                         <thead>
                             <tr>
@@ -540,11 +528,11 @@ $conn->close();
 
         <div class="col-xl-6 col-md-6 mb-4">
             <div class="chart-box">
-                <div class="chart-header">
+                <div class="chart-header mt-2">
                     Quantidade de Veículos de Atendimento
                 </div>
                 <canvas id="lineChart"></canvas>
-                <div class="table-responsive">
+                <div class="table-responsive mt-4">
                     <table class="table table-bordered" id="dataTableVeiculo" width="100%" cellspacing="0">
                         <thead>
                             <tr>
@@ -577,14 +565,20 @@ $conn->close();
 
         // Function to update the chart
         function updateChart() {
-            const startDate = new Date(document.getElementById('startDate').value);
-            const endDate = new Date(document.getElementById('endDate').value);
+            const startDateInput = document.getElementById('startDate');
+            const endDateInput = document.getElementById('endDate');
+            const startDate = startDateInput.value ? new Date(startDateInput.value) : null;
+            const endDate = endDateInput.value ? new Date(endDateInput.value) : null;
 
             // Filter data based on date range
-            const filteredData = combinedData.filter(item => {
-                const itemDate = new Date(item.label); // Assuming label is in a date-compatible format
-                return (!isNaN(itemDate.getTime()) && itemDate >= startDate && itemDate <= endDate);
-            });
+            let filteredData = combinedData;
+
+            if (startDate && endDate) {
+                filteredData = combinedData.filter(item => {
+                    const itemDate = new Date(item.label); // Assuming label is in a date-compatible format
+                    return (!isNaN(itemDate.getTime()) && itemDate >= startDate && itemDate <= endDate);
+                });
+            }
 
             filteredData.sort((a, b) => b.value - a.value);
 
@@ -605,8 +599,8 @@ $conn->close();
                     labels: sortedLabels,
                     datasets: [{
                         label: 'Quantidade de Atendimentos no Mês',
-                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                        borderColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: '#A1C4FD', // Azul Claro
+                        borderColor: '#A1C4FD', // Azul Claro
                         borderWidth: 1,
                         data: sortedData,
                     }]
@@ -638,8 +632,10 @@ $conn->close();
         }
 
         // Event listeners for date inputs and apply filter button
-  
         document.getElementById('applyFilterBtn').addEventListener('click', updateChart);
+
+        // Initialize chart with general data on page load
+        updateChart();
     });
 </script>
 
@@ -661,7 +657,7 @@ $conn->close();
     const sortedStatusLabels = combinedStatusData.map(item => item.label);
     const sortedStatusData = combinedStatusData.map(item => item.value);
 
-    const backgroundColor = sortedStatusLabels.map(label => label === "Aberto" ? '#4BC0C0' : '#F7464A');
+    const backgroundColor = sortedStatusLabels.map(label => label === "Aberto" ? '#9DF2C8' : '#F4A6B0');
     const borderColor = backgroundColor; // Same color for border
 
     const ctx = document.getElementById('doughnutChart').getContext('2d');
@@ -718,89 +714,97 @@ $conn->close();
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        const assuntosLabels = <?php echo $assuntosjson; ?>;
-        const assuntosData = <?php echo $quantidadejson; ?>;
-        const combinedassuntosData = assuntosLabels.map((label, index) => ({
-            label: label,
-            value: assuntosData[index]
-        }));
-        combinedassuntosData.sort((a, b) => b.value - a.value);
-        const sortedassuntosLabels = combinedassuntosData.map(item => item.label);
-        const sortedassuntosData = combinedassuntosData.map(item => item.value);
-        const ctx = document.getElementById('orgaoChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: sortedassuntosLabels,
-                datasets: [{
-                    label: 'Quantidade de assuntos',
-                    backgroundColor: [
-                    '#FF6384', // Rosa
-                    '#36A2EB', // Azul
-                    '#FFCE56', // Amarelo
-                    '#4BC0C0', // Verde água
-                    '#9966FF', // Roxo
-                    '#FF9F40', // Laranja
-                    '#FFCD56', // Ouro
-                    '#4D5360', // Cinza escuro
-                    '#C9CBCF', // Cinza claro
-                    '#46BFBD', // Verde esmeralda
-                    '#F7464A', // Vermelho forte
-                    '#97BBCD', // Azul pastel
-                    ],
-                    borderColor: [
-                        '#FF6384', // Rosa
-                        '#36A2EB', // Azul
-                        '#FFCE56', // Amarelo
-                        '#4BC0C0', // Verde água
-                        '#9966FF', // Roxo
-                        '#FF9F40', // Laranja
-                        '#FFCD56', // Ouro
-                        '#4D5360', // Cinza escuro
-                        '#C9CBCF', // Cinza claro
-                        '#46BFBD', // Verde esmeralda
-                        '#F7464A', // Vermelho forte
-                        '#97BBCD', // Azul pastel
-                    ],
-                    borderWidth: 1,
-                    data: sortedassuntosData,
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        display: false,
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function (context) {
-                                let label = context.label || '';
-                                if (label) {
-                                    label += ': ';
-                                }
-                                if (context.raw !== null) {
-                                    label += context.raw;
-                                }
-                                return label;
+    const assuntosLabels = <?php echo $assuntosjson; ?>;
+    const assuntosData = <?php echo $quantidadejson; ?>;
+    const combinedassuntosData = assuntosLabels.map((label, index) => ({
+        label: label,
+        value: assuntosData[index]
+    }));
+    combinedassuntosData.sort((a, b) => b.value - a.value);
+    const sortedassuntosLabels = combinedassuntosData.map(item => item.label);
+    const sortedassuntosData = combinedassuntosData.map(item => item.value);
+
+    // Defina um array de cores correspondente
+    const colors = [
+        '#A1C4FD', // Azul Claro
+        '#9DF2C8', // Verde Menta
+        '#E0E0E0', // Cinza Claro
+        '#F5F5F5', // Bege Claro
+        '#F9AFAE', // Pêssego Claro
+        '#E6BEE6', // Lavanda
+        '#8FB1C2', // Cinza Azul
+        '#F7E7A6', // Amarelo Claro
+        '#F4A6B0', // Rosa Claro
+        '#F4A79A', // Salmon Claro
+        '#A8D5B8', // Verde Claro
+        '#D8BFD8'  // Lilás
+    ];
+
+    // Mapeie os rótulos para cores
+    const labelColors = {};
+    sortedassuntosLabels.forEach((label, index) => {
+        labelColors[label] = colors[index % colors.length];
+    });
+
+    const ctx = document.getElementById('orgaoChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: sortedassuntosLabels,
+            datasets: [{
+                label: 'Quantidade de assuntos',
+                backgroundColor: sortedassuntosLabels.map(label => labelColors[label]),
+                borderColor: sortedassuntosLabels.map(label => labelColors[label]),
+                borderWidth: 1,
+                data: sortedassuntosData,
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false,
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function (context) {
+                            let label = context.label || '';
+                            if (label) {
+                                label += ': ';
                             }
+                            if (context.raw !== null) {
+                                label += context.raw;
+                            }
+                            return label;
                         }
                     }
                 }
             }
-        });
-        const tableBodyOrgao = document.getElementById('tableBodyOrgao');
-        for (let i = 0; i < sortedassuntosLabels.length; i++) {
-            const row = document.createElement('tr');
-            const cell1 = document.createElement('td');
-            const cell2 = document.createElement('td');  
-            cell1.textContent = sortedassuntosLabels[i];
-            cell2.textContent = sortedassuntosData[i];
-            row.appendChild(cell1);
-            row.appendChild(cell2);
-            tableBodyOrgao.appendChild(row);
         }
     });
+
+    const tableBodyOrgao = document.getElementById('tableBodyOrgao');
+    for (let i = 0; i < sortedassuntosLabels.length; i++) {
+        const row = document.createElement('tr');
+        const cell1 = document.createElement('td');
+        const cell2 = document.createElement('td');
+        
+        // Define o conteúdo das células
+        cell1.textContent = sortedassuntosLabels[i];
+        cell2.textContent = sortedassuntosData[i];
+
+        // Aplica a cor de fundo às células com base no labelColors
+        const color = labelColors[sortedassuntosLabels[i]] || '#FFFFFF'; // Fallback para branco se a cor não for encontrada
+        cell1.style.backgroundColor = color;
+        cell2.style.backgroundColor = color;
+
+        // Adiciona as células à linha e a linha à tabela
+        row.appendChild(cell1);
+        row.appendChild(cell2);
+        tableBodyOrgao.appendChild(row);
+    }
+});
+
 </script>
 
 <script>
@@ -821,8 +825,8 @@ $conn->close();
                 labels: sortedVeiculoLabels,
                 datasets: [{
                     label: 'Quantidade de Veículos de Atendimento',
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: '#A1C4FD', // Azul Claro
+                    borderColor: '#A1C4FD', // Azul Claro
                     borderWidth: 2,
                     data: sortedVeiculoData,
                     fill: true
