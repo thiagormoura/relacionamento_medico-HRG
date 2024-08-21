@@ -1,31 +1,59 @@
 <?php
+
 include("conexao.php");
 
-if (isset($_GET['mes'])) {
-    $monthMap = array(
-        "Jan" => 1,
-        "Feb" => 2,
-        "Mar" => 3,
-        "Apr" => 4,
-        "May" => 5,
-        "Jun" => 6,
-        "Jul" => 7,
-        "Aug" => 8,
-        "Sep" => 9,
-        "Oct" => 10,
-        "Nov" => 11,
-        "Dec" => 12
-    );
+// Mapear abreviações dos meses para números
+$monthMap = array(
+    "Jan" => 1,
+    "Feb" => 2,
+    "Mar" => 3,
+    "Apr" => 4,
+    "May" => 5,
+    "Jun" => 6,
+    "Jul" => 7,
+    "Aug" => 8,
+    "Sep" => 9,
+    "Oct" => 10,
+    "Nov" => 11,
+    "Dec" => 12
+);
 
-    $mesClicadoAbbr = $_GET['mes'];
-    $mesClicado = $monthMap[$mesClicadoAbbr];
-    
-    // Verifique se os intervalos de data foram fornecidos
+$mesClicado = isset($_GET['mes']) ? $monthMap[$_GET['mes']] : null;
+$anoAtual = date('Y');
+
+// Definir o início e o fim do mês
+$startDate = $mesClicado ? date('Y-m-01', strtotime("$anoAtual-$mesClicado-01")) : null;
+$endDate = $mesClicado ? date('Y-m-t', strtotime("$anoAtual-$mesClicado-01")) : null;
+
+?>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const startDate = '<?php echo $startDate; ?>';
+        const endDate = '<?php echo $endDate; ?>';
+
+        const startDateInput = document.getElementById('startDate');
+        const endDateInput = document.getElementById('endDate');
+
+        // Definir valores mínimos e máximos para os campos de data
+        if (startDate && endDate) {
+            startDateInput.setAttribute('min', startDate);
+            startDateInput.setAttribute('max', endDate);
+            endDateInput.setAttribute('min', startDate);
+            endDateInput.setAttribute('max', endDate);
+        }
+    });
+</script>
+
+<?php
+
+// Consultas SQL baseadas no mês selecionado
+if ($mesClicado) {
+    // Filtrar por intervalo de datas
     if (isset($_POST['startDate']) && isset($_POST['endDate'])) {
         $startDate = $_POST['startDate'];
         $endDate = $_POST['endDate'];
         
-        // Modifique a consulta SQL para incluir o intervalo de datas
         $sql = "
             SELECT 
                 a.data AS mes_ano,
@@ -41,7 +69,6 @@ if (isset($_GET['mes'])) {
                 mes_ano;
         ";
     } else {
-        // Se não houver intervalo de datas, filtre apenas pelo mês clicado
         $sql = "
             SELECT 
                 a.data AS mes_ano,
@@ -56,33 +83,20 @@ if (isset($_GET['mes'])) {
                 mes_ano;
         ";
     }
-
-    // Execute a consulta SQL e prepare os dados para a resposta
-    $result = $conn->query($sql);
-    $labels = [];
-    $data = [];
-
-    while ($row = $result->fetch_assoc()) {
-        $labels[] = $row['mes_ano'];
-        $data[] = $row['quantidade'];
-    }
-
-    $labelsJson = json_encode($labels);
-    $dataJson = json_encode($data);
-
 } else {
     $sql = "
-    SELECT 
-        a.data AS mes_ano,
-        COUNT(*) AS quantidade
-    FROM 
-        atendimento a
-    GROUP BY 
-        mes_ano
-    ORDER BY 
-        mes_ano;
-";
-// Execute a consulta SQL e prepare os dados para a resposta
+        SELECT 
+            a.data AS mes_ano,
+            COUNT(*) AS quantidade
+        FROM 
+            atendimento a
+        GROUP BY 
+            mes_ano
+        ORDER BY 
+            mes_ano;
+    ";
+}
+
 $result = $conn->query($sql);
 $labels = [];
 $data = [];
@@ -94,8 +108,6 @@ while ($row = $result->fetch_assoc()) {
 
 $labelsJson = json_encode($labels);
 $dataJson = json_encode($data);
-
-}
 
 // quant. status dos atendimentos
 if(isset($_GET['mes'])) {
@@ -330,7 +342,7 @@ $conn->close();
 
     <style>
     .table-responsive {
-        max-height: 260px; /* Define a altura máxima para a tabela */
+        max-height: 200px; /* Define a altura máxima para a tabela */
         overflow-y: auto;  /* Adiciona barra de rolagem vertical se necessário */
         border: 1px solid #dee2e6; /* Borda ao redor da div */
         border-radius: 8px; /* Bordas arredondadas */
@@ -428,6 +440,13 @@ $conn->close();
         height: 100px; 
         margin: 0 auto;
     }
+
+    /* Classe para o botão selecionado */
+    .selected-month {
+        background-color: #004d00; /* Cor de fundo do botão selecionado */
+        color: white; /* Cor do texto do botão selecionado */
+    }
+
 </style>
 
 </head>
@@ -445,26 +464,23 @@ $conn->close();
     </div>
 
  
-    <div class="date-filters-container mt-4">
-                    <b><span class="filter-label">Filtro de Data</span></b>
-                    <div class="date-filters">       
-                        <input type="date" id="startDate" placeholder="Data Inicial" title="data inicial">
-                        <input type="date" id="endDate" placeholder="Data Final" title="data final">
-                        <button id="applyFilterBtn">Aplicar Filtro</button>
-                    </div>
-                </div>
-
 
 
 
         <div class="col-xl-6 col-md-6 mb-4 mt-5">
             <div class="chart-box">
-                <div class="chart-header">
+            <b><span class="filter-label">Filtro de Data</span></b>
+                    <div class="date-filters mt-2">       
+                        <input type="date" id="startDate" placeholder="Data Inicial" title="data inicial">
+                        <input type="date" id="endDate" placeholder="Data Final" title="data final">
+                        <button id="applyFilterBtn">Aplicar Filtro</button>
+                    </div>
+                <div class="chart-header mt-3">
                     Quantidade de Atendimentos no Mês
                 </div>
                 <canvas id="barChart"></canvas>
-                <div class="table-responsive mt-2">
-                    <table class="table table-bordered mt-2" id="dataTable" width="100%" cellspacing="0">
+                <div class="table-responsive">
+                    <table class="table table-bordered " id="dataTable" width="100%" cellspacing="0">
                         <thead>
                             <tr>
                                 <th>Mês/Ano</th>
@@ -855,13 +871,23 @@ $conn->close();
     });
 </script>
 <script>
-    // Função para obter o nome do mês
+// Função para obter o nome do mês
 function getMonthName(monthIndex) {
     const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     return months[monthIndex];
 }
 
 const monthButtonsContainer = document.getElementById("monthButtons");
+
+// Função para marcar o botão selecionado
+function highlightSelectedMonth(button) {
+    // Remove a classe 'selected-month' de todos os botões
+    const buttons = document.querySelectorAll("#monthButtons button");
+    buttons.forEach(btn => btn.classList.remove("selected-month"));
+
+    // Adiciona a classe 'selected-month' ao botão clicado
+    button.classList.add("selected-month");
+}
 
 // Loop para obter os nomes dos meses de janeiro até dezembro
 for (let i = 0; i < 12; i++) {
@@ -890,9 +916,22 @@ for (let i = 0; i < 12; i++) {
             // Redireciona para a nova URL
             window.location.href = updatedURL;
         }
+
+        // Destaque o botão clicado
+        highlightSelectedMonth(this);
     });
 
     monthButtonsContainer.appendChild(button);
+}
+
+// Se o URL já contiver um mês selecionado, destaque o botão correspondente
+const urlParams = new URLSearchParams(window.location.search);
+const selectedMonth = urlParams.get("mes");
+if (selectedMonth) {
+    const selectedButton = document.getElementById(selectedMonth);
+    if (selectedButton) {
+        highlightSelectedMonth(selectedButton);
+    }
 }
 
 
