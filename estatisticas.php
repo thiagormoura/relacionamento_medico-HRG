@@ -467,7 +467,7 @@ $conn->close();
 
 
 
-        <div class="col-xl-6 col-md-6 mb-4 mt-5">
+        <div class="col-xl-6 col-md-7 mb-4 mt-5">
             <div class="chart-box">
             <b><span class="filter-label">Filtro de Data</span></b>
                     <div class="date-filters mt-2">       
@@ -495,7 +495,7 @@ $conn->close();
             </div>
         </div>
 
-        <div class="col-xl-6 col-md-6 mb-4 mt-5">
+        <div class="col-xl-6 col-md-7 mb-4 mt-5">
             <div class="chart-box">
                 <div class="chart-header mt-2">
                     Status dos Atendimentos
@@ -519,7 +519,7 @@ $conn->close();
     </div>
 
     <div class="row mt-4">
-        <div class="col-xl-6 col-md-6 mb-4">
+        <div class="col-xl-6 col-md-7 mb-4">
             <div class="chart-box">
                 <div class="chart-header mt-2">
                     Quantidade de Assuntos
@@ -542,7 +542,7 @@ $conn->close();
         </div>
 
 
-        <div class="col-xl-6 col-md-6 mb-4">
+        <div class="col-xl-6 col-md-7 mb-4">
             <div class="chart-box">
                 <div class="chart-header mt-2">
                     Quantidade de Veículos de Atendimento
