@@ -375,157 +375,6 @@ $conn->close();
         align-items: center;
         width: 100%;
         padding: 0 15px;
-<<<<<<< HEAD
-        }
-        .row {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            width: 100%;
-        }
-        .col-xl-6, .col-md-6 {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 30px;
-        }
-        .chart-box {
-            position: relative;
-            width: 100%;
-            max-width: 550px;
-            margin: 0 auto;
-            height: 800px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            padding: 15px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        .chart-header {
-            font-size: 1.25rem;
-            color: #1E3050;
-            text-align: center;
-            margin-bottom: 10px;
-        }
-        .chart-box canvas {
-            width: 100%;
-            height: 300px;
-            padding: 15px;
-        }
-        .chart-container {
-            max-height: 400px; 
-            overflow-y: auto; 
-            margin-top: 20px; 
-            border-radius: 5px; 
-            padding: 10px;
-        }
-        .table {
-            width: 100%;
-            max-width: 100%;
-            margin-bottom: 1rem;
-            background-color: transparent;
-        }
-        .table th, .table td {
-            padding: 0.75rem;
-            vertical-align: top;
-            border-top: 1px solid #dee2e6;
-        }
-        .table thead th {
-            vertical-align: bottom;
-            border-bottom: 2px solid #dee2e6;
-        }
-        .table tbody + tbody {
-            border-top: 2px solid #dee2e6;
-        }
-        .table-bordered {
-            border: 1px solid #dee2e6;
-        }
-        .table-bordered th, .table-bordered td {
-            border: 1px solid #dee2e6;
-        }
-        .table-bordered thead th, .table-bordered thead td {
-            border-bottom-width: 2px;
-        }
-        .table-responsive {
-            max-height: 300px; 
-            overflow-y: auto; 
-            border: 1px solid #ddd; 
-            border-radius: 5px;
-            padding: 10px; 
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse; 
-        }
-        th, td {
-            padding: 8px; 
-            text-align: left; 
-            border-bottom: 1px solid #ddd; 
-        }
-        .table thead th {
-            background-color: #1E3050; 
-            color: white;
-        }
-        .btn-sm {
-            font-size: 0.8rem; 
-        }
-
-        #toggleIcon {
-            margin-right: 5px;
-        }
-
-        .chart-small {
-            width: 100%;
-            max-width: 200px; 
-            height: 100px; 
-            margin: 0 auto;
-        }
-        .status {
-            width: 100%;
-            max-width: 200px; 
-            height: 100px; 
-            margin: 0 auto;
-        }
-        .date-filters-container {
-            padding: 10px; 
-            border-radius: 10px; 
-            margin: 10px auto; 
-        }
-
-        .filter-label {
-            display: block;
-            color: black; 
-            font-size: 18px; 
-            margin-bottom: 10px; 
-        }
-
-        .date-filters {
-            display: flex; 
-            gap: 3px; 
-            align-items: center; 
-        }
-        .date-filters input[type="date"] {
-            background-color: #ffffff; 
-            border: 1px solid #AFAFAF; 
-            border-radius: 5px; 
-            padding: 7px; 
-            font-size: 16px; 
-            color: #1E3050; 
-            width: 170px;
-            box-sizing: border-box; 
-        }
-        #applyFilterBtn {
-            background-color: #1E3050;
-            color: #ffffff; 
-            border: none; 
-            padding: 8px 15px; 
-            font-size: 16px; 
-            border-radius: 5px; 
-            cursor: pointer; 
-            transition: background-color 0.3s; 
-        }
-        #applyFilterBtn:hover {
-            background-color: #14324e; 
-        }
-=======
     }
 
     .row {
@@ -598,7 +447,6 @@ $conn->close();
         color: white; /* Cor do texto do botão selecionado */
     }
 
->>>>>>> origin/vitnovabranch
 </style>
 
 </head>
@@ -621,29 +469,16 @@ $conn->close();
 
         <div class="col-xl-6 col-md-7 mb-4 mt-5">
             <div class="chart-box">
-<<<<<<< HEAD
-                <div class="date-filters-container">
-                    <span class="filter-label">Filtro de Data</span>
-                    <div class="date-filters">       
-=======
             <b><span class="filter-label">Filtro de Data</span></b>
                     <div class="date-filters mt-2">       
->>>>>>> origin/vitnovabranch
                         <input type="date" id="startDate" placeholder="Data Inicial" title="data inicial">
                         <input type="date" id="endDate" placeholder="Data Final" title="data final">
                         <button id="applyFilterBtn">Aplicar Filtro</button>
                     </div>
-<<<<<<< HEAD
-                </div>
-                <div class="chart-header">
-=======
                 <div class="chart-header mt-3">
->>>>>>> origin/vitnovabranch
                     Quantidade de Atendimentos no Mês
                 </div>
-                <div class="chart-container">
-                    <canvas id="barChart"></canvas>
-                </div>
+                <canvas id="barChart"></canvas>
                 <div class="table-responsive">
                     <table class="table table-bordered " id="dataTable" width="100%" cellspacing="0">
                         <thead>
@@ -653,17 +488,14 @@ $conn->close();
                             </tr>
                         </thead>
                         <tbody id="tableBody">
+                            <!-- Dados serão preenchidos via JavaScript -->
                         </tbody>
-                    </table>   
+                    </table>
                 </div>
             </div>
         </div>
-<<<<<<< HEAD
-        <div class="col-xl-6 col-md-6 mb-4">
-=======
 
         <div class="col-xl-6 col-md-7 mb-4 mt-5">
->>>>>>> origin/vitnovabranch
             <div class="chart-box">
                 <div class="chart-header mt-2">
                     Status dos Atendimentos
@@ -738,99 +570,6 @@ $conn->close();
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-<<<<<<< HEAD
-    function renderChartAndTable(labelsJson, dataJson) {
-        const labels = labelsJson;
-        const data = dataJson;
-        const combinedData = labels.map((label, index) => ({
-            label: label,
-            value: data[index]
-        }));
-        combinedData.sort((a, b) => b.value - a.value);
-        const sortedLabels = combinedData.map(item => item.label);
-        const sortedData = combinedData.map(item => item.value);
-        const ctx = document.getElementById('barChart').getContext('2d');
-        const chart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: sortedLabels,
-                datasets: [{
-                    label: 'Quantidade de Atendimentos no Mês',
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    borderWidth: 1,
-                    data: sortedData,
-                }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
-        const tableBody = document.getElementById('tableBody');
-        for (let i = 0; i < sortedLabels.length; i++) {
-            const row = document.createElement('tr');
-            const cell1 = document.createElement('td');
-            const cell2 = document.createElement('td');
-
-            cell1.textContent = sortedLabels[i];
-            cell2.textContent = sortedData[i];
-
-            row.appendChild(cell1);
-            row.appendChild(cell2);
-            tableBody.appendChild(row);
-        }
-        return chart;
-        }
-        function filterData(labels, data, startDate, endDate) {
-            const start = new Date(startDate);
-            const end = new Date(endDate);
-            const filteredData = labels.map((label, index) => {
-                const [month, year] = label.split('/');
-                const date = new Date(year, month - 1);
-                if (date >= start && date <= end) {
-                    return { label: label, value: data[index] };
-                }
-                return null;
-            }).filter(item => item !== null);
-
-            filteredData.sort((a, b) => b.value - a.value);
-
-            const filteredLabels = filteredData.map(item => item.label);
-            const filteredValues = filteredData.map(item => item.value);
-
-            return { filteredLabels, filteredValues };
-        }
-        const labels = <?php echo $labelsJson; ?>;
-        const data = <?php echo $dataJson; ?>;
-        let chart = renderChartAndTable(labels, data);
-        document.getElementById('applyFilterBtn').addEventListener('click', function () {
-            const startDate = document.getElementById('startDate').value;
-            const endDate = document.getElementById('endDate').value;
-            if (startDate && endDate) {
-                const { filteredLabels, filteredValues } = filterData(labels, data, startDate, endDate);
-                chart.data.labels = filteredLabels;
-                chart.data.datasets[0].data = filteredValues;
-                chart.update();
-                const tableBody = document.getElementById('tableBody');
-                tableBody.innerHTML = '';
-                for (let i = 0; i < filteredLabels.length; i++) {
-                    const row = document.createElement('tr');
-                    const cell1 = document.createElement('td');
-                    const cell2 = document.createElement('td');
-                    cell1.textContent = filteredLabels[i];
-                    cell2.textContent = filteredValues[i];
-                    row.appendChild(cell1);
-                    row.appendChild(cell2);
-                    tableBody.appendChild(row);
-                }
-            }
-        });
-    });
-=======
         const labels = <?php echo $labelsJson; ?>;
         const data = <?php echo $dataJson; ?>;
         let combinedData = labels.map((label, index) => ({
@@ -986,7 +725,6 @@ $conn->close();
         tableBodyStatus.appendChild(row);
     }
 });
->>>>>>> origin/vitnovabranch
 
 </script>
 
