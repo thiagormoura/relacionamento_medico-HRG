@@ -147,13 +147,7 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
                 <button class="accordion-button shadow-sm text-white text-center" type="button" data-toggle="collapse" data-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne" style="background-color: #001f3f">
                     <i id="filter" class="fa-solid fa-filter mb-1"></i>
                     <h5>Filtro - Atendimentos</h5>
-                    <div class="loading">
-                        <svg height="48px" width="64px">
-                            <polyline id="back" points="0.157 23.954, 14 23.954, 21.843 48, 43 0, 50 24, 64 24"></polyline>
-                            <polyline id="front" points="0.157 23.954, 14 23.954, 21.843 48, 43 0, 50 24, 64 24"></polyline>
-                            <polyline id="front2" points="0.157 23.954, 14 23.954, 21.843 48, 43 0, 50 24, 64 24"></polyline>
-                        </svg>
-                    </div>
+                   
                 </button>
             </h2>
             <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-collapseOne" data-bs-parent="#accordionPanelsStayOpenExample">
@@ -247,6 +241,7 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
     <br>
     <div class="pagination" id="pagination"></div>
     <script>
+<<<<<<< HEAD
     const rows = <?php echo json_encode($rows); ?>;
     const rowsPerPage = 20;
     const tableBody = document.getElementById('tableBody');
@@ -254,6 +249,27 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
     const toggleOrderButton = document.getElementById('toggleOrder');
     let currentPage = 1;
     let ascending = true;
+=======
+        const rows = <?php echo json_encode($rows); ?>;
+const rowsPerPage = 10;
+const maxPageButtons = 10;
+const tableBody = document.getElementById('tableBody');
+const pagination = document.getElementById('pagination');
+const toggleOrderButton = document.getElementById('toggleOrder');
+let currentPage = 1;
+let pageBlock = 1;
+
+function displayRows(data, startIndex, endIndex) {
+    tableBody.innerHTML = '';
+    for (let i = startIndex; i < endIndex; i++) {
+        if (i >= data.length) break;
+        const row = data[i];
+        const dataAtendimento = new Date(row.data);
+        const dataAtendimentoFormatada = dataAtendimento.toLocaleDateString('pt-BR');
+        const assunto = row.assunto ? row.assunto : "Nenhum assunto encontrado";
+        const situacao = row.situacao;
+        const situacaoClass = situacao === 'Aberto' ? 'text-success' : 'text-danger';
+>>>>>>> origin/vitnovabranch
 
     function displayRows(data, startIndex, endIndex) {
         tableBody.innerHTML = '';
@@ -274,7 +290,143 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
                             <path fill='#1E3050' d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/>
                         </svg>
                     </button>
+<<<<<<< HEAD
                 `;
+=======
+                </td>
+                <td class='text-center'>
+                    ${buttonHTML}
+                </td>
+            </tr>
+        `;
+    }
+}
+
+function setupPagination(data) {
+    pagination.innerHTML = '';
+    const pageCount = Math.ceil(data.length / rowsPerPage);
+    const blockCount = Math.ceil(pageCount / maxPageButtons);
+
+    const prevBlockButton = document.createElement('button');
+    prevBlockButton.innerHTML = '&larr;';
+    prevBlockButton.disabled = pageBlock === 1;
+    prevBlockButton.title = 'Bloco Anterior';
+    prevBlockButton.addEventListener('click', () => {
+        pageBlock--;
+        updatePagination(data);
+    });
+    pagination.appendChild(prevBlockButton);
+
+    const startPage = (pageBlock - 1) * maxPageButtons + 1;
+    const endPage = Math.min(startPage + maxPageButtons - 1, pageCount);
+
+    for (let i = startPage; i <= endPage; i++) {
+        const button = document.createElement('button');
+        button.textContent = i;
+        button.classList.add('page');
+        if (i === currentPage) {
+            button.classList.add('active');
+        }
+        button.addEventListener('click', () => {
+            currentPage = i;
+            updatePagination(data);
+        });
+        pagination.appendChild(button);
+    }
+
+    const nextBlockButton = document.createElement('button');
+    nextBlockButton.innerHTML = '&rarr;';
+    nextBlockButton.disabled = pageBlock === blockCount;
+    nextBlockButton.title = 'Próximo Bloco';
+    nextBlockButton.addEventListener('click', () => {
+        pageBlock++;
+        updatePagination(data);
+    });
+    pagination.appendChild(nextBlockButton);
+}
+
+function updatePagination(data) {
+    const start = (currentPage - 1) * rowsPerPage;
+    const end = start + rowsPerPage;
+    displayRows(data, start, end);
+    setupPagination(data);
+}
+
+updatePagination(rows);
+
+    </script>
+
+
+<script>
+    function finalizeTask(id) {
+    const button = document.getElementById(`finalizar-${id}`);
+    Swal.fire({
+        title: 'Você realmente deseja finalizar este atendimento?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sim',
+        cancelButtonText: 'Não',
+        customClass: {
+            confirmButton: 'btn-confirm',
+            cancelButton: 'btn-cancel'
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            button.disabled = true;
+            fetch('finalizar.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({
+                    'id_atendimento': id
+                })
+            })
+            .then(response => response.text())
+            .then(data => {
+                console.log(data);
+                location.reload();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                button.disabled = false;
+            });
+        }
+    });
+}
+    function applyFilters() {
+            filterData = document.getElementById('filterData').value.trim();
+            filterNome = document.getElementById('filterNome').value.trim().toLowerCase();
+            filterAssunto = document.getElementById('filterAssunto').value.trim().toLowerCase();
+            filterStatus = document.getElementById('filterStatus').value.trim().toLowerCase();
+            const filteredData = rows.filter(row => {
+                const dataMatches = filterData === '' || new Date(row.data).toLocaleDateString('pt-BR') === filterData;
+                const nomeMatches = row.nome.toLowerCase().includes(filterNome);
+                const assuntoMatches = row.assunto.toLowerCase().includes(filterAssunto);
+                const statusMatches = filterStatus === '' || row.situacao.toLowerCase() === filterStatus;
+
+                return dataMatches && nomeMatches && assuntoMatches && statusMatches;
+            });
+            currentPage = 1;
+            updatePagination(filteredData);
+        }
+        document.getElementById('applyFilters').addEventListener('click', applyFilters);
+        toggleOrderButton.addEventListener('click', function() {
+            ascending = !ascending;
+            const sortedData = rows.sort((rowA, rowB) => {
+                const dateA = new Date(rowA.data);
+                const dateB = new Date(rowB.data);
+                return ascending ? dateA - dateB : dateB - dateA;
+            });
+            currentPage = 1;
+            updatePagination(sortedData);
+            toggleSortIcon(ascending);
+        });
+        function toggleSortIcon(ascending) {
+            const icon = toggleOrderButton.querySelector('svg path');
+            if (ascending) {
+                icon.setAttribute('d', 'M7 14l5-5 5 5H7z');
+>>>>>>> origin/vitnovabranch
             } else {
                 buttonHTML = `
                     <button id='finalizar-${row.id_atendimento}' class='btn btn-success' style='background-color: transparent; border: none;' title='Finalizado'>
@@ -446,12 +598,31 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
             currentPage = parseInt(storedPage);
             localStorage.removeItem('currentPage');
         }
+<<<<<<< HEAD
         updatePagination(rows);
     });
 
     updatePagination(rows);
 </script>
 
+=======
+        function redirectToDetails(idAtendimento) {
+            window.location.href = `dados.php?id=${idAtendimento}`;
+        }
+        function getBadgeClass(situacao) {
+            switch (situacao) {
+                case 'Aberto':
+                    return 'badge badge-custom bg-success';
+                case 'Concluido':
+                    return 'badge badge-custom bg-primary';
+                case 'Análise':
+                    return 'badge badge-custom bg-warning';
+                default:
+                    return 'badge badge-custom bg-secondary';
+            }
+        }
+</script>
+>>>>>>> origin/vitnovabranch
 </div>   
 </div>  
     </main>

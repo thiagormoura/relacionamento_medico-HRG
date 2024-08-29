@@ -69,7 +69,7 @@ include("conexao.php")
                     <div class="col-xl-3 col-md-6 mb-5">
                         <div class="form-group">
                             <label for="date">Data</label>
-                            <input type="date" class="form-control" id="date" name="date" onkeydown="return false; " min="<?= date('Y-m-d') ?>">
+                            <input type="date" class="form-control" id="date" name="date">
                         </div>
                         <script>
                             document.addEventListener("DOMContentLoaded", function() {
