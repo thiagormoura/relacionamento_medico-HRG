@@ -242,13 +242,15 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
     <div class="pagination" id="pagination"></div>
     <script>
         const rows = <?php echo json_encode($rows); ?>;
-        const rowsPerPage = 10;
-        const tableBody = document.getElementById('tableBody');
-        const pagination = document.getElementById('pagination');
-        const toggleOrderButton = document.getElementById('toggleOrder');
-        let currentPage = 1;
-        let ascending = true;
-        function displayRows(data, startIndex, endIndex) {
+const rowsPerPage = 10;
+const maxPageButtons = 10;
+const tableBody = document.getElementById('tableBody');
+const pagination = document.getElementById('pagination');
+const toggleOrderButton = document.getElementById('toggleOrder');
+let currentPage = 1;
+let pageBlock = 1;
+
+function displayRows(data, startIndex, endIndex) {
     tableBody.innerHTML = '';
     for (let i = startIndex; i < endIndex; i++) {
         if (i >= data.length) break;
@@ -297,7 +299,64 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
         `;
     }
 }
-function finalizeTask(id) {
+
+function setupPagination(data) {
+    pagination.innerHTML = '';
+    const pageCount = Math.ceil(data.length / rowsPerPage);
+    const blockCount = Math.ceil(pageCount / maxPageButtons);
+
+    const prevBlockButton = document.createElement('button');
+    prevBlockButton.innerHTML = '&larr;';
+    prevBlockButton.disabled = pageBlock === 1;
+    prevBlockButton.title = 'Bloco Anterior';
+    prevBlockButton.addEventListener('click', () => {
+        pageBlock--;
+        updatePagination(data);
+    });
+    pagination.appendChild(prevBlockButton);
+
+    const startPage = (pageBlock - 1) * maxPageButtons + 1;
+    const endPage = Math.min(startPage + maxPageButtons - 1, pageCount);
+
+    for (let i = startPage; i <= endPage; i++) {
+        const button = document.createElement('button');
+        button.textContent = i;
+        button.classList.add('page');
+        if (i === currentPage) {
+            button.classList.add('active');
+        }
+        button.addEventListener('click', () => {
+            currentPage = i;
+            updatePagination(data);
+        });
+        pagination.appendChild(button);
+    }
+
+    const nextBlockButton = document.createElement('button');
+    nextBlockButton.innerHTML = '&rarr;';
+    nextBlockButton.disabled = pageBlock === blockCount;
+    nextBlockButton.title = 'Próximo Bloco';
+    nextBlockButton.addEventListener('click', () => {
+        pageBlock++;
+        updatePagination(data);
+    });
+    pagination.appendChild(nextBlockButton);
+}
+
+function updatePagination(data) {
+    const start = (currentPage - 1) * rowsPerPage;
+    const end = start + rowsPerPage;
+    displayRows(data, start, end);
+    setupPagination(data);
+}
+
+updatePagination(rows);
+
+    </script>
+
+
+<script>
+    function finalizeTask(id) {
     const button = document.getElementById(`finalizar-${id}`);
     Swal.fire({
         title: 'Você realmente deseja finalizar este atendimento?',
@@ -333,63 +392,7 @@ function finalizeTask(id) {
         }
     });
 }
-        function setupPagination(data) {
-            pagination.innerHTML = '';
-            const prevButton = document.createElement('button');
-            prevButton.innerHTML = '&larr;';
-            prevButton.disabled = currentPage === 1;
-            prevButton.title = 'Anterior';
-            prevButton.addEventListener('click', () => {
-                currentPage--;
-                updatePagination(data);
-            });
-            pagination.appendChild(prevButton);
-            const pageCount = Math.ceil(data.length / rowsPerPage);
-            for (let i = 1; i <= pageCount; i++) {
-                const button = document.createElement('button');
-                button.textContent = i;
-                button.classList.add('page');
-                if (i === currentPage) {
-                    button.classList.add('active');
-                }
-                button.addEventListener('click', () => {
-                    currentPage = i;
-                    updatePagination(data);
-                });
-                pagination.appendChild(button);
-            }
-            const nextButton = document.createElement('button');
-            nextButton.innerHTML = '&rarr;';
-            nextButton.disabled = currentPage === pageCount;
-            nextButton.title = 'Próximo';
-            nextButton.addEventListener('click', () => {
-                currentPage++;
-                updatePagination(data);
-            });
-            pagination.appendChild(nextButton);
-        }
-        function updatePagination(data) {
-            const start = (currentPage - 1) * rowsPerPage;
-            const end = start + rowsPerPage;
-            displayRows(data, start, end);
-            setupPagination(data);
-        }
-        function redirectToDetails(idAtendimento) {
-            window.location.href = `dados.php?id=${idAtendimento}`;
-        }
-        function getBadgeClass(situacao) {
-            switch (situacao) {
-                case 'Aberto':
-                    return 'badge badge-custom bg-success';
-                case 'Concluido':
-                    return 'badge badge-custom bg-primary';
-                case 'Análise':
-                    return 'badge badge-custom bg-warning';
-                default:
-                    return 'badge badge-custom bg-secondary';
-            }
-        }
-        function applyFilters() {
+    function applyFilters() {
             filterData = document.getElementById('filterData').value.trim();
             filterNome = document.getElementById('filterNome').value.trim().toLowerCase();
             filterAssunto = document.getElementById('filterAssunto').value.trim().toLowerCase();
@@ -425,8 +428,22 @@ function finalizeTask(id) {
                 icon.setAttribute('d', 'M7 10l5 5 5-5H7z');
             }
         }
-        updatePagination(rows);
-    </script>
+        function redirectToDetails(idAtendimento) {
+            window.location.href = `dados.php?id=${idAtendimento}`;
+        }
+        function getBadgeClass(situacao) {
+            switch (situacao) {
+                case 'Aberto':
+                    return 'badge badge-custom bg-success';
+                case 'Concluido':
+                    return 'badge badge-custom bg-primary';
+                case 'Análise':
+                    return 'badge badge-custom bg-warning';
+                default:
+                    return 'badge badge-custom bg-secondary';
+            }
+        }
+</script>
 </div>   
 </div>  
     </main>

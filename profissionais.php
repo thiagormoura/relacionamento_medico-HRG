@@ -156,57 +156,61 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
 
     <script>
     const rows = <?php echo json_encode($rows); ?>;
-    const rowsPerPage = 10;
-    const tableBody = document.getElementById('tableBody');
-    const pagination = document.getElementById('pagination');
-    let currentPage = 1;
+const rowsPerPage = 10;
+const maxVisiblePages = 10; // Máximo de páginas visíveis na paginação
+const tableBody = document.getElementById('tableBody');
+const pagination = document.getElementById('pagination');
+let currentPage = 1;
+let currentPaginationStart = 1;
 
-    function displayRows(data, startIndex, endIndex) {
-        tableBody.innerHTML = '';
-        for (let i = startIndex; i < endIndex; i++) {
-            if (i >= data.length) break;
-            const row = data[i];
-            const dataAtendimento = new Date(row.data);
-            const dataAtendimentoFormatada = dataAtendimento.toLocaleDateString('pt-BR');
-            const cpf = row.cpf;
-            const telefone = row.telefone;
-            const telefone2 = row.telefone2;
-            const email = row.email;
-            tableBody.innerHTML += `
-                <tr>
-                    <td class='text-left'>${cpf}</td>
-                    <td class='text-left'>${row.nome}</td>
-                    <td class='text-left'>${email}</td>
-                    <td class='text-left'>${telefone}</td>
-                    <td class='text-center'>
-                        <button class='btn btn-primary' onclick='redirectToDetails(${row.id_atendimento})' style='background-color: transparent; border: none;'>
-                            <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' width='20' height='20' style='cursor: pointer;' onclick='editAtendimento(${row.id})'>
-                                <path fill='#001f3f' d='M471.6 21.7c-21.9-21.9-57.3-21.9-79.2 0L362.3 51.7l97.9 97.9 30.1-30.1c21.9-21.9 21.9-57.3 0-79.2L471.6 21.7zm-299.2 220c-6.1 6.1-10.8 13.6-13.5 21.9l-29.6 88.8c-2.9 8.6-.6 18.1 5.8 24.6s15.9 8.7 24.6 5.8l88.8-29.6c8.2-2.7 15.7-7.4 21.9-13.5L437.7 172.3 339.7 74.3 172.4 241.7zM96 64C43 64 0 107 0 160V416c0 53 43 96 96 96H352c53 0 96-43 96-96V320c0-17.7-14.3-32-32-32s-32 14.3-32 32v96c0 17.7-14.3 32-32 32H96c-17.7 0-32-14.3-32-32V160c0-17.7 14.3-32 32-32h96c17.7 0 32-14.3 32-32s-14.3-32-32-32H96z'/>
-                            </svg>
-                        </button>
-                    </td>
-                </tr>
-            `;
-        }
+function displayRows(data, startIndex, endIndex) {
+    tableBody.innerHTML = '';
+    for (let i = startIndex; i < endIndex; i++) {
+        if (i >= data.length) break;
+        const row = data[i];
+        const dataAtendimento = new Date(row.data);
+        const dataAtendimentoFormatada = dataAtendimento.toLocaleDateString('pt-BR');
+        const cpf = row.cpf;
+        const telefone = row.telefone;
+        const telefone2 = row.telefone2;
+        const email = row.email;
+        tableBody.innerHTML += `
+            <tr>
+                <td class='text-left'>${cpf}</td>
+                <td class='text-left'>${row.nome}</td>
+                <td class='text-left'>${email}</td>
+                <td class='text-left'>${telefone}</td>
+                <td class='text-center'>
+                    <button class='btn btn-primary' onclick='redirectToDetails(${row.id_atendimento})' style='background-color: transparent; border: none;'>
+                        <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' width='20' height='20' style='cursor: pointer;' onclick='editAtendimento(${row.id})'>
+                            <path fill='#001f3f' d='M471.6 21.7c-21.9-21.9-57.3-21.9-79.2 0L362.3 51.7l97.9 97.9 30.1-30.1c21.9-21.9 21.9-57.3 0-79.2L471.6 21.7zm-299.2 220c-6.1 6.1-10.8 13.6-13.5 21.9l-29.6 88.8c-2.9 8.6-.6 18.1 5.8 24.6s15.9 8.7 24.6 5.8l88.8-29.6c8.2-2.7 15.7-7.4 21.9-13.5L437.7 172.3 339.7 74.3 172.4 241.7zM96 64C43 64 0 107 0 160V416c0 53 43 96 96 96H352c53 0 96-43 96-96V320c0-17.7-14.3-32-32-32s-32 14.3-32 32v96c0 17.7-14.3 32-32 32H96c-17.7 0-32-14.3-32-32V160c0-17.7 14.3-32 32-32h96c17.7 0 32-14.3 32-32s-14.3-32-32-32H96z'/>
+                        </svg>
+                    </button>
+                </td>
+            </tr>
+        `;
     }
+}
 
-    function setupPagination(data) {
+function setupPagination(data) {
     pagination.innerHTML = '';
+    const pageCount = Math.ceil(data.length / rowsPerPage);
 
-    // Botão Anterior
-    const prevButton = document.createElement('button');
-    prevButton.innerHTML = '&larr;';
-    prevButton.disabled = currentPage === 1;
-    prevButton.title = 'Anterior'; // Tooltip para o botão Anterior
-    prevButton.addEventListener('click', () => {
-        currentPage--;
+    // Botão Anterior de Página de Paginação
+    const prevPageSetButton = document.createElement('button');
+    prevPageSetButton.innerHTML = '&laquo;';
+    prevPageSetButton.disabled = currentPaginationStart === 1;
+    prevPageSetButton.title = 'Páginas Anteriores'; // Tooltip para o botão
+    prevPageSetButton.addEventListener('click', () => {
+        currentPaginationStart -= maxVisiblePages;
+        currentPage = currentPaginationStart;
         updatePagination(data);
     });
-    pagination.appendChild(prevButton);
+    pagination.appendChild(prevPageSetButton);
 
     // Botões de Página
-    const pageCount = Math.ceil(data.length / rowsPerPage);
-    for (let i = 1; i <= pageCount; i++) {
+    const endPage = Math.min(currentPaginationStart + maxVisiblePages - 1, pageCount);
+    for (let i = currentPaginationStart; i <= endPage; i++) {
         const button = document.createElement('button');
         button.textContent = i;
         button.classList.add('page');
@@ -220,59 +224,60 @@ $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
         pagination.appendChild(button);
     }
 
-    // Botão Próximo
-    const nextButton = document.createElement('button');
-    nextButton.innerHTML = '&rarr;';
-    nextButton.disabled = currentPage === pageCount;
-    nextButton.title = 'Próximo'; // Tooltip para o botão Próximo
-    nextButton.addEventListener('click', () => {
-        currentPage++;
+    // Botão Próximo de Página de Paginação
+    const nextPageSetButton = document.createElement('button');
+    nextPageSetButton.innerHTML = '&raquo;';
+    nextPageSetButton.disabled = endPage === pageCount;
+    nextPageSetButton.title = 'Próximas Páginas'; // Tooltip para o botão
+    nextPageSetButton.addEventListener('click', () => {
+        currentPaginationStart += maxVisiblePages;
+        currentPage = currentPaginationStart;
         updatePagination(data);
     });
-    pagination.appendChild(nextButton);
+    pagination.appendChild(nextPageSetButton);
 }
 
+function updatePagination(data) {
+    const start = (currentPage - 1) * rowsPerPage;
+    const end = start + rowsPerPage;
+    displayRows(data, start, end);
+    setupPagination(data);
+}
 
-    function updatePagination(data) {
-        const start = (currentPage - 1) * rowsPerPage;
-        const end = start + rowsPerPage;
-        displayRows(data, start, end);
-        setupPagination(data);
-    }
+function redirectToDetails(idAtendimento) {
+    window.location.href = `editar_profissional.php?id=${idAtendimento}`;
+}
 
-    function redirectToDetails(idAtendimento) {
-        window.location.href = `editar_profissional.php?id=${idAtendimento}`;
-    }
+let filterCPF = '';
+let filterNome = '';
+let filterEmail = '';
+let filterTelefone = '';
 
-    let filterCPF = '';
-    let filterNome = '';
-    let filterEmail = '';
-    let filterTelefone = '';
+function applyFilters() {
+    filterCPF = document.getElementById('filterCPF').value.trim().toLowerCase();
+    filterNome = document.getElementById('filterNome').value.trim().toLowerCase();
+    filterEmail = document.getElementById('filterEmail').value.trim().toLowerCase();
+    filterTelefone = document.getElementById('filterTelefone').value.trim().toLowerCase();
 
-    function applyFilters() {
-        filterCPF = document.getElementById('filterCPF').value.trim().toLowerCase();
-        filterNome = document.getElementById('filterNome').value.trim().toLowerCase();
-        filterEmail = document.getElementById('filterEmail').value.trim().toLowerCase();
-        filterTelefone = document.getElementById('filterTelefone').value.trim().toLowerCase();
+    const filteredData = rows.filter(row => {
+        const cpfMatches = row.cpf.toLowerCase().includes(filterCPF);
+        const nomeMatches = row.nome.toLowerCase().includes(filterNome);
+        const emailMatches = row.email.toLowerCase().includes(filterEmail);
+        const telefoneMatches = row.telefone.toLowerCase().includes(filterTelefone);
 
-        const filteredData = rows.filter(row => {
-            const cpfMatches = row.cpf.toLowerCase().includes(filterCPF);
-            const nomeMatches = row.nome.toLowerCase().includes(filterNome);
-            const emailMatches = row.email.toLowerCase().includes(filterEmail);
-            const telefoneMatches = row.telefone.toLowerCase().includes(filterTelefone);
+        return cpfMatches && nomeMatches && emailMatches && telefoneMatches;
+    });
 
-            return cpfMatches && nomeMatches && emailMatches && telefoneMatches;
-        });
+    currentPage = 1; // Resetar para a primeira página ao filtrar
+    currentPaginationStart = 1; // Resetar a paginação para a primeira página
+    updatePagination(filteredData); // Atualizar a exibição e paginação
+}
 
-        currentPage = 1; // Resetar para a primeira página ao filtrar
-        displayRows(filteredData, 0, filteredData.length); // Mostrar todos os dados filtrados
-        setupPagination(filteredData); // Atualizar a paginação para refletir o novo conjunto de dados
-    }
+document.getElementById('applyFilters').addEventListener('click', applyFilters);
 
-    document.getElementById('applyFilters').addEventListener('click', applyFilters);
+// Inicializar a exibição e paginação com todos os dados
+updatePagination(rows);
 
-    // Inicializar a exibição e paginação com todos os dados
-    updatePagination(rows);
 </script>
 
 
